@@ -24,6 +24,12 @@ Cada capa se construye sobre la inferior inmediata, la cual provee los servicios
 
 La arquitectura tiene muchas variaciones, ya sea en las capas que se utilizan o en el orden jerárquico de las mismas. Siguiendo la lógica "mantenlo simple" se usará la versión más básica compuesta por las siguientes capas:
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.36\textwidth]{../images/figure_architecture.png}
+  \caption{Arquitectura por capas}
+\end{figure}
+
 \begin{enumerate}
   \item[\(\cdot\)] Capa de presentación o capa de usuario: En concreto, la interfaz gráfica, presenta el sistema al usuario, le comunica información y obtiene información o peticiones de él. Aquí es donde el usuario realizará sus peticiones de recuperación de información del juego y también donde obtendrá sus respuestas. Su requisito principal es ser lo más ‘amigable’ posible, es decir, que los conocimientos técnicos necesarios para operar esta interfaz sean mínimos de modo que esté disponible para la mayor cantidad de usuarios posibles. Esta capa se comunicará solo con la capa de negocio. 
   \item[\(\cdot\)] Capa de negocio: Aquí es donde radican los diversos programas, se reciben las peticiones del usuario a través de la capa de presentación y se computa la respuesta, enviándose nuevamente a la capa de presentación. Aquí yace el código para interpretar las solicitudes del usuario y determinar los datos que este desea recuperar, también se encarga de la actualización de los datos a través de los cambios en el juego, el primero está íntimamente relacionado con la capa de usuario mientras que el segundo es automático. También se comunica con la capa de datos para solicitar al gestor de base de datos almacenar o recuperar datos.
