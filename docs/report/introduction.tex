@@ -22,9 +22,9 @@ El sistema a desarrollar es una herramienta auxiliar del popular juego de móvil
 
 \subsection{Descripción general del producto}
 
-Nuestro sistema está destinado a mejorar el atractivo del juego Clash Royale por medio de un fácil acceso a la información del mismo lo que , como habíamos mencionado anteriormente, funciona como una especie de guía para novatos y un incentivo para todos los jugadores, motivándolos a querer alcanzar logros que sean registrados y estén a la vista de toda la comunidad. Esto, esperamos, aumente el interés en  el juego, y por tanto el número de jugadores lo que a su vez aumentará el número de usuarios de nuestro sistema. 
+El sistema está destinado a mejorar el atractivo del juego Clash Royale por medio de un fácil acceso a la información del mismo lo que, como habíamos mencionado anteriormente, funciona como una especie de guía para novatos y un incentivo para todos los jugadores, motivándolos a querer alcanzar logros que sean registrados y estén a la vista de toda la comunidad. Esto, esperamos, aumente el interés en  el juego, y por tanto el número de jugadores lo que a su vez aumentará el número de usuarios de nuestro sistema. 
 
-Las funciones principales de nuestro producto se centran en recopilar, analizar y poner a disposición del usuario datos referentes a las características de distintos elementos del juego, estas son:
+Las funciones principales se centran en recopilar, analizar y poner a disposición del usuario datos referentes a las características de distintos elementos del juego, estas son:
 
 \begin{enumerate}
   \item[\(\cdot\)] Sobre los jugadores: Código ID, apodo, nivel, cantidad de victorias, carta favorita actual, cantidad de trofeos, máximo de trofeos alcanzados, cantidad de cartas encontradas, las cartas que posee, en que nivel está cada carta, clan al que pertenece, posición que ocupa en el clan, las cartas que ha donado a un clan, los desafíos en los que ha participado, los premios que ha alcanzado en cada desafío, las partidas que ha jugado, su resultado en cada partida.
@@ -42,10 +42,14 @@ El sistema luego debe usar estos datos para responder las consultas de los usuar
 
 Como un sistema que sirve como complemento al juego Clash Royale, los usuarios de nuestro producto serán precisamente los jugadores de este, como tal, aunque siempre hay excepciones, no se espera que posean un conocimiento técnico sobre programación o manejo de datos, por lo que la interfaz de usuario debe mantener esto en cuenta y ser lo más simple e intuitiva posible. 
 
-Nuestro sistema también se ve afectado por restricciones como son:
+El sistema también se ve afectado por restricciones como son:
 
 \begin{enumerate}
   \item[\(\cdot\)] Las políticas y regulaciones relacionadas con la privacidad y seguridad de los datos. Si bien hay algunos datos, como la cantidad de trofeos obtenidos en guerras por un clan, que puede resultar de interés para ellos difundirlos a fin de aumentar su popularidad y atraer nuevos miembros, hay datos confidenciales cuya libre difusión no solo viola la privacidad de los usuarios sino que supondría una desventaja para ellos en el juego, como las cartas poseídas por un jugador y su nivel.
   \item[\(\cdot\)] La necesidad de compatibilidad del sistema con las plataformas en que se juega Clash Royale, lo cual incluía anteriormente solo a iOS y Android, pero recientemente se está produciendo una versión del mismo para PC.
   \item[\(\cdot\)] Garantizar un nivel bajo de requisitos de conocimiento técnico para sus uso, en otras palabras, que sea simple e intuitivo de forma que esté disponible para la mayor cantidad de usuarios. 
 \end{enumerate}
+
+\subsection{Resumen}
+
+El proyecto consiste en un sistema auxiliar que recopile información sobre elementos de Clash Royale y responda a las consultas de los usuarios en base a esa información. Para el desarrollo se optó por una metodología híbrida que combine características de \textbf{RUP} y \textbf{XP}. La arquitectura empleada es \textit{n-layer}, en su versión básica. El programa implementa los patrones de datos `\textit{Builder}', `\textit{Singleton}' y `\textit{Composition}' y los patrones de acceso a datos `\textit{Table Data Gateway}', y `\textit{Unit of Work}'.
