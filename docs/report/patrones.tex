@@ -1,0 +1,16 @@
+\section*{Patrones de diseño y acceso a los datos}
+
+Los patrones de datos que el software implementa son:
+
+\begin{enumerate}
+  \item[\(\cdot\)] \textit{Builder}: La familia de clases \lstinline|Data.Card|, \lstinline|Data.MagicCard|, \lstinline|Data.StructureCard| y \lstinline|Data.UnitCard| se construyen usando un este patron (mediante un objeto \lstinline|Utils.CardBuilder|).
+  \item[\(\cdot\)] \textit{Singleton}: El objeto que representa la conexión con la base de datos (\lstinline|Data.Connection|) se trata de un singleton, de esta forma se optimiza su acceso dado que la aplicación es un servicio web y la creación de multiples conexiones por cada petición sería prohibitiva (aunque el \textbf{ORM} usado, \textit{Entity Framework}, implementa un sistema de \textit{caching} de las conexiones, es mejor manejarlo desde la aplicación que dejarlo en manos de un sistema genérico).
+  \item[\(\cdot\)] \textit{Composition}: Los objetos que representan entidades en la base de datos (como \lstinline|Data.Card|) se componen en las instancias que representan relaciones (como \lstinline|Data.Match|), con lo que se asegura la representación de dichas relaciones.
+\end{enumerate}
+
+Los patrones de acceso a los datos que el software implementa son:
+
+\begin{enumerate}
+  \item[\(\cdot\)] \textit{Table Data Gateway}: El espacio de nombres (\textit{namespace}) \lstinline|Data| contiene clases que representan las tablas presentes en la base de datos (excepto \lstinline|Data.Connection| que representa la propia conexión con la base de datos). La clase \lstinline|Data.Connection| contiene colecciones de tipo \lstinline|System.Data.Entity.DbSet| que manejan el acceso a la base de datos, y usa patrones específicos del lenguaje para ofrecer acceso a esta (específicamente los métodos de las colecciones como \lstinline|OrderBy|, \lstinline|Add| y otros)
+  \item[\(\cdot\)] \textit{Unit of Work}: Todos los cambios hechos en la clase \lstinline|Data.Connection| mediante los métodos descritos en el punto anterior se registran y luego se aplican a la base de datos subyacente mediante el método \lstinline|SaveChanges|. 
+\end{enumerate}
