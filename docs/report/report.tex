@@ -14,15 +14,39 @@
 % You should have received a copy of the GNU General Public License
 % along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
 %
+\documentclass[spanish]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{babel}
 \usepackage{color}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{indentfirst}
 \usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=black,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
 
-\lstloadlanguages{C,C++,csh,Java}
+\geometry{margin=1.2in}
+
+\title{
+  Ingeniería de Software \\
+  Seminario Integrador \\
+}
+
+\author{
+  Amanda Noris Hern\'andez \\
+  Juan Miguel P\'erez Mart\'inez \\
+  Marcos Antonio P\'erez Lorenzo \\
+  Maykol Luis Martínez Rodr\'iguez \\
+}
 
 \definecolor{blue}{rgb}{0,0,0.6}
 \definecolor{cyan}{rgb}{0.0,0.6,0.6}
 \definecolor{green}{rgb}{0,0.8,0}
 \definecolor{red}{rgb}{0.6,0,0}
+
+\lstloadlanguages{C,C++,csh,Java}
 
 \lstset{
   language=csh,
@@ -67,3 +91,16 @@
   keywordstyle=\color{cyan},
   identifierstyle=\color{red},
 }
+
+\begin{document}
+  \maketitle
+  \pagebreak
+  \tableofcontents
+  \pagebreak
+  \include{introduction.tex}
+  \include{requirements.tex}
+  \include{functionalities.tex}
+  \include{methodology.tex}
+  \include{design_patterns.tex}
+  \include{merx.tex}
+\end{document}
