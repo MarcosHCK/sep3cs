@@ -1,0 +1,67 @@
+% Copyright (c) 2023-2025
+% This file is part of sep3cs.
+%
+% sep3cs is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% sep3cs is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
+%
+\section{Requerimientos}
+
+\subsection{Requerimientos Funcionales}
+
+Entre las funcionalidades que debe realizar nuestra aplicación web según los deseos del cliente se encuentran:
+
+\begin{enumerate}
+  \item[\(\cdot\)] El sistema debe ser capaz de recopilar datos de los jugadores, incluyendo su código, apodo, nivel, clan al que pertenece, cantidad de trofeos, victorias totales, cartas encontradas, máximo de trofeos alcanzados y carta favorita actual.
+  \item[\(\cdot\)] El sistema debe ser capaz de recopilar datos sobre las cartas, incluyendo su nombre, descripción, costo de elixir, calidad y tipo.
+  \item[\(\cdot\)] El sistema debe ser capaz de recopilar datos sobre las batallas, incluyendo su duración y el ganador.
+  \item[\(\cdot\)] El sistema debe ser capaz de recopilar datos sobre los desafíos, incluyendo su nombre, descripción, costo, cantidad de premios que ofrece, fecha en que comienza, tiempo de duración, nivel mínimo necesario para participar y cantidad de derrotas que admite.
+  \item[\(\cdot\)] Recopilación de datos sobre clanes, incluyendo su nombre, posición y líder.
+  \item[\(\cdot\)] El sistema debe ser capaz de recopilar datos sobre las guerras de clanes, incluyendo su identificador y la fecha de comienzo.
+  \item[\(\cdot\)] El sistema debe ser capaz de realizar las consultas especificadas en el proyecto. 
+  \item[\(\cdot\)] Conocer los mejores jugadores que participan en una guerra, es decir, por cada clan que participa en una guerra obtener el jugador con más trofeos.
+  \item[\(\cdot\)] Conocer el clan con mejor desempeño durante las guerras por región del mundo, es decir, por cada región obtener el clan con mayor cantidad de trofeos.
+  \item[\(\cdot\)] Conocer la carta o las cartas más donadas por región en el último mes.
+  \item[\(\cdot\)] Conocer la carta más popular de cada tipo dentro de cada clan existente.
+  \item[\(\cdot\)] Dado un jugador saber a que clanes se puede unir, conociendo los requisitos de cada clan.
+  \item[\(\cdot\)] Conocer los desafíos donde haya participado al menos un jugador que lo haya completado.
+\end{enumerate}
+
+\subsection{Requerimientos no funcionales}
+
+Nuestra aplicación posee como requerimientos no funcionales los siguientes:
+
+\begin{enumerate}
+  \item[\(\cdot\)] Usabilidad: El sistema debe ser intuitivo y fácil de usar para los jugadores, independientemente de su nivel de experiencia con este tipo de aplicaciones.
+  \item[\(\cdot\)] Seguridad:
+    \begin{enumerate}
+      \item[\(\cdot\)] Confidencialidad: La información del jugador debe estar protegida y solo ser accesible por el propio jugador y los administradores del sistema.
+      \item[\(\cdot\)] Integridad: La información del juego (como las estadísticas de las cartas y los resultados de las batallas) debe estar protegida contra la corrupción y mantenerse consistente.
+      \item[\(\cdot\)] Disponibilidad: Los jugadores deben tener acceso garantizado a la información del juego en cualquier momento.
+    \end{enumerate}
+  \item[\(\cdot\)] Diseño e implementación:
+    \begin{enumerate}
+      \item[\(\cdot\)] El sistema será implementado en C\#, siguiendo las mejores prácticas de diseño y arquitectura de software.
+      \item[\(\cdot\)] Se utilizará una arquitectura en capas (n-layered) para separar las responsabilidades del sistema y facilitar su mantenimiento y escalabilidad.
+      \item[\(\cdot\)] Se utilizará Entity Framework como ORM para facilitar el acceso y manipulación de la base de datos.
+    \end{enumerate}
+  \item[\(\cdot\)] Rendimiento: El sistema debe ser capaz de manejar un gran volumen de datos y proporcionar respuestas rápidas a las consultas.
+\end{enumerate}
+
+\subsection{Requerimientos de entorno}
+
+Para el correcto uso de nuestra aplicación, los usuarios deben adherirse a los siguientes requerimientos de entorno:
+
+\begin{enumerate}
+  \item[\(\cdot\)] Hardware: El usuario necesitará un dispositivo con conexión a Internet y capacidad para ejecutar un navegador web moderno (como un PC con Windows/Linux, un Mac o un dispositivo móvil).
+  \item[\(\cdot\)] Software: El usuario necesitará un navegador web moderno (como Google Chrome, Mozilla Firefox, Safari, etc.) para acceder a la aplicación. No se requiere ninguna instalación adicional ya que la aplicación se ejecuta en el servidor y se accede a través del navegador.
+\end{enumerate}

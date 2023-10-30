@@ -1,0 +1,108 @@
+% Copyright (c) 2023-2025
+% This file is part of sep3cs.
+%
+% sep3cs is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% sep3cs is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
+%
+\documentclass[spanish]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{babel}
+\usepackage{color}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=black,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+
+\geometry{margin=1.2in}
+
+\title{
+  \textbf{Data Clash}
+  \linebreak \linebreak
+  \includegraphics[width=0.2\textwidth]{../images/logo.jpeg}
+}
+
+\author{
+  Amanda Noris Hern\'andez \\
+  Juan Miguel P\'erez Mart\'inez \\
+  Marcos Antonio P\'erez Lorenzo \\
+  Maykol Luis Martínez Rodr\'iguez \\
+}
+
+\definecolor{blue}{rgb}{0,0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\definecolor{green}{rgb}{0,0.8,0}
+\definecolor{red}{rgb}{0.6,0,0}
+
+\lstloadlanguages{C,C++,csh,Java}
+
+\lstset{
+  language=csh,
+  basicstyle=\footnotesize\ttfamily,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  tabsize=2,
+  extendedchars=true,
+  breaklines=true,
+  stringstyle=\color{blue}\ttfamily,
+  showspaces=false,
+  showtabs=false,
+  xleftmargin=17pt,
+  framexleftmargin=17pt,
+  framexrightmargin=5pt,
+  framexbottommargin=4pt,
+  commentstyle=\color{green},
+  morecomment=[l]{//}, %use comment-line-style!
+  morecomment=[s]{/*}{*/}, %for multiline comments
+  showstringspaces=false,
+  morekeywords={ abstract, event, new, struct,
+  as, explicit, null, switch,
+  base, extern, object, this,
+  bool, false, operator, throw,
+  break, finally, out, true,
+  byte, fixed, override, try,
+  case, float, params, typeof,
+  catch, for, private, uint,
+  char, foreach, protected, ulong,
+  checked, get, set, goto, public, unchecked,
+  class, if, readonly, unsafe,
+  const, implicit, ref, ushort,
+  continue, in, return, using,
+  decimal, int, sbyte, virtual,
+  default, interface, sealed, volatile,
+  delegate, internal, short, void,
+  do, is, sizeof, while,
+  double, lock, stackalloc,
+  else, long, static,
+  enum, namespace, string},
+  keywordstyle=\color{cyan},
+  identifierstyle=\color{red},
+}
+
+\begin{document}
+  \maketitle
+  \pagebreak
+  \tableofcontents
+  \pagebreak
+  \include{introduction.tex}
+  \include{requirements.tex}
+  \include{functionalities.tex}
+  \include{methodology.tex}
+  \include{architecture.tex}
+  \include{design_patterns.tex}
+  \include{merx.tex}
+\end{document}
