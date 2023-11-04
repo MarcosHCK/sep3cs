@@ -19,11 +19,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Data
 {
-
   public class Connection : DbContext
     {
       public string DbPath { get; private set; }
-      public static Connection? Default { get; private set; }
 
       public DbSet<Administrator> Administrators { get; set; }
       public DbSet<Player> Players { get; set; }
@@ -38,13 +36,7 @@ namespace DataClash.Data
           var folder = Environment.SpecialFolder.LocalApplicationData;
           var path = Environment.GetFolderPath (folder);
 
-          if (Default != null)
-            {
-              throw new Exception ("Singleton violation");
-            }
-
           DbPath = System.IO.Path.Join (path, "dataclash.db");
-          Default = this;
         }
     }
 }
