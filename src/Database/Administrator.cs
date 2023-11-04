@@ -15,29 +15,11 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace DataClash
+namespace DataClash.Data
 {
-  class Program
+  public class Administrator
     {
-      public static int Main (string[] args)
-        {
-          var builder = WebApplication.CreateBuilder (args);
-          var connection = new Data.Connection ();
-
-          builder.Services.AddControllersWithViews ();
-
-          var app = builder.Build ();
-
-          if (app.Environment.IsDevelopment () == false)
-            app.UseHsts ();
-
-          app.UseHttpsRedirection ();
-          app.UseStaticFiles ();
-          app.UseRouting ();
-          app.MapControllerRoute (name : "default", pattern : "{controller}/{action=Index}/{id?}");
-          app.MapFallbackToFile ("index.html");
-          app.Run ();
-        return 0;
-        }
+      public int Id { get; set; }
+      public string Name { get; set; }
     }
 }
