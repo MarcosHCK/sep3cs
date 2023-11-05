@@ -12,7 +12,7 @@ function Login() {
 
         try {
             // Hacer una solicitud POST a tu servidor para autenticar al usuario
-            const response = await axios.post('https://localhost:7264/api/account/login', {
+            const response = await axios.post('api/account/login', {
                 username,
                 password
             });

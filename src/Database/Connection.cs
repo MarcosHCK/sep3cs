@@ -21,6 +21,7 @@ namespace DataClash.Data
 {
   public class Connection : DbContext
     {
+      public static Connection default_connection{get; private set;}
       public string DbPath { get; private set; }
 
       public DbSet<Administrator> Administrators { get; set; }
@@ -35,7 +36,7 @@ namespace DataClash.Data
         {
           var folder = Environment.SpecialFolder.LocalApplicationData;
           var path = Environment.GetFolderPath (folder);
-
+          default_connection=this;
           DbPath = System.IO.Path.Join (path, "dataclash.db");
         }
     }
