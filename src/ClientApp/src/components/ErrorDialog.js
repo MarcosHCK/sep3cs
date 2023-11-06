@@ -14,18 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Landing as AdminLanding } from './administration/Landing'
-import { Landing as NormalLanding } from './dashboard/Landing'
+import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import React from 'react';
 
-export function Home ()
+export function ErrorDialog (props)
 {
-  const admin = localStorage.getItem ('admin')
-  const token = localStorage.getItem ('token')
-
-  return (token != null)
-    ? (admin)
-      ? <AdminLanding />
-      : <NormalLanding />
-    : <p>Login to access</p>
+  return (
+    <Modal>
+      <ModalHeader>
+        <p>Error dialog</p>
+      </ModalHeader>
+      <ModalBody>
+        <p>Error dialog contents</p>
+      </ModalBody>
+    </Modal>
+  )
 }
