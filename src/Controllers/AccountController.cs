@@ -1,39 +1,55 @@
+/* Copyright (c) 2023-2025
+ * This file is part of sep3cs.
+ *
+ * sep3cs is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sep3cs is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
+ */
 using DataClash.Data;
 using DataClash.Services;
 using DataClash.Models;
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
+[Route ("api/[controller]")]
 [ApiController]
 public class AccountController : ControllerBase
 {   
-   
-    private readonly AuthenticationService _authenticationService;
+    private readonly AuthenticationService authenticationService;
 
-    public AccountController(AuthenticationService authenticationService)
-    {
-        _authenticationService = authenticationService;
-    }
+    public AccountController (AuthenticationService authenticationService)
+			{
+				this.authenticationService = authenticationService;
+			}
 
-    [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginModel model)
-    {   
-                
-        User user1 = (from user in Connection.default_connection.Players where user.Name == model.Username select user).First(); // Reemplaza esta línea con tu lógica para buscar al usuario en la base de datos
-        if (user1==null){
-            user1= (from user in Connection.default_connection.Administrators where user.Name == model.Username select user).First();
-        }
-        if (user1 != null)
-        {
-            var isPasswordValid = _authenticationService.VerifyPassword(user1, user1.PasswordHash, model.Password);
-            if (isPasswordValid)
-            {
-                // La contraseña es válida, puedes iniciar sesión al usuario
-                return Ok(new { Username = user1.Name });
-            }
-        }
+    [HttpPost ("login")]
+    public IActionResult Login ([FromBody] LoginModel model)
+			{
+				User? user;
 
-        // Si el usuario no existe o la contraseña no es válida, muestra un mensaje de error
-        return Unauthorized();
-    }
+				if (model.isAdministrator)
+					user = (from users in Connection.defaultConnection!.Administrators where users.Name == model.Username select users).First (null!);
+				else
+					user = (from users in Connection.defaultConnection!.Players where users.Name == model.Username select users).First (null!);
+
+				if (user != null)
+					{
+						var isPasswordValid = authenticationService.VerifyPassword (user, user.PasswordHash, model.Password);
+
+						if (isPasswordValid)
+							{
+								// La contraseña es válida, puedes iniciar sesión al usuario
+								return Ok (new { Username = user.Name });
+							}
+					}
+				return Unauthorized ();
+			}
 }

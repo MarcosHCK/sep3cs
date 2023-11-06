@@ -17,8 +17,7 @@
 
 namespace DataClash.Data
 {
-    public class Administrator : User
+  public class Administrator : User
     {
-        // Aquí puedes agregar cualquier propiedad o método que sea específico para los administradores
     }
 }

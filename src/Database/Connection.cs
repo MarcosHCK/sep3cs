@@ -14,30 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Data
 {
   public class Connection : DbContext
     {
-      public static Connection default_connection{get; private set;}
-      public string DbPath { get; private set; }
+      public static Connection? defaultConnection {get; private set; }
+      public string dbPath { get; private set; }
 
       public DbSet<Administrator> Administrators { get; set; }
       public DbSet<Player> Players { get; set; }
 
       protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
         {
-          optionsBuilder.UseSqlite ($"Data Source={DbPath}");
+          optionsBuilder.UseSqlite ($"Data Source={dbPath}");
         }
 
       public Connection ()
         {
           var folder = Environment.SpecialFolder.LocalApplicationData;
           var path = Environment.GetFolderPath (folder);
-          default_connection=this;
-          DbPath = System.IO.Path.Join (path, "dataclash.db");
+
+          defaultConnection = this;
+          dbPath = System.IO.Path.Join (path, "dataclash.db");
         }
     }
 }
