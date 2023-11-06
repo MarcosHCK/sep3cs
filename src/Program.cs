@@ -25,7 +25,7 @@ namespace DataClash
           var connection = new Data.Connection ();
 
           builder.Services.AddControllersWithViews ();
-          builder.Services.AddScoped<Services.AuthenticationService>();
+          builder.Services.AddScoped<Services.AuthenticationService> ();
 
           var app = builder.Build ();
 
