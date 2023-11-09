@@ -127,7 +127,7 @@ export function Login (props)
         <Card>
           <CardHeader>
             <h2 className="text-center">
-              Login
+              Sign up
             </h2>
           </CardHeader>
           <CardBody>
