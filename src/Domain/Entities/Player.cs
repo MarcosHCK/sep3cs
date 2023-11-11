@@ -19,14 +19,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataClash.Domain.Entities
 {
-  public class Player : BaseDerivedType<User>
+  public class Player : BaseEntity
     {
-      public long? FavoriteCardId { get; set; }
-      public long? Level { get; set; }
+      public long FavoriteCardId { get; set; }
+      public long Level { get; set; }
       public string? Nickname { get; set; }
-      public long? TotalCardsFound { get; set; }
-      public long? TotalThrophies { get; set; }
-      public long? TotalWins { get; set; }
+      public long TotalCardsFound { get; set; }
+      public long TotalThrophies { get; set; }
+      public long TotalWins { get; set; }
 
       [ForeignKey ("FavoriteCard")]
       public virtual Card? FavoriteCard { get; set; }

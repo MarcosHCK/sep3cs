@@ -31,6 +31,6 @@ namespace DataClash.Domain.Entities
       public virtual Clan? Clan { get; set; }
 
       [ForeignKey ("PlayerId")]
-      public virtual User? Player { get; set; }
+      public virtual Player? Player { get; set; }
     }
 }

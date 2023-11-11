@@ -26,9 +26,9 @@ namespace DataClash.Domain.Entities
       public DateTime Duration { get; set; }
 
       [ForeignKey ("LooserPlayerId")]
-      public virtual User? LooserPlayer { get; set; }
+      public virtual Player? LooserPlayer { get; set; }
 
       [ForeignKey ("WinnerPlayerId")]
-      public virtual User? WinnerPlayer { get; set; }
+      public virtual Player? WinnerPlayer { get; set; }
     }
 }

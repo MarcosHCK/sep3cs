@@ -28,6 +28,6 @@ namespace DataClash.Domain.Entities
       public virtual Card? Card { get; set; }
 
       [ForeignKey ("PlayerId")]
-      public virtual User? Player { get; set; }
+      public virtual Player? Player { get; set; }
     }
 }
