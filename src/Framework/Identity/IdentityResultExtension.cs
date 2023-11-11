@@ -14,12 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Interfaces;
+using DataClash.Application.Common.Models;
+using Microsoft.AspNetCore.Identity;
 
-namespace DataClash.Framework.Services
+namespace DataClash.Framework.Identity
 {
-  public class DateTimeService : IDateTime
+  public static class IdentityResultExtensions
     {
-      public DateTime Now => DateTime.Now;
+      public static Result ToApplicationResult (this IdentityResult result)
+        {
+          return result.Succeeded
+            ? Result.Success ()
+            : Result.Failure (result.Errors.Select (e => e.Description));
+        }
     }
 }

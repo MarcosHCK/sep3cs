@@ -14,13 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Interfaces;
 using DataClash.Domain.Entities;
+using DataClash.Framework.Identity;
+using Duende.IdentityServer.EntityFramework.Options;
+using MediatR;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Reflection;
 
-namespace DataClash.Application.Common.Interfaces
+namespace DataClash.Framework.Persistence
 {
-  public interface IDbConnection
+  public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
     {
+      private readonly IMediator _mediator;
+
       public DbSet<Card> Cards { get; set; }
       public DbSet<CardGift> CardGifts { get; set; }
       public DbSet<Challenge> Challenges { get; set; }
@@ -33,6 +42,28 @@ namespace DataClash.Application.Common.Interfaces
       public DbSet<War> Wars { get; set; }
       public DbSet<WarClan> WarClans { get; set; }
 
-      Task<int> SaveChangesAsync (CancellationToken cancellationToken);
+      public ApplicationDbContext (
+            DbContextOptions<ApplicationDbContext> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions,
+            IMediator mediator)
+            : base (options, operationalStoreOptions)
+        {
+          _mediator = mediator;
+        }
+
+      protected override void OnModelCreating (ModelBuilder builder)
+        {
+          builder.ApplyConfigurationsFromAssembly (Assembly.GetExecutingAssembly());
+          base.OnModelCreating (builder);
+        }
+
+      protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
+        {
+        }
+
+      public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken = default)
+        {
+          return await base.SaveChangesAsync (cancellationToken);
+        }
     }
 }
