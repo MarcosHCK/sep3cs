@@ -14,26 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import './custom.css';
-import { Layout } from './components/Layout';
-import { Route, Routes } from 'react-router-dom';
-import AppRoutes from './AppRoutes';
-import React, { Component } from 'react';
+import './custom.css'
+import { Layout } from "./components/Layout"
+import AppRoutes from './AppRoutes'
+import { AuthProvider } from 'react-auth-kit'
+import React from 'react'
 
-export default class App extends Component
+const App = () =>
 {
-  static displayName = App.name;
-
-  render()
-    {
-      return (
-        <Layout>
-          <Routes>
-            {AppRoutes.map((route, index) => {
-              const { element, ...rest } = route;
-              return <Route key={index} {...rest} element={element} />;
-            })}
-          </Routes>
-        </Layout>);
-    }
+  return (
+    <AuthProvider authType={'cookie'}
+                  authName={'_auth'}
+                  cookieDomain={window.location.hostname}
+                  cookieSecure={window.location.protocol === 'https:'}>
+      <Layout>
+        <AppRoutes />
+      </Layout>
+    </AuthProvider>);
 }
+
+export default App

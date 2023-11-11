@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import 'bootstrap/dist/css/bootstrap.css';
-import { BrowserRouter } from 'react-router-dom';
-import { createRoot } from 'react-dom/client';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import App from './App';
-import React from 'react';
-import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.css'
+import { BrowserRouter } from 'react-router-dom'
+import { createRoot } from 'react-dom/client'
+import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+import App from './App'
+import React from 'react'
+import reportWebVitals from './reportWebVitals'
 
 const baseUrl = document.getElementsByTagName ('base')[0].getAttribute ('href');
 const rootElement = document.getElementById ('root');

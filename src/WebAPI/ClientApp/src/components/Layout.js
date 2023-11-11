@@ -15,7 +15,6 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Container } from 'reactstrap'
-import { ErrorDialog } from './ErrorDialog'
 import { NavMenu } from './NavMenu'
 import React from 'react'
 
@@ -24,7 +23,6 @@ export function Layout (props)
   return (
     <div>
       <NavMenu />
-      <ErrorDialog />
       <Container tag="main">
         {props.children}
       </Container>

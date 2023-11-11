@@ -16,16 +16,15 @@
  */
 import { Home } from './components/Home'
 import { Login } from './components/Login'
+import { Route, Routes } from 'react-router-dom'
+import { RequireAuth } from 'react-auth-kit'
 
-const AppRoutes = [
-  {
-    index: true,
-    element: <Home />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-];
+const AppRoutes = () => (
+    <Routes>
+      <Route path={'/'} element={<Home />} index={true} />
+      <Route path={'/login'} element={<Login />} />
+      <Route path={'/dashboard'} element={<RequireAuth><p>Dashboard</p></RequireAuth>}/>
+    </Routes>
+)
 
 export default AppRoutes;

@@ -19,18 +19,20 @@ import { Card, CardBody, CardHeader } from 'reactstrap'
 import { Container } from 'reactstrap'
 import { Form, FormGroup } from 'reactstrap'
 import { useNavigate }  from 'react-router-dom'
+import { useSignIn } from 'react-auth-kit'
 import axios from 'axios'
 import React, { useState } from 'react'
 
 export function Login (props)
 {
-  let [firstName, setFirstName] = useState ('');
-  let [isAdministrator, setIsAdministrator] = useState (false);
-  let [lastName, setLastName] = useState ('');
-  let [loginMode, setLoginMode] = useState (props.isSignUp ? 'signup' : 'signin');
-  let [password, setPassword] = useState ('');
-  let [username, setUsername] = useState ('');
-  let navigate = useNavigate ();
+  let [firstName, setFirstName] = useState ('')
+  let [isAdministrator, setIsAdministrator] = useState (false)
+  let [lastName, setLastName] = useState ('')
+  let [loginMode, setLoginMode] = useState (props.isSignUp ? 'signup' : 'signin')
+  let [password, setPassword] = useState ('')
+  let [username, setUsername] = useState ('')
+  let navigate = useNavigate ()
+  let signIn = useSignIn ()
 
   const switchLoginMode = () =>
     {
@@ -41,43 +43,52 @@ export function Login (props)
     {
       e.preventDefault ();
 
-      try
+      let request
+
+      if (loginMode === 'signin')
         {
-          // Hacer una solicitud POST a tu servidor para autenticar al usuario
-          let request
-
-          if (loginMode === 'signin')
+          request =
             {
-              request =
-                {
-                  administrator : isAdministrator,
-                  password : password,
-                  username : username,
-                }
+              administrator : isAdministrator,
+              password : password,
+              username : username,
             }
-          else
-            {
-              request =
-                {
-                  administrator : isAdministrator,
-                  firstname : firstName,
-                  lastname : lastName,
-                  password : password,
-                  username : username,
-                }
-            }
-
-          const response = await axios.post ('api/account/login', request);
-
-          localStorage.setItem ('admin', isAdministrator);
-          localStorage.setItem ('token', response.data.token);
-          navigate ('/');
         }
-			catch (error)
+      else
         {
-          // Manejar el error
-          console.error ('Error al iniciar sesión:', error);
+          request =
+            {
+              firstname : firstName,
+              lastname : lastName,
+              password : password,
+              username : username,
+            }
         }
+
+        try
+          {
+            const response = await axios.post ('api/account/login', request)
+            const result = signIn (
+              {
+                authState : response.data.authState,
+                expiresIn : response.data.expiresIn,
+                refreshToken : response.data.refreshToken,
+                refreshTokenExpiresIn : response.data.refreshTokenExpiresIn,
+                token : response.data.token,
+                tokenType : 'Bearer',
+              })
+
+            if (result)
+              navigate ('/')
+            else
+              {
+                throw new Error ('Login is blocked')
+              }
+          }
+        catch (error)
+          {
+            console.error ('Can not log in', error)
+          }
     };
 
   return (loginMode === 'signin'
