@@ -14,26 +14,57 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Framework.Persistence;
 
 namespace DataClash
 {
   class Program
     {
-      public static int Main (string[] args)
+      public static async Task<int> Main (string[] args)
         {
           var builder = WebApplication.CreateBuilder (args);
 
-          builder.Services.AddControllersWithViews ();
+          builder.Services.AddApplicationServices ();
+          builder.Services.AddFrameworkServices (builder.Configuration);
+          builder.Services.AddWebUIServices ();
 
           var app = builder.Build ();
 
           if (app.Environment.IsDevelopment () == false)
-            app.UseHsts ();
 
+            app.UseHsts ();
+          else
+            {
+              app.UseDeveloperExceptionPage ();
+              app.UseMigrationsEndPoint ();
+
+              using (var scope = app.Services.CreateScope ())
+                {
+                  var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser> ();
+
+                  await initializer.InitialiseAsync ();
+                  await initializer.SeedAsync ();
+                }
+            }
+
+          app.UseHealthChecks ("/health");
           app.UseHttpsRedirection ();
           app.UseStaticFiles ();
+
+          app.UseSwaggerUi3 (settings =>
+            {
+              settings.Path = "/api";
+              settings.DocumentPath = "/api/specification.json";
+            });
+
           app.UseRouting ();
+
+          app.UseAuthentication ();
+          app.UseIdentityServer ();
+          app.UseAuthorization ();
+
           app.MapControllerRoute (name : "default", pattern : "{controller}/{action=Index}/{id?}");
+          app.MapRazorPages ();
           app.MapFallbackToFile ("index.html");
           app.Run ();
         return 0;
