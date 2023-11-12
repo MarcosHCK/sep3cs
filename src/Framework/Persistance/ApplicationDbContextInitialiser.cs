@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Entities;
 using DataClash.Framework.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,14 +40,12 @@ namespace DataClash.Framework.Persistence
           _roleManager = roleManager;
         }
 
-      public async Task InitialiseAsync()
+      public async Task InitialiseAsync ()
         {
           try
             {
               if (_context.Database.IsSqlite ())
-                {
-                  await _context.Database.MigrateAsync ();
-                }
+                await _context.Database.MigrateAsync ();
             }
           catch (Exception ex)
             {
@@ -76,11 +73,8 @@ namespace DataClash.Framework.Persistence
           var administratorRole = new IdentityRole ("Administrator");
 
           if (_roleManager.Roles.All (r => r.Name != administratorRole.Name))
-            {
-              await _roleManager.CreateAsync (administratorRole);
-            }
+            await _roleManager.CreateAsync (administratorRole);
 
-            // Default users
           var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
 
           if (_userManager.Users.All (u => u.UserName != administrator.UserName))
@@ -88,9 +82,7 @@ namespace DataClash.Framework.Persistence
               await _userManager.CreateAsync (administrator, "Administrator1!");
 
               if (!string.IsNullOrWhiteSpace (administratorRole.Name))
-                {
-                  await _userManager.AddToRolesAsync (administrator, new [] { administratorRole.Name });
-                }
+                await _userManager.AddToRolesAsync (administrator, new [] { administratorRole.Name });
             }
         }
     }

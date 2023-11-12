@@ -14,21 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Common.Exceptions
 {
-  public class Player : BaseEntity
+  public class NotFoundException : Exception
     {
-      public long FavoriteCardId { get; set; }
-      public long Level { get; set; }
-      public string? Nickname { get; set; }
-      public long TotalCardsFound { get; set; }
-      public long TotalThrophies { get; set; }
-      public long TotalWins { get; set; }
-
-      [ForeignKey ("FavoriteCardId")]
-      public virtual Card? FavoriteCard { get; set; }
+      public NotFoundException () : base() { }
+      public NotFoundException (string message) : base(message) { }
+      public NotFoundException (string message, Exception innerException) : base (message, innerException) { }
+      public NotFoundException (string name, object key) : base ($"Entity \"{name}\" ({key}) was not found.") { }
     }
 }

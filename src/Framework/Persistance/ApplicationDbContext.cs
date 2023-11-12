@@ -30,17 +30,17 @@ namespace DataClash.Framework.Persistence
     {
       private readonly IMediator _mediator;
 
-      public DbSet<Card> Cards { get; set; }
-      public DbSet<CardGift> CardGifts { get; set; }
-      public DbSet<Challenge> Challenges { get; set; }
-      public DbSet<Clan> Clans { get; set; }
-      public DbSet<Match> Matches { get; set; }
-      public DbSet<Player> Players { get; set; }
-      public DbSet<PlayerCard> PlayerCards { get; set; }
-      public DbSet<PlayerChallenge> PlayerChallenges { get; set; }
-      public DbSet<PlayerClan> PlayerClans { get; set; }
-      public DbSet<War> Wars { get; set; }
-      public DbSet<WarClan> WarClans { get; set; }
+      public DbSet<Card> Cards => Set<Card> ();
+      public DbSet<CardGift> CardGifts => Set<CardGift> ();
+      public DbSet<Challenge> Challenges => Set<Challenge> ();
+      public DbSet<Clan> Clans => Set<Clan> ();
+      public DbSet<Match> Matches => Set<Match> ();
+      public DbSet<Player> Players => Set<Player> ();
+      public DbSet<PlayerCard> PlayerCards => Set<PlayerCard> ();
+      public DbSet<PlayerChallenge> PlayerChallenges => Set<PlayerChallenge> ();
+      public DbSet<PlayerClan> PlayerClans => Set<PlayerClan> ();
+      public DbSet<War> Wars => Set<War> ();
+      public DbSet<WarClan> WarClans => Set<WarClan> ();
 
       public ApplicationDbContext (
             DbContextOptions<ApplicationDbContext> options,
@@ -53,7 +53,7 @@ namespace DataClash.Framework.Persistence
 
       protected override void OnModelCreating (ModelBuilder builder)
         {
-          builder.ApplyConfigurationsFromAssembly (Assembly.GetExecutingAssembly());
+          builder.ApplyConfigurationsFromAssembly (Assembly.GetExecutingAssembly ());
           base.OnModelCreating (builder);
         }
 

@@ -14,21 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
+using DataClash.WebUI.Filters;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.WebUI.Controllers
 {
-  public class Player : BaseEntity
+  [ApiController]
+  [ApiExceptionFilter]
+  [Route ("api/[controller]")]
+  public abstract class ApiControllerBase : ControllerBase
     {
-      public long FavoriteCardId { get; set; }
-      public long Level { get; set; }
-      public string? Nickname { get; set; }
-      public long TotalCardsFound { get; set; }
-      public long TotalThrophies { get; set; }
-      public long TotalWins { get; set; }
-
-      [ForeignKey ("FavoriteCardId")]
-      public virtual Card? FavoriteCard { get; set; }
+      private ISender? _mediator;
+      protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender> ();
     }
 }

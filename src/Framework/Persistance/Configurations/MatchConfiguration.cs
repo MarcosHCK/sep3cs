@@ -16,23 +16,15 @@
  */
 using DataClash.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataClash.Application.Common.Interfaces
+namespace DataClash.Infrastructure.Persistence.Configurations
 {
-  public interface IApplicationDbContext
+  public class MatchConfiguration : IEntityTypeConfiguration<Match>
     {
-      public DbSet<Card> Cards { get; }
-      public DbSet<CardGift> CardGifts { get; }
-      public DbSet<Challenge> Challenges { get; }
-      public DbSet<Clan> Clans { get; }
-      public DbSet<Match> Matches { get; }
-      public DbSet<Player> Players { get; }
-      public DbSet<PlayerCard> PlayerCards { get; }
-      public DbSet<PlayerChallenge> PlayerChallenges { get; }
-      public DbSet<PlayerClan> PlayerClans { get; }
-      public DbSet<War> Wars { get; }
-      public DbSet<WarClan> WarClans { get; }
-
-      Task<int> SaveChangesAsync (CancellationToken cancellationToken);
+      public void Configure (EntityTypeBuilder<Match> builder)
+        {
+          builder.HasNoKey ();
+        }
     }
 }
