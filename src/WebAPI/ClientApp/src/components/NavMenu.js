@@ -15,9 +15,10 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './NavMenu.css';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import React, { Component } from 'react';
+import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { LoginMenu } from './api-authorization/LoginMenu'
+import React, { Component } from 'react'
 
 export class NavMenu extends Component
 {
@@ -54,9 +55,7 @@ export class NavMenu extends Component
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
                 </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
-                </NavItem>
+                <LoginMenu />
               </ul>
             </Collapse>
           </Navbar>

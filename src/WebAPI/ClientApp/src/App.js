@@ -17,20 +17,14 @@
 import './custom.css'
 import { Layout } from "./components/Layout"
 import AppRoutes from './AppRoutes'
-import { AuthProvider } from 'react-auth-kit'
 import React from 'react'
 
 const App = () =>
 {
   return (
-    <AuthProvider authType={'cookie'}
-                  authName={'_auth'}
-                  cookieDomain={window.location.hostname}
-                  cookieSecure={window.location.protocol === 'https:'}>
       <Layout>
         <AppRoutes />
-      </Layout>
-    </AuthProvider>);
+      </Layout>);
 }
 
 export default App

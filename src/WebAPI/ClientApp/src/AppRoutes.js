@@ -14,16 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants'
+import { Login } from './components/api-authorization/Login'
+import { LoginActions } from './components/api-authorization/ApiAuthorizationConstants'
+import { Logout } from './components/api-authorization/Logout'
+import { LogoutActions } from './components/api-authorization/ApiAuthorizationConstants'
 import { Home } from './components/Home'
-import { Login } from './components/Login'
 import { Route, Routes } from 'react-router-dom'
-import { RequireAuth } from 'react-auth-kit'
+
+const loginAction = (name) => (<Login action={name}></Login>)
+const logoutAction = (name) => (<Logout action={name}></Logout>)
 
 const AppRoutes = () => (
     <Routes>
       <Route path={'/'} element={<Home />} index={true} />
-      <Route path={'/login'} element={<Login />} />
-      <Route path={'/dashboard'} element={<RequireAuth><p>Dashboard</p></RequireAuth>}/>
+      <Route path={ApplicationPaths.Login} element={ loginAction (LoginActions.Login) }/>
+      <Route path={ApplicationPaths.LoginFailed} element={ loginAction (LoginActions.LoginFailed) } />
+      <Route path={ApplicationPaths.LoginCallback} element={ loginAction (LoginActions.LoginCallback) } />
+      <Route path={ApplicationPaths.Profile} element={ loginAction (LoginActions.Profile) } />
+      <Route path={ApplicationPaths.Register} element={ loginAction (LoginActions.Register) } />
+      <Route path={ApplicationPaths.LogOut} element={ logoutAction (LogoutActions.Logout) } />
+      <Route path={ApplicationPaths.LogOutCallback} element={ logoutAction (LogoutActions.LogoutCallback) } />
+      <Route path={ApplicationPaths.LoggedOut} element={ logoutAction (LogoutActions.LoggedOut) } />
     </Routes>
 )
 
