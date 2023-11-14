@@ -14,15 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using FluentValidation;
+using AutoMapper;
 
-namespace DataClash.Application.Wars.Commands.CreateWar
+namespace DataClash.Application.Common.Mappings
 {
-  public class CreateWarCommandValidator : AbstractValidator<CreateWarCommand>
+  public interface IMapFrom<T>
     {
-      public CreateWarCommandValidator ()
-        {
-          RuleFor (v => v.Duration).NotEmpty ();
-        }
+      void Mapping (Profile profile) => profile.CreateMap (typeof (T), GetType ());
     }
 }

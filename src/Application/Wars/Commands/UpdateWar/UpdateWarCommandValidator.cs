@@ -16,11 +16,11 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Wars.Commands.CreateWar
+namespace DataClash.Application.Wars.Commands.UpdateWar
 {
-  public class CreateWarCommandValidator : AbstractValidator<CreateWarCommand>
+  public class UpdateWarCommandValidator : AbstractValidator<UpdateWarCommand>
     {
-      public CreateWarCommandValidator ()
+      public UpdateWarCommandValidator ()
         {
           RuleFor (v => v.Duration).NotEmpty ();
         }

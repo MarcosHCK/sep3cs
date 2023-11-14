@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using FluentValidation;
+using DataClash.Application.Common.Mappings;
+using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Wars.Commands.CreateWar
+namespace DataClash.Application.Wars.Queries.GetWar
 {
-  public class CreateWarCommandValidator : AbstractValidator<CreateWarCommand>
+  public class WarBriefDto : IMapFrom<War>
     {
-      public CreateWarCommandValidator ()
-        {
-          RuleFor (v => v.Duration).NotEmpty ();
-        }
+      public int Id { get; init; }
+      public DateTime Duration { get; init; }
     }
 }

@@ -16,13 +16,14 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Wars.Commands.CreateWar
+namespace DataClash.Application.Wars.Queries.GetWarsWithPagination
 {
-  public class CreateWarCommandValidator : AbstractValidator<CreateWarCommand>
+  public class GetWarsWithPaginationQueryValidator : AbstractValidator<GetWarsWithPaginationQuery>
     {
-      public CreateWarCommandValidator ()
+      public GetWarsWithPaginationQueryValidator ()
         {
-          RuleFor (v => v.Duration).NotEmpty ();
+          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
         }
     }
 }

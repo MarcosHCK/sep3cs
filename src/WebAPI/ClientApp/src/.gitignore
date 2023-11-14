@@ -15,4 +15,4 @@
 # along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
 #
 
-webApiClient.js
+webApiClient.ts

@@ -104,7 +104,7 @@
       "newLineBehavior": "Auto",
       "nullValue": "Undefined",
       "operationGenerationMode": "MultipleClientsFromOperationId",
-      "output": "ClientApp/src/webApiClient.js",
+      "output": "ClientApp/src/webApiClient.ts",
       "promiseType": "Promise",
       "propertyNameGeneratorType": null,
       "protectedMethods": [],
