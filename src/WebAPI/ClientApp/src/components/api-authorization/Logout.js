@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths } from './ApiAuthorizationConstants'
+import { ApplicationPaths } from './Constants'
 import { AuthenticationResultStatus } from './AuthorizeService'
 import { Component } from 'react'
-import { LogoutActions } from './ApiAuthorizationConstants'
-import { QueryParameterNames } from './ApiAuthorizationConstants'
+import { LogoutActions } from './Constants'
+import { QueryParameterNames } from './Constants'
 import authService from './AuthorizeService'
 import React from 'react'
 

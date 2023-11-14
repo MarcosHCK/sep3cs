@@ -14,15 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
+import { ApplicationPaths } from './Constants'
+import { QueryParameterNames } from './Constants'
 import { Component } from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import authService from './AuthorizeService'
 import React from 'react'
 
-export default class AuthorizeRoute extends Component
+export class RequireAuth extends Component
 {
-  constructor(props)
+  constructor (props)
     {
       super (props)
 
@@ -65,16 +66,10 @@ export default class AuthorizeRoute extends Component
         return <div></div>;
       else
         {
-          const { component: Component, ...rest } = this.props;
-
-          return (
-            <Route {...rest} render={(props) =>
-              {
-                if (authenticated)
-                  return <Component {...props} />
-                else
-                  return <Redirect to={redirectUrl} />
-              }} />)
+          if (authenticated)
+            return this.props.children
+          else
+            return <Navigate to={redirectUrl} />
         }
     }
 }
