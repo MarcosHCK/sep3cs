@@ -9,6 +9,9 @@
 # production
 /build
 
+# NSwag
+/public/swagger/**/*.json
+
 # misc
 .DS_Store
 .env.local
