@@ -14,9 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import { HomeCarousel } from './HomeCarousel'
 import React from 'react';
 
 export function Home ()
 {
-  return <p>Landing page</p>
+  return (
+  <div>
+    <HomeCarousel items={[
+      { caption : 'Administrator working', src : '/comic/administrator.jpeg', },
+      { caption : 'Querying cards statistics', src : '/comic/query_card_stats.jpeg', },
+      { caption : 'Querying challenges statistics', src : '/comic/query_challenge_stats.jpeg', },
+      { caption : 'Querying clans statistics', src : '/comic/query_clan_stats.jpeg', },
+      { caption : 'Querying wars statistics', src : '/comic/query_clan_war_stats.jpeg', },
+      { caption : 'Querying matches statistics', src : '/comic/query_match_stats.jpeg', },
+      { caption : 'User signing up for DataClash', src : '/comic/registration.jpeg', },
+    ]} />
+  </div>)
 }
