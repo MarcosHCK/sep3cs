@@ -40,7 +40,7 @@
       "newLineBehavior": "Auto",
       "noBuild": true,
       "operationProcessorTypes": [],
-      "output": "ClientApp/public/swagger/DataClash/swagger.json",
+      "output": "ClientApp/public/swagger/v1/swagger.json",
       "outputType": "OpenApi3",
       "project": "WebAPI.csproj",
       "referencePaths": [],
