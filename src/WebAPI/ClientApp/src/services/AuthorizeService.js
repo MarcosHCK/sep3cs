@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths, ApplicationName, UserRoles } from './Constants'
+import { ApplicationPaths, ApplicationName, UserRoles } from './AuthorizeConstants'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 export const AuthenticationResultStatus =

@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths } from './Constants'
-import { QueryParameterNames } from './Constants'
+import { ApplicationPaths } from '../services/AuthorizeConstants'
+import { QueryParameterNames } from '../services/AuthorizeConstants'
 import { Component } from 'react'
 import { Navigate } from 'react-router-dom'
-import authService from './AuthorizeService'
+import authService from '../services/AuthorizeService'
 import React from 'react'
 
 export class RequireAuth extends Component

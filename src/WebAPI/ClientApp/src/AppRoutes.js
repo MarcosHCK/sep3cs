@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths } from './components/api-authorization/Constants'
-import { RequireAuth } from './components/api-authorization/RequireAuth'
-import { Login } from './components/api-authorization/Login'
-import { LoginActions } from './components/api-authorization/Constants'
-import { Logout } from './components/api-authorization/Logout'
-import { LogoutActions } from './components/api-authorization/Constants'
+import { ApplicationPaths } from './services/AuthorizeConstants'
 import { Home } from './components/Home'
+import { Login } from './components/Login'
+import { LoginActions } from './services/AuthorizeConstants'
+import { Logout } from './components/Logout'
+import { LogoutActions } from './services/AuthorizeConstants'
+import { RequireAuth } from './components/RequireAuth'
 import { Route, Routes } from 'react-router-dom'
 
 const loginAction = (name) => (<Login action={name}></Login>)

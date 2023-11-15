@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths } from './Constants'
+import { ApplicationPaths } from '../services/AuthorizeConstants'
+import { AvatarDropdown } from './AvatarDropdown.js'
+import { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { NavItem, NavLink } from 'reactstrap'
-import authService from './AuthorizeService'
-import React, { Component, Fragment } from 'react'
+import authService from '../services/AuthorizeService'
+import React from 'react'
 
 class LoginMenuPlain extends Component
 {
@@ -29,6 +31,7 @@ class LoginMenuPlain extends Component
       this.state =
         {
           isAuthenticated : false,
+          userEmail : null,
           userName : null,
         }
     }
@@ -46,19 +49,15 @@ class LoginMenuPlain extends Component
         </Fragment>)
     }
 
-	authenticatedView (userName, profilePath, logoutPath)
+	authenticatedView (userEmail, userName, profilePath, logoutPath)
     {
       return (
         <Fragment>
           <NavItem>
-            <NavLink tag={Link} className="text-dark" to={profilePath}>
-              {'Hello'} {userName}
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink tag={Link} className="text-dark" to={logoutPath}>
-              {'Logout'}
-            </NavLink>
+            <AvatarDropdown userName={userName} userEmail={userEmail}>
+              <NavLink tag={Link} className="text-dark" to={profilePath}>{'Manage'}</NavLink>
+              <NavLink tag={Link} className="text-dark" to={logoutPath}>{'Logout'}</NavLink>
+            </AvatarDropdown>
           </NavItem>
         </Fragment>)
     }
@@ -66,7 +65,7 @@ class LoginMenuPlain extends Component
   async populateState ()
     {
       const [isAuthenticated, user] = await Promise.all ([ authService.isAuthenticated (), authService.getUser () ])
-      this.setState({ isAuthenticated, userName : user && user.name })
+      this.setState ({ isAuthenticated, userEmail : user && user.email, userName : user && user.name, })
     }
 
   componentDidMount ()
@@ -82,7 +81,7 @@ class LoginMenuPlain extends Component
 
   render()
     {
-      const { isAuthenticated, userName } = this.state
+      const { isAuthenticated, userEmail, userName } = this.state
 
       if (!isAuthenticated)
         {
@@ -94,7 +93,7 @@ class LoginMenuPlain extends Component
         {
           const profilePath = `${ApplicationPaths.Profile}`
           const logoutPath = { pathname : `${ApplicationPaths.LogOut}`, state : { local : true } }
-          return this.authenticatedView (userName, profilePath, logoutPath)
+          return this.authenticatedView (userEmail, userName, profilePath, logoutPath)
         }
     }
 }
