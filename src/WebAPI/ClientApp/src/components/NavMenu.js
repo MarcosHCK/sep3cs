@@ -15,13 +15,12 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './NavMenu.css';
-import { Collapse } from 'reactstrap'
+import { Nav } from 'reactstrap'
 import { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { LoginMenu } from './LoginMenu'
 import { Navbar } from 'reactstrap'
 import { NavbarBrand } from 'reactstrap'
-import { NavbarToggler } from 'reactstrap'
 import React from 'react'
 
 export class NavMenu extends Component
@@ -57,12 +56,10 @@ export class NavMenu extends Component
                 {' '}
               DataClash
             </NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-              <ul className="navbar-nav flex-grow">
-                <LoginMenu />
-              </ul>
-            </Collapse>
+
+            <Nav className="d-sm-inline-flex flex-sm-row-reverse" navbar>
+              <LoginMenu />
+            </Nav>
           </Navbar>
         </header>);
     }

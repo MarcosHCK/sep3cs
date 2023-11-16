@@ -20,6 +20,7 @@ import { Component } from 'react'
 import { Navigate } from 'react-router-dom'
 import authService from '../services/AuthorizeService'
 import React from 'react'
+import { Alert } from 'reactstrap'
 
 export class RequireAuth extends Component
 {
@@ -27,12 +28,11 @@ export class RequireAuth extends Component
     {
       super (props)
 
-      this.state =
-        {
-          authenticated : false,
-          ready : false,
-        }
+      this.takesRoles = props.role
+      this.state = { authenticated : false, hasRole : false, ready : false }
     }
+
+  takesRoles = undefined
 
   async authenticationChanged ()
     {
@@ -42,8 +42,18 @@ export class RequireAuth extends Component
 
   async populateAuthenticationState ()
     {
-      const authenticated = await authService.isAuthenticated ();
-      this.setState ({ ready : true, authenticated });
+      let authenticated = await authService.isAuthenticated ();
+      let hasRole = false
+
+      if (authenticated)
+        {
+          if (this.takesRoles === undefined)
+            hasRole = true
+          else
+            hasRole = await authService.hasRole (this.takesRoles)
+        }
+
+      this.setState ({ ready : true, authenticated, hasRole });
     }
 
   componentDidMount ()
@@ -59,17 +69,20 @@ export class RequireAuth extends Component
 
   render ()
     {
-      const { ready, authenticated } = this.state;
+      const { authenticated, hasRole, ready } = this.state;
       const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI (window.location.href)}`
 
       if (!ready)
         return <div></div>;
       else
         {
-          if (authenticated)
-            return this.props.children
-          else
+          if (authenticated === false)
             return <Navigate to={redirectUrl} />
+          else if (hasRole === false)
+            return <Alert color='danger'>
+              Restricted to '{ this.takesRoles }' users
+            </Alert>
+          else return this.props.children
         }
     }
 }

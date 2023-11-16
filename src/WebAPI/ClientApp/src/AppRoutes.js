@@ -29,10 +29,13 @@ const logoutAction = (name) => (<Logout action={name}></Logout>)
 const AppRoutes = () => (
     <Routes>
       <Route path={'/'} element={<Home />} index={true} />
-      <Route path={'/dashboard'} element={
-        <RequireAuth>
-          <p>Dasboard</p>
-        </RequireAuth>}/>
+
+      <Route path={'/cards'} element={<RequireAuth><p>Cards component placeholdes</p></RequireAuth>}/>
+      <Route path={'/challenges'} element={<RequireAuth><p>Challenges component placeholdes</p></RequireAuth>}/>
+      <Route path={'/clans'} element={<RequireAuth><p>Clans component placeholdes</p></RequireAuth>}/>
+      <Route path={'/matches'} element={<RequireAuth><p>Matches component placeholdes</p></RequireAuth>}/>
+      <Route path={'/players'} element={<RequireAuth role='administrator'><p>Players component placeholdes</p></RequireAuth>}/>
+      <Route path={'/wars'} element={<RequireAuth><p>Wars component placeholdes</p></RequireAuth>}/>
 
       <Route path={ApplicationPaths.ApiAuthorizationPrefix}>
         <Route path={LoginActions.Login} element={ loginAction (LoginActions.Login) }/>

@@ -15,10 +15,11 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths } from '../services/AuthorizeConstants'
-import { AvatarDropdown } from './AvatarDropdown.js'
+import { UserRoles } from '../services/AuthorizeConstants'
+import { UserDashboard } from './UserDashboard.js'
 import { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { DropdownItem, NavItem, NavLink } from 'reactstrap'
+import { NavItem, NavLink } from 'reactstrap'
 import authService from '../services/AuthorizeService'
 import React from 'react'
 
@@ -31,6 +32,7 @@ class LoginMenuPlain extends Component
       this.state =
         {
           isAuthenticated : false,
+          isAdministrator : false,
           userEmail : null,
           userName : null,
         }
@@ -54,19 +56,35 @@ class LoginMenuPlain extends Component
       return (
         <Fragment>
           <NavItem>
-            <AvatarDropdown userName={userName} userEmail={userEmail}>
-              <NavLink tag={Link} className="text-dark" to={profilePath}>{'Manage'}</NavLink>
-              <DropdownItem divider />
+            <UserDashboard userName={userName} userEmail={userEmail}>
+              <NavLink tag={Link} className="text-dark" to='/'>{'Home'}</NavLink>
+              <NavLink tag={Link} className="text-dark" to={profilePath}>{'Profile'}</NavLink>
+              <hr />
+              <NavLink tag={Link} className="text-dark" to='/cards'>{'Cards'}</NavLink>
+              <NavLink tag={Link} className="text-dark" to='/challenges'>{'Challenges'}</NavLink>
+              <NavLink tag={Link} className="text-dark" to='/clans'>{'Clans'}</NavLink>
+              <NavLink tag={Link} className="text-dark" to='/matches'>{'Matches'}</NavLink>
+            { this.isAdministrator &&
+              <NavLink tag={Link} className="text-dark" to='/players'>{'Players'}</NavLink>
+            }
+              <NavLink tag={Link} className="text-dark" to='/wars'>{'Wars'}</NavLink>
+              <hr />
               <NavLink tag={Link} className="text-dark" to={logoutPath}>{'Logout'}</NavLink>
-            </AvatarDropdown>
+            </UserDashboard>
           </NavItem>
         </Fragment>)
     }
 
   async populateState ()
     {
-      const [isAuthenticated, user] = await Promise.all ([ authService.isAuthenticated (), authService.getUser () ])
-      this.setState ({ isAuthenticated, userEmail : user && user.email, userName : user && user.name, })
+      const [ isAdministrator, isAuthenticated, user ] = await Promise.all (
+        [
+          authService.hasRole (UserRoles.Administrator),
+          authService.isAuthenticated (),
+          authService.getUser ()
+        ])
+
+      this.setState ({ isAdministrator, isAuthenticated, userEmail : user && user.email, userName : user && user.name, })
     }
 
   componentDidMount ()
