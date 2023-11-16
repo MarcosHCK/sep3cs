@@ -22,6 +22,11 @@ a.navbar-brand
   word-break: break-all;
 }
 
+img.navbar-brand-logo
+{
+  border-radius: 50%;
+}
+
 html
 {
   font-size: 14px;
