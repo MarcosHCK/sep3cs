@@ -15,13 +15,12 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './NavMenu.css';
-import { Nav } from 'reactstrap'
-import { Component } from 'react'
+import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { Link } from 'react-router-dom'
-import { LoginMenu } from './LoginMenu'
-import { Navbar } from 'reactstrap'
-import { NavbarBrand } from 'reactstrap'
-import React from 'react'
+import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap'
+import { UserDashboard } from './UserDashboard'
+import authService from '../services/AuthorizeService'
+import React, { Component } from 'react'
 
 export class NavMenu extends Component
 {
@@ -29,24 +28,40 @@ export class NavMenu extends Component
 
   constructor (props)
     {
-      super(props);
+      super (props)
 
-      this.toggleNavbar = this.toggleNavbar.bind (this);
       this.state =
         {
-          collapsed: true
-        };
+          isAuthorized : false,
+          isReady : false,
+          userProfile : false,
+        }
     }
 
-  toggleNavbar ()
+  componentDidMount ()
     {
-      this.setState (
-        {
-          collapsed: !this.state.collapsed
-        });
+      this._subscription = authService.subscribe (() => this.authenticationChanged ())
+      this.populateAuthenticationState ()
     }
 
-  render()
+  componentWillUnmount ()
+    {
+      authService.unsubscribe (this._subscription)
+    }
+
+  async authenticationChanged ()
+    {
+      this.setState ({ isAuthorized : false, isReady : false, userProfile : undefined })
+      await this.populateAuthenticationState ()
+    }
+
+  async populateAuthenticationState ()
+    {
+      const [ isAuthorized, userProfile ] = await Promise.all ([ authService.isAuthenticated (), authService.getUser () ])
+      this.setState ({ isAuthorized : isAuthorized, isReady : true, userProfile : userProfile })
+    }
+
+  render ()
     {
       return (
         <header>
@@ -58,9 +73,41 @@ export class NavMenu extends Component
             </NavbarBrand>
 
             <Nav className="d-sm-inline-flex flex-sm-row-reverse" navbar>
-              <LoginMenu />
+              { !this.state.isReady
+                ? <div></div>
+                : (!this.state.isAuthorized
+                  ? (
+                      <div>
+                        <NavItem>
+                          <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Register}`}>Register</NavLink>
+                        </NavItem>
+                        <NavItem>
+                          <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Login}`}>Login</NavLink>
+                        </NavItem>
+                      </div>
+                    )
+                  : (
+                      <NavItem>
+                        <UserDashboard
+                            userName={this.state.userProfile.name}
+                            userEmail={this.state.userProfile.email} >
+                          <NavLink tag={Link} className="text-dark" to='/'>{'Home'}</NavLink>
+                          <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Profile}`}>{'Profile'}</NavLink>
+                          <hr />
+                          <NavLink tag={Link} className="text-dark" to='/cards'>{'Cards'}</NavLink>
+                          <NavLink tag={Link} className="text-dark" to='/challenges'>{'Challenges'}</NavLink>
+                          <NavLink tag={Link} className="text-dark" to='/clans'>{'Clans'}</NavLink>
+                          <NavLink tag={Link} className="text-dark" to='/matches'>{'Matches'}</NavLink>
+                        { this.isAdministrator &&
+                          <NavLink tag={Link} className="text-dark" to='/players'>{'Players'}</NavLink>
+                        }
+                          <NavLink tag={Link} className="text-dark" to='/wars'>{'Wars'}</NavLink>
+                          <hr />
+                          <NavLink tag={Link} className="text-dark" to={{ pathname : `${ApplicationPaths.LogOut}`, state : { local : true } }}>{'Logout'}</NavLink>
+                        </UserDashboard>
+                      </NavItem>)) }
             </Nav>
           </Navbar>
-        </header>);
+        </header>)
     }
 }
