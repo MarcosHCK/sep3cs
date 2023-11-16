@@ -18,7 +18,7 @@ import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { AvatarDropdown } from './AvatarDropdown.js'
 import { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { NavItem, NavLink } from 'reactstrap'
+import { DropdownItem, NavItem, NavLink } from 'reactstrap'
 import authService from '../services/AuthorizeService'
 import React from 'react'
 
@@ -56,6 +56,7 @@ class LoginMenuPlain extends Component
           <NavItem>
             <AvatarDropdown userName={userName} userEmail={userEmail}>
               <NavLink tag={Link} className="text-dark" to={profilePath}>{'Manage'}</NavLink>
+              <DropdownItem divider />
               <NavLink tag={Link} className="text-dark" to={logoutPath}>{'Logout'}</NavLink>
             </AvatarDropdown>
           </NavItem>

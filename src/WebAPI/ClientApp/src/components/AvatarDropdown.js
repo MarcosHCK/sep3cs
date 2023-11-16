@@ -33,9 +33,13 @@ export function AvatarDropdown (props)
           <DropdownMenu>
             { children.map ((child, index) =>
               {
-                return (<DropdownItem key={index}>
-                  { child }
-                </DropdownItem>)
+                if (child.type === DropdownItem)
+                  return <div key={index}>{ child }</div>
+                else
+                  return (
+                    <DropdownItem key={index}>
+                      { child }
+                    </DropdownItem>)
               }) }
           </DropdownMenu>
         </Dropdown>}
