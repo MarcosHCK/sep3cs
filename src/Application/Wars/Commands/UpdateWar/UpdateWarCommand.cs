@@ -16,11 +16,13 @@
  */
 using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
+using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using MediatR;
 
 namespace DataClash.Application.Wars.Commands.UpdateWar
 {
+  [Authorize (Roles = "Administrator")]
   public record UpdateWarCommand : IRequest
     {
       public long Id { get; init; }

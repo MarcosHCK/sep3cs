@@ -16,6 +16,7 @@
  */
 using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
+using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace DataClash.Application.Wars.Commands.DeleteWar
 {
   public record DeleteWarCommand (long Id) : IRequest;
 
+  [Authorize (Roles = "Administrator")]
   public class DeleteWarCommandHandler : IRequestHandler<DeleteWarCommand>
     {
       private readonly IApplicationDbContext _context;

@@ -15,11 +15,13 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 using DataClash.Application.Common.Interfaces;
+using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using MediatR;
 
 namespace DataClash.Application.Wars.Commands.CreateWar
 {
+  [Authorize (Roles = "Administrator")]
   public record CreateWarCommand : IRequest<long>
     {
       public DateTime Duration { get; init; }

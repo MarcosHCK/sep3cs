@@ -15,12 +15,13 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { createUseStyles } from 'react-jss'
+import AvatarPlaceholder from './AvatarEmpty.svg'
 import md5 from 'md5'
 import React from 'react'
 
-const getColorAndBackground = (digest : string) =>
+const getColorAndBackground = (digest) =>
 {
-  const matches = digest.match (/.{2}/g)!
+  const matches = digest.match (/.{2}/g)
   const [red, green, blue] = matches.map (hex => parseInt (hex, 16))
 
   // Formula from https://www.w3.org/TR/AERT/#color-contrast
@@ -29,10 +30,10 @@ const getColorAndBackground = (digest : string) =>
   return { background : `rgb(${[red, green, blue]})`, color, }
 }
 
-const getInitials = (name : string, maxLength = 3) =>
+const getInitials = (name, maxLength = 3) =>
 {
   const chars = [...name.trim ()]
-  const initials : string[] = []
+  const initials = []
 
   if (name.length <= maxLength)
     return name
@@ -52,62 +53,54 @@ const getInitials = (name : string, maxLength = 3) =>
 return initials.join ('')
 }
 
-const useStyles = createUseStyles (
-{
-  img: ({ size }) => (
-    {
-      borderRadius: '50%',
-      height: size,
-      left: 0,
-      position: 'absolute',
-      top: 0,
-      width: size,
-    }),
-  parent: ({ digest, size }) => (
-    {
-      ...getColorAndBackground (digest),
-      alignItems: 'center',
-      borderRadius: '50%',
-      boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.15)',
-      display: 'inline-flex',
-      height: size,
-      justifyContent: 'center',
-      position: 'relative',
-      width: size,
-    }),
-  swatch: ({ initials, size }) => (
-    {
-      // scale the text size depending on avatar size and
-      // number of initials
-      fontFamily: 'sans-serif',
-      fontSize: size / (1.4 * Math.max ([...initials].length, 2)),
-      position: 'absolute',
-      userSelect: 'none',
-    }),
-})
-
-export type AvatarProps =
-{
-  userName : string
-  userEmail : [string, undefined]
-  size : number
-}
-
-export const Avatar =
-  ({ userName, userEmail, size = 50, } : AvatarProps) =>
+export function Avatar (props)
 {
   // 250px is large enough that it will suffice for most purposes,
   // but small enough that it won't require too much bandwidth.
   // We limit the minimum size to improve caching.
 
+  const { userName, userEmail, size = 50, ...rest } = props
   const digest = md5 (userEmail === undefined ? userName : userEmail)
   const initials = getInitials (userName)
-  const c = useStyles ({ digest, size, initials })
+
+  const c = createUseStyles (
+    {
+      img: () => (
+        {
+          borderRadius: '50%',
+          height: size,
+          left: 0,
+          position: 'absolute',
+          top: 0,
+          width: size,
+        }),
+      parent: () => (
+        {
+          ...getColorAndBackground (digest),
+          alignItems: 'center',
+          borderRadius: '50%',
+          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.15)',
+          display: 'inline-flex',
+          height: size,
+          justifyContent: 'center',
+          position: 'relative',
+          width: size,
+        }),
+      swatch: () => (
+        {
+          // scale the text size depending on avatar size and
+          // number of initials
+          fontFamily: 'sans-serif',
+          fontSize: size / (1.4 * Math.max ([...initials].length, 2)),
+          position: 'absolute',
+          userSelect: 'none',
+        }),
+    }) ()
 
   if (userEmail === undefined)
     {
       return (
-        <div className={c.parent}>
+        <div className={c.parent} {...rest}>
           <div aria-hidden='true' className={c.swatch}>
             {initials}
           </div>
@@ -118,7 +111,7 @@ export const Avatar =
       const url = `https://www.gravatar.com/avatar/${digest}?s=${String (Math.max (size, 250),)}&d=blank`
 
       return (
-        <div className={c.parent}>
+        <div className={c.parent} {...rest}>
           <div aria-hidden='true' className={c.swatch}>
             {initials}
           </div>
@@ -126,4 +119,36 @@ export const Avatar =
           <img className={c.img} src={String(url)} alt={`${userName}’s avatar`} />
         </div>)
     }
+}
+
+export function AvatarEmpty (props)
+{
+  const { size = 50, } = props
+
+  const c = createUseStyles (
+    {
+      box : () => (
+        {
+          border: '3px solid black',
+          borderRadius: `${size}px ${size}px ${size}px ${size}px`,
+        }),
+      img : () => (
+        {
+          height : size,
+          width : size,
+        }),
+      label : () => (
+        {
+          paddingLeft : 7,
+          paddingRight : 11,
+          margin : 0,
+        }),
+    }) ()
+
+  return (
+    <div className={`d-flex flex-row align-items-center justify-content-center border ${c.box}`}>
+      <img className={`rounded-circle ${c.img}`} src={AvatarPlaceholder} alt={'empty avatar'} />
+      <p className={c.label}>{'Sign in'}</p>
+    </div>
+  )
 }

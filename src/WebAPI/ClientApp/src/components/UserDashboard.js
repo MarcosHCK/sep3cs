@@ -15,7 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './UserDashboard.css'
-import { Avatar } from './Avatar.tsx'
+import { Avatar } from './Avatar'
 import { Container, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Col } from 'reactstrap'
 import { useState } from 'react'
 

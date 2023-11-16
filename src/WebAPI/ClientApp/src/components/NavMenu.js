@@ -16,6 +16,7 @@
  */
 import './NavMenu.css';
 import { ApplicationPaths } from '../services/AuthorizeConstants'
+import { AvatarEmpty } from './Avatar';
 import { Link } from 'react-router-dom'
 import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap'
 import { UserDashboard } from './UserDashboard'
@@ -77,14 +78,11 @@ export class NavMenu extends Component
                 ? <div></div>
                 : (!this.state.isAuthorized
                   ? (
-                      <div>
-                        <NavItem>
-                          <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Register}`}>Register</NavLink>
-                        </NavItem>
-                        <NavItem>
-                          <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Login}`}>Login</NavLink>
-                        </NavItem>
-                      </div>
+                      <NavItem>
+                        <NavLink tag={Link} to={`${ApplicationPaths.Login}`}>
+                          <AvatarEmpty />
+                        </NavLink>
+                      </NavItem>
                     )
                   : (
                       <NavItem>
