@@ -14,75 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths } from '../services/AuthorizeConstants'
-import { QueryParameterNames } from '../services/AuthorizeConstants'
-import { Component } from 'react'
-import { Navigate } from 'react-router-dom'
-import authService from '../services/AuthorizeService'
-import React from 'react'
 import { Alert } from 'reactstrap'
+import { ApplicationPaths } from '../services/AuthorizeConstants'
+import { Navigate } from 'react-router-dom'
+import { QueryParameterNames } from '../services/AuthorizeConstants'
+import { useAuthorize } from '../services/AuthorizeReact'
+import React from 'react'
 
-export class RequireAuth extends Component
+export function RequireAuth (props)
 {
-  constructor (props)
-    {
-      super (props)
+  const { role, children } = props
+  // eslint-disable-next-line no-unused-vars
+  const [ isReady, isAuthorized, userProfile, hasRoles ] = useAuthorize (role)
 
-      this.takesRoles = props.role
-      this.state = { authenticated : false, hasRole : false, ready : false }
-    }
+  const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI(window.location.href)}`
 
-  takesRoles = undefined
-
-  async authenticationChanged ()
-    {
-      this.setState ({ ready : false, authenticated : false });
-      await this.populateAuthenticationState ();
-    }
-
-  async populateAuthenticationState ()
-    {
-      let authenticated = await authService.isAuthenticated ();
-      let hasRole = false
-
-      if (authenticated)
-        {
-          if (this.takesRoles === undefined)
-            hasRole = true
-          else
-            hasRole = await authService.hasRole (this.takesRoles)
-        }
-
-      this.setState ({ ready : true, authenticated, hasRole });
-    }
-
-  componentDidMount ()
-    {
-      this._subscription = authService.subscribe (() => this.authenticationChanged ())
-      this.populateAuthenticationState ()
-    }
-
-  componentWillUnmount ()
-    {
-      authService.unsubscribe (this._subscription)
-    }
-
-  render ()
-    {
-      const { authenticated, hasRole, ready } = this.state;
-      const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI (window.location.href)}`
-
-      if (!ready)
-        return <div></div>;
-      else
-        {
-          if (authenticated === false)
-            return <Navigate to={redirectUrl} />
-          else if (hasRole === false)
-            return <Alert color='danger'>
-              Restricted to '{ this.takesRoles }' users
-            </Alert>
-          else return this.props.children
-        }
-    }
+  return (
+    !isReady
+    ? (<div></div>)
+    : (!isAuthorized
+      ? (<Navigate to={redirectUrl} />)
+    : (role !== undefined && !hasRoles[role])
+      ? (<Alert color='danger'>Restricted to '{ role }' users</Alert>)
+    : children)
+  )
 }
