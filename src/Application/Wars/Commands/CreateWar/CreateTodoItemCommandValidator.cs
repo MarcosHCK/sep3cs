@@ -18,9 +18,9 @@ using FluentValidation;
 
 namespace DataClash.Application.Wars.Commands.CreateWar
 {
-  public class CreateTodoItemCommandValidator : AbstractValidator<CreateWarCommand>
+  public class CreateWarCommandValidator : AbstractValidator<CreateWarCommand>
     {
-      public CreateTodoItemCommandValidator ()
+      public CreateWarCommandValidator ()
         {
           RuleFor (v => v.Duration).NotEmpty ();
         }

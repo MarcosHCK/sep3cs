@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths } from './ApiAuthorizationConstants'
-import { AuthenticationResultStatus } from './AuthorizeService'
+import { ApplicationPaths } from '../services/AuthorizeConstants'
+import { AuthenticationResultStatus } from '../services/AuthorizeService'
 import { Component } from 'react'
-import { LogoutActions } from './ApiAuthorizationConstants'
-import { QueryParameterNames } from './ApiAuthorizationConstants'
-import authService from './AuthorizeService'
+import { LogoutActions } from '../services/AuthorizeConstants'
+import { QueryParameterNames } from '../services/AuthorizeConstants'
+import authService from '../services/AuthorizeService'
 import React from 'react'
 
 // The main responsibility of this component is to handle the user's logout process.

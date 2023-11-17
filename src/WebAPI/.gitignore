@@ -16,3 +16,7 @@
 #
 
 package-lock.json
+
+dataclash.db
+dataclash.db-shm
+dataclash.db-wal

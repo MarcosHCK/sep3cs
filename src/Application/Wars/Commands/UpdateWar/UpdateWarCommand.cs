@@ -14,39 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using MediatR;
 
-namespace DataClash.Application.Wars.Commands.CreateWar
+namespace DataClash.Application.Wars.Commands.UpdateWar
 {
   [Authorize (Roles = "Administrator")]
-  public record CreateWarCommand : IRequest<long>
+  public record UpdateWarCommand : IRequest
     {
+      public long Id { get; init; }
       public DateTime Duration { get; init; }
     }
 
-  public class CreateWarCommandHandler : IRequestHandler<CreateWarCommand, long>
+  public class UpdateWarCommandHandler : IRequestHandler<UpdateWarCommand>
     {
       private readonly IApplicationDbContext _context;
 
-      public CreateWarCommandHandler (IApplicationDbContext context)
+      public UpdateWarCommandHandler (IApplicationDbContext context)
         {
           _context = context;
         }
 
-      public async Task<long> Handle (CreateWarCommand request, CancellationToken cancellationToken)
+      public async Task Handle (UpdateWarCommand request, CancellationToken cancellationToken)
         {
-          var entity = new War
-            {
-              Duration = request.Duration
-            };
-
-          _context.Wars.Add (entity);
-
+          var entity = await _context.Wars.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (War), request.Id);
+            entity.Duration = request.Duration;
           await _context.SaveChangesAsync (cancellationToken);
-        return entity.Id;
         }
     }
 }

@@ -15,50 +15,61 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './NavMenu.css';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap'
+import { ApplicationPaths } from '../services/AuthorizeConstants'
+import { UserRoles } from '../services/AuthorizeConstants'
+import { AvatarEmpty } from './Avatar';
 import { Link } from 'react-router-dom'
-import { LoginMenu } from './api-authorization/LoginMenu'
-import React, { Component } from 'react'
+import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap'
+import { useAuthorize } from '../services/AuthorizeReact';
+import { UserDashboard } from './UserDashboard'
+import React from 'react'
 
-export class NavMenu extends Component
+export function NavMenu ()
 {
-  static displayName = NavMenu.name;
+  const adminRole = UserRoles.Administrator
+  const [ isReady, isAuthorized, userProfile, hasRoles ] = useAuthorize (adminRole)
 
-  constructor (props)
-    {
-      super(props);
+  return (
+    <header>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
+        <NavbarBrand tag={Link} to="/">
+          <img alt='ICON' src={'/favicon.ico'} className="navbar-brand-logo"/>
+            {' '}
+          DataClash
+        </NavbarBrand>
 
-      this.toggleNavbar = this.toggleNavbar.bind (this);
-      this.state =
-        {
-          collapsed: true
-        };
-    }
-
-  toggleNavbar ()
-    {
-      this.setState (
-        {
-          collapsed: !this.state.collapsed
-        });
-    }
-
-  render()
-    {
-      return (
-        <header>
-          <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-            <NavbarBrand tag={Link} to="/">DataClash</NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-              <ul className="navbar-nav flex-grow">
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-                </NavItem>
-                <LoginMenu />
-              </ul>
-            </Collapse>
-          </Navbar>
-        </header>);
-    }
+        <Nav className="d-sm-inline-flex flex-sm-row-reverse" navbar>
+          { !isReady
+            ? <div></div>
+            : (!isAuthorized
+              ? (
+                  <NavItem>
+                    <NavLink tag={Link} to={`${ApplicationPaths.Login}`}>
+                      <AvatarEmpty />
+                    </NavLink>
+                  </NavItem>
+                )
+              : (
+                  <NavItem>
+                    <UserDashboard
+                        userName={userProfile.name}
+                        userEmail={userProfile.email} >
+                      <NavLink tag={Link} className="text-dark" to='/'>{'Home'}</NavLink>
+                      <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Profile}`}>{'Profile'}</NavLink>
+                      <hr />
+                      <NavLink tag={Link} className="text-dark" to='/cards'>{'Cards'}</NavLink>
+                      <NavLink tag={Link} className="text-dark" to='/challenges'>{'Challenges'}</NavLink>
+                      <NavLink tag={Link} className="text-dark" to='/clans'>{'Clans'}</NavLink>
+                      <NavLink tag={Link} className="text-dark" to='/matches'>{'Matches'}</NavLink>
+                    { hasRoles[UserRoles.Administrator] &&
+                      <NavLink tag={Link} className="text-dark" to='/players'>{'Players'}</NavLink>
+                    }
+                      <NavLink tag={Link} className="text-dark" to='/wars'>{'Wars'}</NavLink>
+                      <hr />
+                      <NavLink tag={Link} className="text-dark" to={{ pathname : `${ApplicationPaths.LogOut}`, state : { local : true } }}>{'Logout'}</NavLink>
+                    </UserDashboard>
+                  </NavItem>)) }
+        </Nav>
+      </Navbar>
+    </header>)
 }

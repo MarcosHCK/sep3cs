@@ -14,33 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using AutoMapper;
 
-a.navbar-brand
+namespace DataClash.Application.Common.Mappings
 {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
-img.navbar-brand-logo
-{
-  border-radius: 50%;
-}
-
-html
-{
-  font-size: 14px;
-}
-
-@media (min-width: 768px)
-{
-  html
-  {
-    font-size: 16px;
-  }
-}
-
-.box-shadow
-{
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+  public interface IMapFrom<T>
+    {
+      void Mapping (Profile profile) => profile.CreateMap (typeof (T), GetType ());
+    }
 }

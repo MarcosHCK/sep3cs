@@ -14,33 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import authService from './AuthorizeService'
 
-a.navbar-brand
+export class ApiClientBase
 {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
+  protected constructor ()
+    {
+    }
 
-img.navbar-brand-logo
-{
-  border-radius: 50%;
-}
+  protected transformOptions = (options: RequestInit) : Promise<RequestInit> =>
+    {
+      return new Promise<RequestInit> (async (resolve, reject) =>
+        {
+          const token = await authService.getAccessToken ()
 
-html
-{
-  font-size: 14px;
-}
+          if (typeof token !== 'string')
 
-@media (min-width: 768px)
-{
-  html
-  {
-    font-size: 16px;
-  }
-}
-
-.box-shadow
-{
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+            reject ('Unauthorized user missis JWT token')
+          else
+            {
+              options.headers =
+                {
+                  ...options.headers,
+                  'Authorization': `Bearer ${token}`,
+                }
+              resolve (options)
+            }
+        })
+    };
 }

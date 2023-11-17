@@ -14,33 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using FluentValidation;
 
-a.navbar-brand
+namespace DataClash.Application.Wars.Queries.GetWarsWithPagination
 {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
-img.navbar-brand-logo
-{
-  border-radius: 50%;
-}
-
-html
-{
-  font-size: 14px;
-}
-
-@media (min-width: 768px)
-{
-  html
-  {
-    font-size: 16px;
-  }
-}
-
-.box-shadow
-{
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+  public class GetWarsWithPaginationQueryValidator : AbstractValidator<GetWarsWithPaginationQuery>
+    {
+      public GetWarsWithPaginationQueryValidator ()
+        {
+          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
+        }
+    }
 }

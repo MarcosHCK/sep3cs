@@ -14,39 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+
+using AutoMapper;
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
-using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using MediatR;
 
-namespace DataClash.Application.Wars.Commands.CreateWar
+namespace DataClash.Application.Wars.Queries.GetWar
 {
-  [Authorize (Roles = "Administrator")]
-  public record CreateWarCommand : IRequest<long>
+  public record GetWarQuery : IRequest<WarBriefDto>
     {
-      public DateTime Duration { get; init; }
+      public long Id { get; init; }
     }
 
-  public class CreateWarCommandHandler : IRequestHandler<CreateWarCommand, long>
+  public class GetWarQueryHandler : IRequestHandler<GetWarQuery, WarBriefDto>
     {
       private readonly IApplicationDbContext _context;
+      private readonly IMapper _mapper;
 
-      public CreateWarCommandHandler (IApplicationDbContext context)
+      public GetWarQueryHandler (IApplicationDbContext context, IMapper mapper)
         {
           _context = context;
+          _mapper = mapper;
         }
 
-      public async Task<long> Handle (CreateWarCommand request, CancellationToken cancellationToken)
+      public async Task<WarBriefDto> Handle (GetWarQuery query, CancellationToken cancellationToken)
         {
-          var entity = new War
-            {
-              Duration = request.Duration
-            };
-
-          _context.Wars.Add (entity);
-
-          await _context.SaveChangesAsync (cancellationToken);
-        return entity.Id;
+          var entity = await _context.Wars.FindAsync (new object [] { query.Id }, cancellationToken) ?? throw new NotFoundException (nameof (War), query.Id);
+          var brief = _mapper.Map (entity, typeof (War), typeof (WarBriefDto));
+        return (WarBriefDto) brief;
         }
     }
 }

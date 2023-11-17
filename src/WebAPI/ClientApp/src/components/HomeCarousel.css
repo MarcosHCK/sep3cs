@@ -15,32 +15,19 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-a.navbar-brand
+.home-carousel
 {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+  display: flex;
+  list-style: none;
+  padding: 0;
+  padding: 1rem 0 0;
+  overflow: hidden;
+  width: 27vw;
+  margin: 0 auto;
+  max-width: 50rem;
 }
 
-img.navbar-brand-logo
+.home-carousel img
 {
-  border-radius: 50%;
-}
-
-html
-{
-  font-size: 14px;
-}
-
-@media (min-width: 768px)
-{
-  html
-  {
-    font-size: 16px;
-  }
-}
-
-.box-shadow
-{
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+  width: 100%;
 }
