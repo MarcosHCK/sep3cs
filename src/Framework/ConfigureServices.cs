@@ -43,7 +43,17 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ApplicationDbContextInitialiser> ();
 
             services
-                .AddDefaultIdentity<ApplicationUser> ()
+                .AddDefaultIdentity<ApplicationUser> (options =>
+                  {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Lockout.AllowedForNewUsers = true;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes (10);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.User.RequireUniqueEmail = true;
+                  })
                 .AddRoles<IdentityRole> ()
                 .AddEntityFrameworkStores<ApplicationDbContext> ();
 
@@ -59,7 +69,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddIdentityServerJwt ();
 
             services.AddAuthorization (options =>
-                options.AddPolicy ("CanPurge", policy => policy.RequireRole ("Administrator")));
+                {
+                  options.AddPolicy ("CanPurge", policy => policy.RequireRole ("Administrator"));
+                });
           return services;
         }
     }
