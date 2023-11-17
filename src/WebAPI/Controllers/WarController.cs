@@ -29,7 +29,7 @@ namespace DataClash.WebUI.Controllers
   public class WarController : ApiControllerBase
     {
       [HttpGet]
-      public async Task<ActionResult<PaginatedList<WarBriefDto>>> GetTodoItemsWithPagination ([FromQuery] GetWarsWithPaginationQuery query)
+      public async Task<ActionResult<PaginatedList<WarBriefDto>>> GetWithPagination ([FromQuery] GetWarsWithPaginationQuery query)
         {
           return await Mediator.Send (query);
         }

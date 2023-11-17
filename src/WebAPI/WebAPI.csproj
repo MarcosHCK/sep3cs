@@ -71,6 +71,16 @@
     <Error Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' != '0'" />
   </Target>
 
+  <Target Name="NSwagPatch" AfterTargets="NSwag" >
+    <Exec ConsoleToMSBuild="true" WorkingDirectory="$(ProjectDir)" Command="node patchWebApi.js">
+      <Output TaskParameter="ExitCode" PropertyName="NSwagPatchExitCode" />
+      <Output TaskParameter="ConsoleOutput" PropertyName="NSwagPatchOutput" />
+    </Exec>
+
+    <Message Text="$(NSwagPatchOutput)" Condition="'$(NSwagPatchExitCode)' == '0'" Importance="high" />
+    <Error Text="$(NSwagPatchOutput)" Condition="'$(NSwagPatchExitCode)' != '0'" />
+  </Target>
+
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />

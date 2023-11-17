@@ -68,10 +68,11 @@
   {
     "openApiToTypeScriptClient" :
     {
+      "additionalNamespaceUsages" : [ "ApiClientBase" ],
       "baseUrlTokenName": "API_BASE_URL",
       "className": "{controller}Client",
       "classTypes": [],
-      "clientBaseClass": null,
+      "clientBaseClass": "ApiClientBase",
       "configurationClass": null,
       "convertConstructorInterfaceData": false,
       "dateTimeType": "Date",
@@ -122,7 +123,7 @@
       "useGetBaseUrlMethod": false,
       "useLeafType": false,
       "useSingletonProvider": true,
-      "useTransformOptionsMethod": false,
+      "useTransformOptionsMethod": true,
       "useTransformResultMethod": false,
       "withCredentials": false,
       "wrapDtoExceptions": false,

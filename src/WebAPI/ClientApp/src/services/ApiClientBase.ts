@@ -14,14 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Mappings;
-using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Wars.Queries.GetWar
+export class ApiClientBase
 {
-  public class WarBriefDto : IMapFrom<War>
+  private Token : string | undefined = undefined
+
+  protected constructor ()
     {
-      public long Id { get; init; }
-      public DateTime Duration { get; init; }
     }
+
+  public clearBearerToken () : any { this.Token = undefined }
+  public setBearerToken (token : string) : any { this.Token = token }
+
+  protected transformOptions = (options: RequestInit) : Promise<RequestInit> =>
+    {
+      if (this.Token === null || this.Token === undefined)
+
+        return Promise.resolve (options)
+      else
+        {
+          options.headers =
+            {
+              ...options.headers,
+              'Authorization': `Bearer ${this.Token}`,
+            }
+          return Promise.resolve (options)
+        }
+    };
 }

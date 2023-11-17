@@ -71,3 +71,23 @@ export function useAuthorize (roles)
     }, [])
 return [ isReady, isAuthorized, userProfile, hasRole ]
 }
+
+export function useAuthToken ()
+{
+  const [ authToken, setAuthToken ] = useState (null)
+  const [ isReady, isAuthorized ] = useAuthorize ()
+
+  useEffect (() =>
+    {
+      setAuthToken (null)
+
+      if (isReady && isAuthorized)
+        {
+          authService.getAccessToken ().then ((token) =>
+      {
+              setAuthToken (token)
+      })
+        }
+    }, [isReady, isAuthorized])
+return [ authToken ]
+}
