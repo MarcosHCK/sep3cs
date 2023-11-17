@@ -26,7 +26,8 @@ namespace DataClash.Application.Wars.Commands.UpdateWar
   public record UpdateWarCommand : IRequest
     {
       public long Id { get; init; }
-      public DateTime Duration { get; init; }
+      public DateTime BeginDay { get; init; }
+      public TimeSpan Duration { get; init; }
     }
 
   public class UpdateWarCommandHandler : IRequestHandler<UpdateWarCommand>
@@ -41,6 +42,7 @@ namespace DataClash.Application.Wars.Commands.UpdateWar
       public async Task Handle (UpdateWarCommand request, CancellationToken cancellationToken)
         {
           var entity = await _context.Wars.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (War), request.Id);
+            entity.BeginDay = request.BeginDay;
             entity.Duration = request.Duration;
           await _context.SaveChangesAsync (cancellationToken);
         }

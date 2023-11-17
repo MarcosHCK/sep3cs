@@ -22,6 +22,7 @@ namespace DataClash.Application.Wars.Commands.UpdateWar
     {
       public UpdateWarCommandValidator ()
         {
+          RuleFor (v => v.BeginDay).NotEmpty ();
           RuleFor (v => v.Duration).NotEmpty ();
         }
     }

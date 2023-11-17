@@ -20,6 +20,7 @@ namespace DataClash.Domain.Entities
 {
   public class War : BaseEntity
     {
-      public DateTime Duration { get; set; }
+      public DateTime BeginDay { get; set; }
+      public TimeSpan Duration { get; set; }
     }
 }
