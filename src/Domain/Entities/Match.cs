@@ -23,7 +23,7 @@ namespace DataClash.Domain.Entities
       public long WinnerPlayerId { get; set; }
       public long LooserPlayerId { get; set; }
       public DateTime BeginDate { get; set; }
-      public DateTime Duration { get; set; }
+      public TimeSpan Duration { get; set; }
 
       [ForeignKey ("LooserPlayerId")]
       public virtual Player? LooserPlayer { get; set; }

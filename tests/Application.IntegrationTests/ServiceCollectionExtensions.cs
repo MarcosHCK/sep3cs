@@ -14,13 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.IntegrationTests
 {
-  public class War : BaseEntity
+  public static class ServiceCollectionExtensions
     {
-      public DateTime BeginDay { get; set; }
-      public TimeSpan Duration { get; set; }
+      public static IServiceCollection Remove<TService> (this IServiceCollection services)
+        {
+          var serviceDescriptor = services.FirstOrDefault (d =>
+            d.ServiceType == typeof (TService));
+
+          if (serviceDescriptor != null)
+            {
+              services.Remove (serviceDescriptor);
+            }
+        return services;
+        }
     }
 }

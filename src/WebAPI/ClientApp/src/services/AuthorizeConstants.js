@@ -43,8 +43,8 @@ export const QueryParameterNames =
 
 export const UserRoles =
 {
-  Administrator : 'administrator',
-  User : 'user'
+  Administrator : 'Administrator',
+  User : 'User'
 }
 
 export const ApplicationPaths =

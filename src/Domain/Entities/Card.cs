@@ -19,12 +19,34 @@ using DataClash.Domain.Enums;
 
 namespace DataClash.Domain.Entities
 {
-  public class Card : BaseEntity
+  public abstract class Card : BaseEntity
     {
       public string? Description { get; set; }
       public double ElixirCost { get; set; }
       public long InitialLevel { get; set; }
       public string? Name { get; set; }
       public Quality Quality { get; set; }
+    }
+
+  public class MagicCard : Card
+    {
+      public double DamageRadius {get; set; }
+      public double AreaDamage { get; set; }
+      public double TowerDamage { get; set; }
+      public TimeSpan Duration { get; set; }
+    }
+
+  public class StructCard : Card
+    {
+      public double HitPoints { get; set; }
+      public double RangeDamage { get; set; }
+      public double AttackPaseRate { get; set; }
+    }
+
+  public class TroopCard : Card
+    {
+      public double AreaDamage { get; set; }
+      public double HitPoints { get; set; }
+      public long UnitCount { get; set; }
     }
 }

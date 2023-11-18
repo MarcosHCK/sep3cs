@@ -22,6 +22,7 @@ namespace DataClash.Application.Wars.Queries.GetWar
   public class WarBriefDto : IMapFrom<War>
     {
       public long Id { get; init; }
-      public DateTime Duration { get; init; }
+      public DateTime BeginDay { get; init; }
+      public TimeSpan Duration { get; init; }
     }
 }

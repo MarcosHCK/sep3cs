@@ -55,100 +55,94 @@ return initials.join ('')
 
 export function Avatar (props)
 {
-  // 250px is large enough that it will suffice for most purposes,
-  // but small enough that it won't require too much bandwidth.
-  // We limit the minimum size to improve caching.
+  const { userName, userEmail, empty, size = 50, ...rest } = props
 
-  const { userName, userEmail, size = 50, ...rest } = props
-  const digest = md5 (userEmail === undefined ? userName : userEmail)
-  const initials = getInitials (userName)
-
-  const c = createUseStyles (
+  if (empty)
     {
-      img: () => (
+      const c = createUseStyles (
         {
-          borderRadius: '50%',
-          height: size,
-          left: 0,
-          position: 'absolute',
-          top: 0,
-          width: size,
-        }),
-      parent: () => (
-        {
-          ...getColorAndBackground (digest),
-          alignItems: 'center',
-          borderRadius: '50%',
-          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.15)',
-          display: 'inline-flex',
-          height: size,
-          justifyContent: 'center',
-          position: 'relative',
-          width: size,
-        }),
-      swatch: () => (
-        {
-          // scale the text size depending on avatar size and
-          // number of initials
-          fontFamily: 'sans-serif',
-          fontSize: size / (1.4 * Math.max ([...initials].length, 2)),
-          position: 'absolute',
-          userSelect: 'none',
-        }),
-    }) ()
+          box : () => (
+            {
+              border: '3px solid black',
+              borderRadius: `${size}px ${size}px ${size}px ${size}px`,
+            }),
+          img : () => (
+            {
+              height : size,
+              width : size,
+            }),
+          label : () => (
+            {
+              paddingLeft : 3,
+              paddingRight : 13,
+              margin : 0,
+            }),
+        }) ()
 
-  if (userEmail === undefined)
-    {
       return (
-        <div className={c.parent} {...rest}>
-          <div aria-hidden='true' className={c.swatch}>
-            {initials}
-          </div>
-        </div>)
+        <div className={`d-flex flex-row align-items-center justify-content-center border ${c.box}`}>
+          <img className={`rounded-circle ${c.img}`} src={AvatarPlaceholder} alt={'empty avatar'} />
+          <p className={c.label}>{'Sign in'}</p>
+        </div>
+      )
     }
   else
     {
-      const url = `https://www.gravatar.com/avatar/${digest}?s=${String (Math.max (size, 250),)}&d=blank`
+      const digest = md5 (userEmail === undefined ? userName : userEmail)
+      const initials = getInitials (userName)
 
-      return (
-        <div className={c.parent} {...rest}>
-          <div aria-hidden='true' className={c.swatch}>
-            {initials}
-          </div>
+      const c = createUseStyles (
+        {
+          img: () => (
+            {
+              borderRadius: '50%',
+              height: size,
+              left: 0,
+              position: 'absolute',
+              top: 0,
+              width: size,
+            }),
+          parent: () => (
+            {
+              alignItems: 'center',
+              borderRadius: '50%',
+              display: 'inline-flex',
+              height: size,
+              justifyContent: 'center',
+              position: 'relative',
+              width: size,
+              ...getColorAndBackground (digest),
+            }),
+          swatch: () => (
+            {
+              fontFamily: 'sans-serif',
+              fontSize: size / (1.4 * Math.max ([...initials].length, 2)),
+              position: 'absolute',
+              userSelect: 'none',
+            }),
+        }) ()
 
-          <img className={c.img} src={String(url)} alt={`${userName}’s avatar`} />
-        </div>)
+      if (userEmail === undefined)
+        {
+          return (
+            <div className={c.parent} {...rest}>
+              <div aria-hidden='true' className={c.swatch}>
+                {initials}
+              </div>
+            </div>)
+        }
+      else
+        {
+          const url = `https://www.gravatar.com/avatar/${digest}?s=${String (Math.max (size, 250),)}&d=blank`
+
+          return (
+            <div className={c.parent} {...rest}>
+              <div aria-hidden='true' className={c.swatch}>
+                {initials}
+              </div>
+
+              <img className={c.img} src={String(url)} alt={`${userName}’s avatar`} />
+            </div>)
+        }
     }
-}
-
-export function AvatarEmpty (props)
-{
-  const { size = 50, } = props
-
-  const c = createUseStyles (
-    {
-      box : () => (
-        {
-          border: '3px solid black',
-          borderRadius: `${size}px ${size}px ${size}px ${size}px`,
-        }),
-      img : () => (
-        {
-          height : size,
-          width : size,
-        }),
-      label : () => (
-        {
-          paddingLeft : 7,
-          paddingRight : 11,
-          margin : 0,
-        }),
-    }) ()
-
-  return (
-    <div className={`d-flex flex-row align-items-center justify-content-center border ${c.box}`}>
-      <img className={`rounded-circle ${c.img}`} src={AvatarPlaceholder} alt={'empty avatar'} />
-      <p className={c.label}>{'Sign in'}</p>
-    </div>
-  )
 }

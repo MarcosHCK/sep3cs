@@ -43,7 +43,7 @@ namespace DataClash.Application.UnitTests.Common.Behaviours
           _currentUserService.Setup (x => x.UserId).Returns (Guid.NewGuid ().ToString ());
 
           var requestLogger = new LoggingBehaviour<CreateWarCommand> (_logger.Object, _currentUserService.Object, _identityService.Object);
-          await requestLogger.Process (new CreateWarCommand { Duration = DateTime.Now }, new CancellationToken ());
+          await requestLogger.Process (new CreateWarCommand { BeginDay = DateTime.Now, Duration = TimeSpan.Zero, }, new CancellationToken ());
           _identityService.Verify (i => i.GetUserNameAsync (It.IsAny<string> ()), Times.Once);
         }
 
@@ -51,7 +51,7 @@ namespace DataClash.Application.UnitTests.Common.Behaviours
       public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated ()
         {
           var requestLogger = new LoggingBehaviour<CreateWarCommand> (_logger.Object, _currentUserService.Object, _identityService.Object);
-          await requestLogger.Process (new CreateWarCommand { Duration = DateTime.Now }, new CancellationToken ());
+          await requestLogger.Process (new CreateWarCommand { BeginDay = DateTime.Now, Duration = TimeSpan.Zero, }, new CancellationToken ());
           _identityService.Verify (i => i.GetUserNameAsync (It.IsAny<string> ()), Times.Never);
         }
     }

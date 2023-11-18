@@ -70,6 +70,7 @@ export function Wars ()
             <thead>
               <tr>
                 <th>{'#'}</th>
+                <th>{'Begin day'}</th>
                 <th>{'Duration'}</th>
               </tr>
             </thead>
@@ -77,6 +78,7 @@ export function Wars ()
         { (items ?? []).map ((item, index) => (
               <tr key={`0${index}`}>
                 <th scope="row">{ item.id }</th>
+                <td>{ item.beginDay.toString () }</td>
                 <td>{ item.duration.toString () }</td>
               </tr>))
         }

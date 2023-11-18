@@ -24,7 +24,8 @@ namespace DataClash.Application.Wars.Commands.CreateWar
   [Authorize (Roles = "Administrator")]
   public record CreateWarCommand : IRequest<long>
     {
-      public DateTime Duration { get; init; }
+      public DateTime BeginDay { get; init; }
+      public TimeSpan Duration { get; init; }
     }
 
   public class CreateWarCommandHandler : IRequestHandler<CreateWarCommand, long>
@@ -40,7 +41,8 @@ namespace DataClash.Application.Wars.Commands.CreateWar
         {
           var entity = new War
             {
-              Duration = request.Duration
+              BeginDay = request.BeginDay,
+              Duration = request.Duration,
             };
 
           _context.Wars.Add (entity);

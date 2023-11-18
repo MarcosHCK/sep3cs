@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import './NavMenu.css';
 import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { UserRoles } from '../services/AuthorizeConstants'
-import { AvatarEmpty } from './Avatar';
+import { Avatar } from './Avatar'
 import { Link } from 'react-router-dom'
 import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap'
 import { useAuthorize } from '../services/AuthorizeReact';
@@ -31,9 +30,9 @@ export function NavMenu ()
 
   return (
     <header>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom mb-3" container light>
         <NavbarBrand tag={Link} to="/">
-          <img alt='ICON' src={'/favicon.ico'} className="navbar-brand-logo"/>
+          <img alt='ICON' src={'/favicon.ico'} className="rounded-circle"/>
             {' '}
           DataClash
         </NavbarBrand>
@@ -45,7 +44,7 @@ export function NavMenu ()
               ? (
                   <NavItem>
                     <NavLink tag={Link} to={`${ApplicationPaths.Login}`}>
-                      <AvatarEmpty />
+                      <Avatar empty />
                     </NavLink>
                   </NavItem>
                 )

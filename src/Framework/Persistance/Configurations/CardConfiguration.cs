@@ -14,13 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
+using DataClash.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Infrastructure.Persistence.Configurations
 {
-  public class War : BaseEntity
+  public class CardConfiguration : IEntityTypeConfiguration<Card>
     {
-      public DateTime BeginDay { get; set; }
-      public TimeSpan Duration { get; set; }
+      public void Configure (EntityTypeBuilder<Card> builder)
+        {
+          builder.UseTptMappingStrategy ();
+        }
     }
 }

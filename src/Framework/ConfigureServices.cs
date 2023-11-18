@@ -18,6 +18,7 @@ using DataClash.Application.Common.Interfaces;
 using DataClash.Framework.Identity;
 using DataClash.Framework.Persistence;
 using DataClash.Framework.Services;
+using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,17 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ApplicationDbContextInitialiser> ();
 
             services
-                .AddDefaultIdentity<ApplicationUser> ()
+                .AddDefaultIdentity<ApplicationUser> (options =>
+                  {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Lockout.AllowedForNewUsers = true;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes (10);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.User.RequireUniqueEmail = true;
+                  })
                 .AddRoles<IdentityRole> ()
                 .AddEntityFrameworkStores<ApplicationDbContext> ();
 
@@ -53,13 +64,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IDateTime, DateTimeService> ();
             services.AddTransient<IIdentityService, IdentityService> ();
+            services.AddTransient<IProfileService, ProfileService> ();
 
             services
                 .AddAuthentication ()
                 .AddIdentityServerJwt ();
 
             services.AddAuthorization (options =>
-                options.AddPolicy ("CanPurge", policy => policy.RequireRole ("Administrator")));
+                {
+                  options.AddPolicy ("CanPurge", policy => policy.RequireRole ("Administrator"));
+                });
           return services;
         }
     }

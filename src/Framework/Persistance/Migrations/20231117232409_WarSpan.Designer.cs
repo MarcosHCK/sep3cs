@@ -3,6 +3,7 @@ using System;
 using DataClash.Framework.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Framework.Persistance.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231117232409_WarSpan")]
+    partial class WarSpan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
@@ -41,8 +44,6 @@ namespace Framework.Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cards");
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("DataClash.Domain.Entities.CardGift", b =>
@@ -604,57 +605,6 @@ namespace Framework.Persistance.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DataClash.Domain.Entities.MagicCard", b =>
-                {
-                    b.HasBaseType("DataClash.Domain.Entities.Card");
-
-                    b.Property<double>("AreaDamage")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("DamageRadius")
-                        .HasColumnType("REAL");
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("TowerDamage")
-                        .HasColumnType("REAL");
-
-                    b.ToTable("MagicCards");
-                });
-
-            modelBuilder.Entity("DataClash.Domain.Entities.StructCard", b =>
-                {
-                    b.HasBaseType("DataClash.Domain.Entities.Card");
-
-                    b.Property<double>("AttackPaseRate")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("HitPoints")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("RangeDamage")
-                        .HasColumnType("REAL");
-
-                    b.ToTable("StructCards");
-                });
-
-            modelBuilder.Entity("DataClash.Domain.Entities.TroopCard", b =>
-                {
-                    b.HasBaseType("DataClash.Domain.Entities.Card");
-
-                    b.Property<double>("AreaDamage")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("HitPoints")
-                        .HasColumnType("REAL");
-
-                    b.Property<long>("UnitCount")
-                        .HasColumnType("INTEGER");
-
-                    b.ToTable("TroopCards");
-                });
-
             modelBuilder.Entity("DataClash.Domain.Entities.CardGift", b =>
                 {
                     b.HasOne("DataClash.Domain.Entities.Card", "Card")
@@ -857,33 +807,6 @@ namespace Framework.Persistance.Migrations
                     b.HasOne("DataClash.Framework.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DataClash.Domain.Entities.MagicCard", b =>
-                {
-                    b.HasOne("DataClash.Domain.Entities.Card", null)
-                        .WithOne()
-                        .HasForeignKey("DataClash.Domain.Entities.MagicCard", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DataClash.Domain.Entities.StructCard", b =>
-                {
-                    b.HasOne("DataClash.Domain.Entities.Card", null)
-                        .WithOne()
-                        .HasForeignKey("DataClash.Domain.Entities.StructCard", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DataClash.Domain.Entities.TroopCard", b =>
-                {
-                    b.HasOne("DataClash.Domain.Entities.Card", null)
-                        .WithOne()
-                        .HasForeignKey("DataClash.Domain.Entities.TroopCard", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

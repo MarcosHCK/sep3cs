@@ -18,7 +18,7 @@ using DataClash.Framework.Persistence;
 
 namespace DataClash
 {
-  public static class Program
+  public class Program
     {
       public static async Task<int> Main (string[] args)
         {

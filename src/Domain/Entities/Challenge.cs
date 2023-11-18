@@ -24,7 +24,7 @@ namespace DataClash.Domain.Entities
       public long Bounty { get; set; }
       public long Cost { get; set; }
       public string? Description { get; set; }
-      public DateTime Duration { get; set; }
+      public TimeSpan Duration { get; set; }
       public long MaxLooses { get; set; }
       public long MinLevel { get; set; }
       public string? Name { get; set; }
