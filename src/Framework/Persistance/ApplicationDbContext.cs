@@ -34,11 +34,14 @@ namespace DataClash.Framework.Persistence
       public DbSet<CardGift> CardGifts => Set<CardGift> ();
       public DbSet<Challenge> Challenges => Set<Challenge> ();
       public DbSet<Clan> Clans => Set<Clan> ();
+      public DbSet<MagicCard> MagicCards => Set<MagicCard> ();
       public DbSet<Match> Matches => Set<Match> ();
       public DbSet<Player> Players => Set<Player> ();
       public DbSet<PlayerCard> PlayerCards => Set<PlayerCard> ();
       public DbSet<PlayerChallenge> PlayerChallenges => Set<PlayerChallenge> ();
       public DbSet<PlayerClan> PlayerClans => Set<PlayerClan> ();
+      public DbSet<StructCard> StructCards => Set<StructCard> ();
+      public DbSet<TroopCard> TroopCards => Set<TroopCard> ();
       public DbSet<War> Wars => Set<War> ();
       public DbSet<WarClan> WarClans => Set<WarClan> ();
 

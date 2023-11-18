@@ -25,11 +25,14 @@ namespace DataClash.Application.Common.Interfaces
       public DbSet<CardGift> CardGifts { get; }
       public DbSet<Challenge> Challenges { get; }
       public DbSet<Clan> Clans { get; }
+      public DbSet<MagicCard> MagicCards { get; }
       public DbSet<Match> Matches { get; }
       public DbSet<Player> Players { get; }
       public DbSet<PlayerCard> PlayerCards { get; }
       public DbSet<PlayerChallenge> PlayerChallenges { get; }
       public DbSet<PlayerClan> PlayerClans { get; }
+      public DbSet<StructCard> StructCards { get; }
+      public DbSet<TroopCard> TroopCards { get; }
       public DbSet<War> Wars { get; }
       public DbSet<WarClan> WarClans { get; }
 
