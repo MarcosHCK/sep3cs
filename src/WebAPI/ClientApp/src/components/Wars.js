@@ -143,16 +143,16 @@ export function Wars ()
               <tr key={`body${index}`}>
                 <th scope="row">{ item.id }</th>
                 <td>
-        { (!isAdministrator)
-          ? (item.beginDay.toString ())
-          : (<DateTime defaultValue={item.beginDay} onChanged={(date) => { item.beginDay = date; updateWar (item) }} />)
-        }
+                  <DateTime
+                    defaultValue={item.beginDay}
+                    onChanged={(date) => { item.beginDay = date; updateWar (item) }}
+                    readOnly={!isAdministrator} />
                 </td>
                 <td>
-        { (!isAdministrator)
-          ? (item.duration.toString ())
-          : (<TimeSpan defaultValue={item.duration} onChanged={(span) => { item.duration = span; updateWar (item) }} />)
-        }
+                  <TimeSpan
+                    defaultValue={item.duration}
+                    onChanged={(span) => { item.duration = span; updateWar (item) }}
+                    readOnly={!isAdministrator} />
                 </td>
         {
           (!isAdministrator)

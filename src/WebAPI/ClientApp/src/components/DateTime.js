@@ -22,7 +22,7 @@ const getStdTime = (date) => date.toISOString ().substring (11, 16)
 
 export function DateTime (props)
 {
-  const { defaultValue, onChanged } = props
+  const { defaultValue, readOnly, onChanged } = props
   const [date, setDate] = useState (defaultValue)
   const firstRender = useRef (true)
 
@@ -51,13 +51,28 @@ export function DateTime (props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [date])
 
-  return (
-    <InputGroup className='d-flex'>
-      <Input type='time' className='flex-grow-1 flex-shrink-1 p-2'
-        defaultValue={getStdTime (date)}
-        onChange={(e) => updateTime (e.target.value) } />
-      <Input type='date' className='flex-grow-1 flex-shrink-1 p-2'
-        defaultValue={getStdDate (date)}
-        onChange={(e) => updateDate (e.target.value) } />
-    </InputGroup>)
+  /*
+   * disabled property is not a react-handled one, instead is
+   * a base HTML attribute fro <input>, so luckily it gets propagated
+   * down to the base <input> tag which react outputs.
+   * But since disabled is handled as HTML we cant put disabled={readOnly}
+   * because it disables the input whetever readOnly was true or false
+   */
+
+  if (!readOnly)
+    return (
+      <InputGroup className='d-flex'>
+        <Input type='time' className='flex-grow-1 flex-shrink-1 p-2'
+          defaultValue={getStdTime (date)} onChange={(e) => updateTime (e.target.value) } />
+        <Input type='date' className='flex-grow-1 flex-shrink-1 p-2'
+          defaultValue={getStdDate (date)} onChange={(e) => updateDate (e.target.value) } />
+      </InputGroup>)
+  else
+    return (
+      <InputGroup className='d-flex'>
+        <Input type='time' className='flex-grow-1 flex-shrink-1 p-2'
+          defaultValue={getStdTime (date)} disabled onChange={(e) => e.preventDefault () } />
+        <Input type='date' className='flex-grow-1 flex-shrink-1 p-2'
+          defaultValue={getStdDate (date)} disabled onChange={(e) => e.preventDefault () } />
+      </InputGroup>)
 }
