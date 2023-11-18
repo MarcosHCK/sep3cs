@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ApplicationPaths, ApplicationName, UserRoles } from './AuthorizeConstants'
+import { ApplicationPaths, ApplicationName } from './AuthorizeConstants'
 import { UserManager, WebStorageStateStore } from 'oidc-client'
 
 export const AuthenticationResultStatus =
@@ -172,9 +172,9 @@ export class AuthorizeService
       else
         {
           if (user.role instanceof Array)
-            return user.role.includes(UserRoles.Administrator)
+            return user.role.includes (role)
           else
-            return user.role === UserRoles.Administrator
+            return user.role === role
         }
 	  }
 

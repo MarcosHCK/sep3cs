@@ -18,6 +18,7 @@ using DataClash.Application.Common.Interfaces;
 using DataClash.Framework.Identity;
 using DataClash.Framework.Persistence;
 using DataClash.Framework.Services;
+using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +64,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IDateTime, DateTimeService> ();
             services.AddTransient<IIdentityService, IdentityService> ();
+            services.AddTransient<IProfileService, ProfileService> ();
 
             services
                 .AddAuthentication ()

@@ -35,7 +35,7 @@ const AppRoutes = () => (
       <Route path={'/challenges'} element={<RequireAuth><p>Challenges component placeholdes</p></RequireAuth>}/>
       <Route path={'/clans'} element={<RequireAuth><p>Clans component placeholdes</p></RequireAuth>}/>
       <Route path={'/matches'} element={<RequireAuth><p>Matches component placeholdes</p></RequireAuth>}/>
-      <Route path={'/players'} element={<RequireAuth role='administrator'><p>Players component placeholdes</p></RequireAuth>}/>
+      <Route path={'/players'} element={<RequireAuth role='Administrator'><p>Players component placeholdes</p></RequireAuth>}/>
       <Route path={'/wars'} element={<RequireAuth><Wars /></RequireAuth>}/>
 
       <Route path={ApplicationPaths.ApiAuthorizationPrefix}>
