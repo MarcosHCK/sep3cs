@@ -14,10 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import { Button, Table } from 'reactstrap'
+import { CreateWarCommand } from '../webApiClient.ts'
+import { DateTime } from './DateTime'
 import { Pager } from './Pager'
-import { Table } from 'reactstrap'
+import { TimeSpan } from './TimeSpan'
+import { UpdateWarCommand } from '../webApiClient.ts'
 import { useParams } from 'react-router-dom'
+import { UserRoles } from '../services/AuthorizeConstants.js'
 import { WarClient } from '../webApiClient.ts'
+import authService from '../services/AuthorizeService'
 import React, { useEffect, useState } from 'react'
 
 export function Wars ()
@@ -26,6 +32,7 @@ export function Wars ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
+  const [ isAdministrator, setIsAdministrator ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
@@ -34,8 +41,51 @@ export function Wars ()
   const pageSize = 10
   const visibleIndices = 5
 
+  const addWar = async () =>
+    {
+      const data = new CreateWarCommand ()
+        data.beginDay = new Date ()
+        data.duration = "00:00:01"
+      await warClient.create (data)
+      setActivePage (-1)
+    }
+
+  const removeWar = async (item) =>
+    {
+      await warClient.delete (item.id)
+      setActivePage (-1)
+    }
+
+  const updateWar = async (item) =>
+    {
+      const data = new UpdateWarCommand ()
+        data.id = item.id
+        data.beginDay = item.beginDay
+        data.duration = item.duration
+      await warClient.update (item.id, data)
+    }
+
   useEffect (() =>
     {
+      const checkRole = async () =>
+        {
+          const hasRole = await authService.hasRole (UserRoles.Administrator)
+
+          setIsAdministrator (hasRole)
+        }
+
+      setIsLoading (true)
+      checkRole ().then (() => setIsLoading (false))
+    }, [])
+
+  useEffect (() =>
+    {
+      const lastPage = async () =>
+        {
+          const paginatedList = await warClient.getWithPagination (1, pageSize)
+          return paginatedList.totalPages
+        }
+
       const refreshPage = async () =>
         {
           const paginatedList = await warClient.getWithPagination (activePage + 1, pageSize)
@@ -46,8 +96,21 @@ export function Wars ()
           setTotalPages (paginatedList.totalPages)
         }
 
-      setIsLoading (true)
-      refreshPage ().then (() => setIsLoading (false))
+      if (activePage >= 0)
+        {
+          setIsLoading (true)
+          refreshPage ().then (() => setIsLoading (false))
+        }
+      else
+        {
+          lastPage ().then ((total) =>
+            {
+              if (total === 0)
+                setActivePage (0)
+              else
+                setActivePage (total - 1)
+            })
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage])
 
@@ -72,15 +135,39 @@ export function Wars ()
                 <th>{'#'}</th>
                 <th>{'Begin day'}</th>
                 <th>{'Duration'}</th>
+                <th />
               </tr>
             </thead>
             <tbody>
         { (items ?? []).map ((item, index) => (
               <tr key={`0${index}`}>
                 <th scope="row">{ item.id }</th>
-                <td>{ item.beginDay.toString () }</td>
-                <td>{ item.duration.toString () }</td>
+                <td>
+                  <DateTime defaultValue={item.beginDay} onChanged={(date) => { item.beginDay = date; updateWar (item) }} />
+                </td>
+                <td>
+                  <TimeSpan defaultValue={item.duration} onChanged={(span) => { item.duration = span; updateWar (item) }} />
+                </td>
+        {
+          (!isAdministrator)
+          ? (<td />)
+          : (
+                <td>
+                  <Button color='primary' onClick={() => removeWar (item)} close />
+                </td>)
+        }
               </tr>))
+        }
+        {
+          (!isAdministrator)
+          ? (<td />)
+          : (
+              <tr key='addrow'>
+                  <td>
+                    <Button color='primary' onClick={() => addWar ()}>+</Button>
+                  </td>
+                  <td /> <td /> <td />
+                </tr>)
         }
             </tbody>
           </Table>
