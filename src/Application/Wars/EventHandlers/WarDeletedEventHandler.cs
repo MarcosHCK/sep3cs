@@ -14,22 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using DataClash.Domain.Events;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
-namespace DataClash.Domain.Common
+namespace DataClash.Application.Wars.EventHandlers
 {
-  public abstract class BaseEntity
+  public class WarDeletedEventHandler : INotificationHandler<WarDeletedEvent>
     {
-      [Key]
-      public long Id { get; set; }
+      private readonly ILogger<WarDeletedEventHandler> _logger;
 
-      [NotMapped]
-      public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly ();
-      private readonly List<BaseEvent> _domainEvents = new ();
+      public WarDeletedEventHandler (ILogger<WarDeletedEventHandler> logger)
+        {
+          _logger = logger;
+        }
 
-      public void AddDomainEvent (BaseEvent domainEvent) => _domainEvents.Add (domainEvent);
-      public void RemoveDomainEvent (BaseEvent domainEvent) => _domainEvents.Remove (domainEvent);
-      public void ClearDomainEvents () => _domainEvents.Clear ();
+      public Task Handle (WarDeletedEvent notification, CancellationToken cancellationToken)
+        {
+          _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
+          return Task.CompletedTask;
+        }
     }
 }

@@ -14,22 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using MediatR;
 
 namespace DataClash.Domain.Common
 {
-  public abstract class BaseEntity
+  public abstract class BaseEvent : INotification
     {
-      [Key]
-      public long Id { get; set; }
-
-      [NotMapped]
-      public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly ();
-      private readonly List<BaseEvent> _domainEvents = new ();
-
-      public void AddDomainEvent (BaseEvent domainEvent) => _domainEvents.Add (domainEvent);
-      public void RemoveDomainEvent (BaseEvent domainEvent) => _domainEvents.Remove (domainEvent);
-      public void ClearDomainEvents () => _domainEvents.Clear ();
     }
 }

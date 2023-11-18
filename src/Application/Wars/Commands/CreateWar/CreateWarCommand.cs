@@ -17,6 +17,7 @@
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Events;
 using MediatR;
 
 namespace DataClash.Application.Wars.Commands.CreateWar
@@ -45,6 +46,7 @@ namespace DataClash.Application.Wars.Commands.CreateWar
               Duration = request.Duration,
             };
 
+          entity.AddDomainEvent (new WarCreatedEvent (entity));
           _context.Wars.Add (entity);
 
           await _context.SaveChangesAsync (cancellationToken);

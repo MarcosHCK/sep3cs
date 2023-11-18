@@ -18,6 +18,7 @@ using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Events;
 using MediatR;
 
 namespace DataClash.Application.Wars.Commands.UpdateWar
@@ -44,6 +45,8 @@ namespace DataClash.Application.Wars.Commands.UpdateWar
           var entity = await _context.Wars.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (War), request.Id);
             entity.BeginDay = request.BeginDay;
             entity.Duration = request.Duration;
+
+          entity.AddDomainEvent (new WarUpdatedEvent (entity));
           await _context.SaveChangesAsync (cancellationToken);
         }
     }

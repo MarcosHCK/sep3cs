@@ -18,6 +18,7 @@ using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,7 +43,9 @@ namespace DataClash.Application.Wars.Commands.DeleteWar
             .SingleOrDefaultAsync (cancellationToken)
            ?? throw new NotFoundException (nameof (War), request.Id);
 
-                _context.Wars.Remove (entity);
+          _context.Wars.Remove (entity);
+          entity.AddDomainEvent (new WarDeletedEvent (entity));
+
           await _context.SaveChangesAsync (cancellationToken);
         }
     }
