@@ -16,7 +16,10 @@
  */
 import './UserDashboard.css'
 import { Avatar } from './Avatar'
-import { Container, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Col } from 'reactstrap'
+import { Container, Row, Col } from 'reactstrap'
+import { Offcanvas } from 'reactstrap'
+import { OffcanvasBody } from 'reactstrap'
+import { OffcanvasHeader } from 'reactstrap'
 import { useState } from 'react'
 
 export function UserDashboard (props)
@@ -31,9 +34,10 @@ export function UserDashboard (props)
       </div>
 
       <Offcanvas backdrop scrollable
-            direction='end'
-            fade={false}
-            isOpen={show}>
+          direction='end'
+          fade={false}
+          isOpen={show}
+          onMouseLeave={() => setShow (false)}>
         <OffcanvasHeader toggle={() => setShow (show === false)}>
           <Container fluid>
             <Row>
