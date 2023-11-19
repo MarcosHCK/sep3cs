@@ -16,6 +16,7 @@
  */
 using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Wars.Commands.CreateWar;
+using DataClash.Application.Wars.Commands.DeleteWar;
 using DataClash.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
@@ -24,26 +25,34 @@ namespace DataClash.Application.IntegrationTests.Wars.Commands
 {
   using static Testing;
 
-  public class CreateWarsTests : BaseTestFixture
+  public class DeleteWarsTests : BaseTestFixture
     {
       [Test]
       public async Task ShouldRequireAdministratorUser ()
         {
-          var userId = await RunAsDefaultUserAsync ();
-          var command = new CreateWarCommand ();
+          await RunAsAdministratorAsync ();
+          var war = new CreateWarCommand
+            {
+              BeginDay = DateTime.Now,
+              Duration = new TimeSpan (1),
+            };
+
+          var itemId = await SendAsync (war);
+          await RunAsDefaultUserAsync ();
+          var command = new DeleteWarCommand (itemId);
           await FluentActions.Invoking (() => SendAsync (command)).Should ().ThrowAsync<ForbiddenAccessException> ();
         }
 
       [Test]
-      public async Task ShouldRequireMinimumFields ()
+      public async Task ShouldRequireValidWarId ()
         {
           var userId = await RunAsAdministratorAsync ();
-          var command = new CreateWarCommand ();
-          await FluentActions.Invoking (() => SendAsync (command)).Should ().ThrowAsync<ValidationException> ();
+          var command = new DeleteWarCommand (0);
+          await FluentActions.Invoking (() => SendAsync (command)).Should ().ThrowAsync<NotFoundException> ();
         }
 
       [Test]
-      public async Task ShouldCreateWar ()
+      public async Task ShouldDeleteWar ()
         {
           var userId = await RunAsAdministratorAsync ();
 
@@ -54,11 +63,10 @@ namespace DataClash.Application.IntegrationTests.Wars.Commands
             };
 
           var itemId = await SendAsync (war);
+          await SendAsync (new DeleteWarCommand (itemId));
           var item = await FindAsync<War> (itemId);
 
-          item.Should ().NotBeNull ();
-          item!.BeginDay.Should ().Be (war.BeginDay);
-          item!.Duration.Should ().Be (war.Duration);
+          item.Should ().BeNull ();
         }
     }
 }

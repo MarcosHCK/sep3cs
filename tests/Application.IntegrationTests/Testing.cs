@@ -33,7 +33,6 @@ namespace DataClash.Application.IntegrationTests
       private static WebApplicationFactory<Program> _factory = null!;
       private static IConfiguration _configuration = null!;
       private static IServiceScopeFactory _scopeFactory = null!;
-      private static SqliteConnection _backupdb = null!;
       private static string? _currentUserId;
 
       [OneTimeSetUp]
@@ -42,17 +41,36 @@ namespace DataClash.Application.IntegrationTests
           _factory = new CustomWebApplicationFactory ();
           _configuration = _factory.Services.GetRequiredService<IConfiguration> ();
           _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory> ();
+          CleanupDb ();
+        }
 
+      internal static void CleanupDb ()
+        {
           using (var db = new SqliteConnection (_configuration.GetConnectionString ("DefaultConnection")))
-          using (var db2 = new SqliteConnection (_configuration.GetConnectionString ("DefaultConnection") + ".bak"))
             {
+              var tableNames = new List<string> ();
               db.Open ();
-              db2.Open ();
 
-              db.BackupDatabase (db2);
+              using (SqliteCommand cmd = new SqliteCommand ("SELECT name FROM sqlite_master WHERE type='table';", db))
+                {
+                  using (SqliteDataReader reader = cmd.ExecuteReader ())
+                    {
+                      while (reader.Read ())
+                        {
+                          tableNames.Add (reader.GetString (0));
+                        }
+                    }
+                }
 
-              db2.Close ();
-              db.Close ();
+              tableNames.Remove ("__EFMigrationsHistory");
+
+              foreach (string tableName in tableNames)
+                {
+                  using (SqliteCommand cmd = new SqliteCommand ($"DELETE FROM {tableName};", db))
+                    {
+                      cmd.ExecuteNonQuery ();
+                    }
+                }
             }
         }
 
@@ -117,18 +135,9 @@ namespace DataClash.Application.IntegrationTests
 
       public static async Task ResetState ()
         {
-          using (var db = new SqliteConnection (_configuration.GetConnectionString ("DefaultConnection")))
-          using (var db2 = new SqliteConnection (_configuration.GetConnectionString ("DefaultConnection") + ".bak"))
-            {
-              db.Open ();
-              db2.Open ();
-
-              db2.BackupDatabase (db);
-
-              db2.Close ();
-              db.Close ();
-            }
           _currentUserId = null;
+          CleanupDb ();
+          await Task.CompletedTask;
         }
 
       public static async Task<TEntity?> FindAsync<TEntity> (params object[] keyValues)
