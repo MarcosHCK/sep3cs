@@ -14,18 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.ComponentModel.DataAnnotations.Schema;
-using DataClash.Application.Common.Interfaces;
-using DataClash.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
-namespace DataClash.Framework.Identity
+namespace DataClash.Application.Common.Interfaces
 {
-  public class ApplicationUser : IdentityUser, IUser
+  public interface IUser
     {
-      public long? PlayerId { get; set; }
-
-      [ForeignKey ("PlayerId")]
-      public virtual Player? Player { get; set; }
+      public string? Email { get; set; }
+      public string? UserName { get; set; }
     }
 }
