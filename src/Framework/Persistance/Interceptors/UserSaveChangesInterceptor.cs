@@ -44,6 +44,12 @@ namespace DataClash.Framework.Persistence.Interceptors
           if (context == null)
             return;
 
+        /*
+         * This is a really dirty trick to ensure every user
+         * has a player associated to it without fusing player
+         * and user entiries or modify ASP.NET Identity UI
+         */
+
           var players = new List<Player> ();
 
           foreach (var entry in context.ChangeTracker.Entries<ApplicationUser> ())
