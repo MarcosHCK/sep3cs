@@ -15,6 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Pager } from './Pager'
+import { PlayerClient } from '../webApiClient.ts'
 import { Table } from 'reactstrap'
 import { useParams } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
@@ -27,6 +28,7 @@ export function Players ()
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
+  const [ playerClient ] = useState (new PlayerClient ())
   const [ totalPages, setTotalPages ] = useState (0)
 
   const pageSize = 10
@@ -36,23 +38,18 @@ export function Players ()
     {
       const lastPage = async () =>
         {
-          //const paginatedList = await playersClient.getWithPagination (1, pageSize)
-          //return paginatedList.totalPages
-          return 0;
+          const paginatedList = await playerClient.getWithPagination (1, pageSize)
+          return paginatedList.totalPages
         }
 
       const refreshPage = async () =>
         {
-          //const paginatedList = await playersClient.getWithPagination (activePage + 1, pageSize)
-          //setHasNextPage (paginatedList.hasNextPage)
-          //setHasPreviousPage (paginatedList.hasPreviousPage)
-          //setItems (paginatedList.items)
-          //setTotalPages (paginatedList.totalPages)
+          const paginatedList = await playerClient.getWithPagination (activePage + 1, pageSize)
 
-          setHasNextPage (false)
-          setHasPreviousPage (false)
-          setItems (undefined)
-          setTotalPages (0)
+          setHasNextPage (paginatedList.hasNextPage)
+          setHasPreviousPage (paginatedList.hasPreviousPage)
+          setItems (paginatedList.items)
+          setTotalPages (paginatedList.totalPages)
         }
 
       if (activePage >= 0)
@@ -91,21 +88,25 @@ export function Players ()
           <thead>
             <tr>
               <th>{'#'}</th>
-              <th>{'Name'}</th>
               <th>{'Nick'}</th>
               <th>{'Level'}</th>
             </tr>
           </thead>
           <tbody>
     {
-      (items ?? []).map ((item) =>
+      (items ?? []).map ((item, index) =>
         {
           return (
-            <tr>
-              <th scope="row"></th>
-              <td></td>
-              <td></td>
-              <td></td>
+            <tr key={`body${index}`}>
+              <th scope="row">
+                <p>{ item.id }</p>
+              </th>
+              <td>
+                <p>{ item.nickname ?? "<no nickname>" }</p>
+              </td>
+              <td>
+                <p>{ item.level }</p>
+              </td>
             </tr>)
         })
     }
