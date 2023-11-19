@@ -17,6 +17,7 @@
 using DataClash.Application.Common.Interfaces;
 using DataClash.Framework.Identity;
 using DataClash.Framework.Persistence;
+using DataClash.Framework.Persistence.Interceptors;
 using DataClash.Framework.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -29,6 +30,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
       public static IServiceCollection AddFrameworkServices (this IServiceCollection services, IConfiguration configuration)
         {
+          services.AddScoped<UserSaveChangesInterceptor> ();
+
           if (configuration.GetValue<bool> ("UseInMemoryDatabase"))
 
             services.AddDbContext<ApplicationDbContext> (options => options.UseInMemoryDatabase ("DataClashDb"));
