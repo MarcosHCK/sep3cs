@@ -21,7 +21,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 export function TimeSpan (props)
 {
-  const { defaultValue, onChanged } = props
+  const { defaultValue, readOnly, onChanged } = props
   const [ span, setSpan ] = useState (defaultValue)
   const firstRender = useRef (true)
 
@@ -41,13 +41,16 @@ export function TimeSpan (props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [span])
 
-  return (
-    <>
+  if (!readOnly)
+    return (
       <InputGroup className='d-flex'>
         <Input type='text' className='flex-grow-1 flex-shrink-1 p-2'
-          defaultValue={defaultValue}
-          onChange={(e) => update (e.target.value)} />
-      </InputGroup>
-    </>
-  )
+          defaultValue={defaultValue} onChange={(e) => update (e.target.value)} />
+      </InputGroup>)
+  else
+    return (
+      <InputGroup className='d-flex'>
+        <Input type='text' className='flex-grow-1 flex-shrink-1 p-2'
+          defaultValue={defaultValue} disabled onChange={(e) => e.preventDefault ()} />
+      </InputGroup>)
 }

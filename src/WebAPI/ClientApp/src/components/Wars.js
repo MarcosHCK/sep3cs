@@ -140,13 +140,19 @@ export function Wars ()
             </thead>
             <tbody>
         { (items ?? []).map ((item, index) => (
-              <tr key={`0${index}`}>
+              <tr key={`body${index}`}>
                 <th scope="row">{ item.id }</th>
                 <td>
-                  <DateTime defaultValue={item.beginDay} onChanged={(date) => { item.beginDay = date; updateWar (item) }} />
+                  <DateTime
+                    defaultValue={item.beginDay}
+                    onChanged={(date) => { item.beginDay = date; updateWar (item) }}
+                    readOnly={!isAdministrator} />
                 </td>
                 <td>
-                  <TimeSpan defaultValue={item.duration} onChanged={(span) => { item.duration = span; updateWar (item) }} />
+                  <TimeSpan
+                    defaultValue={item.duration}
+                    onChanged={(span) => { item.duration = span; updateWar (item) }}
+                    readOnly={!isAdministrator} />
                 </td>
         {
           (!isAdministrator)
@@ -158,18 +164,20 @@ export function Wars ()
         }
               </tr>))
         }
+            </tbody>
+            <tfoot>
         {
           (!isAdministrator)
-          ? (<td />)
+          ? (<tr />)
           : (
-              <tr key='addrow'>
-                  <td>
-                    <Button color='primary' onClick={() => addWar ()}>+</Button>
-                  </td>
-                  <td /> <td /> <td />
-                </tr>)
+              <tr key='footer0'>
+                <td>
+                  <Button color='primary' onClick={() => addWar ()}>+</Button>
+                </td>
+                <td /><td /><td />
+              </tr>)
         }
-            </tbody>
+            </tfoot>
           </Table>
         </div>
       </>))
