@@ -14,18 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.ComponentModel.DataAnnotations.Schema;
-using DataClash.Application.Common.Interfaces;
-using DataClash.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+using FluentValidation;
 
-namespace DataClash.Framework.Identity
+namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
 {
-  public class ApplicationUser : IdentityUser, IUser
+  public class GetPlayersWithPaginationQueryValidator : AbstractValidator<GetPlayersWithPaginationQuery>
     {
-      public long? PlayerId { get; set; }
-
-      [ForeignKey ("PlayerId")]
-      public virtual Player? Player { get; set; }
+      public GetPlayersWithPaginationQueryValidator ()
+        {
+          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
+        }
     }
 }

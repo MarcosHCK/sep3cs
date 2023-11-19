@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.ComponentModel.DataAnnotations.Schema;
-using DataClash.Application.Common.Interfaces;
+using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
-namespace DataClash.Framework.Identity
+namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
 {
-  public class ApplicationUser : IdentityUser, IUser
+  public class PlayerBriefDto : IMapFrom<Player>
     {
-      public long? PlayerId { get; set; }
-
-      [ForeignKey ("PlayerId")]
-      public virtual Player? Player { get; set; }
+      public long Id { get; init; }
+      public long Level { get; init; }
+      public string? Nickname { get; init; }
+      public long TotalCardsFound { get; init; }
+      public long TotalThrophies { get; init; }
+      public long TotalWins { get; init; }
     }
 }
