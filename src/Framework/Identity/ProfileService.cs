@@ -51,9 +51,10 @@ namespace DataClash.Framework.Identity
           context.IssuedClaims.AddRange (claims.Claims);
         }
 
-      public Task IsActiveAsync(IsActiveContext context)
+      public async Task IsActiveAsync(IsActiveContext context)
         {
-          return Task.CompletedTask;
+          var user = await _userManager.GetUserAsync(context.Subject);
+          context.IsActive = (user != null);
         }
     }
 }

@@ -60,11 +60,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddIdentityServer ()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext> ();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext> ()
+                .AddProfileService<ProfileService> ();
 
             services.AddTransient<IDateTime, DateTimeService> ();
             services.AddTransient<IIdentityService, IdentityService> ();
-            services.AddTransient<IProfileService, ProfileService> ();
 
             services
                 .AddAuthentication ()
