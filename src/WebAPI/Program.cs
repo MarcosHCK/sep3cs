@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Interfaces;
 using DataClash.Framework.Persistence;
 
 namespace DataClash
@@ -31,8 +32,17 @@ namespace DataClash
           var app = builder.Build ();
 
           if (app.Environment.IsDevelopment () == false)
+            {
+              app.UseHsts ();
 
-            app.UseHsts ();
+              using (var scope = app.Services.CreateScope ())
+                {
+                  await scope
+                    .ServiceProvider
+                    .GetRequiredService<IApplicationDbContextSeeder> ()
+                    .SeedAsync ();
+                }
+            }
           else
             {
               app.UseDeveloperExceptionPage ();
@@ -41,9 +51,11 @@ namespace DataClash
               using (var scope = app.Services.CreateScope ())
                 {
                   var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser> ();
+                  var seeder = scope.ServiceProvider.GetRequiredService<IApplicationDbContextSeeder> ();
 
                   await initializer.InitialiseAsync ();
                   await initializer.SeedAsync ();
+                  await seeder.SeedAsync ();
                 }
             }
 
