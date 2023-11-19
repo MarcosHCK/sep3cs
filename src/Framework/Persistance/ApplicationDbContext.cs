@@ -66,6 +66,7 @@ namespace DataClash.Framework.Persistence
 
       public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken = default)
         {
+          await _mediator.DispatchDomainEvents (this);
           return await base.SaveChangesAsync (cancellationToken);
         }
     }
