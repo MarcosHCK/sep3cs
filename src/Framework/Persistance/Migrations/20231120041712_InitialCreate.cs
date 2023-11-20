@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Framework.Persistance.Migrations
+namespace Framework.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -23,31 +23,6 @@ namespace Framework.Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -77,7 +52,7 @@ namespace Framework.Persistance.Migrations
                     Bounty = table.Column<long>(type: "INTEGER", nullable: false),
                     Cost = table.Column<long>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
-                    Duration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     MaxLooses = table.Column<long>(type: "INTEGER", nullable: false),
                     MinLevel = table.Column<long>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true)
@@ -168,7 +143,8 @@ namespace Framework.Persistance.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Duration = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    BeginDay = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,6 +168,250 @@ namespace Framework.Persistance.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MagicCards",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DamageRadius = table.Column<double>(type: "REAL", nullable: false),
+                    AreaDamage = table.Column<double>(type: "REAL", nullable: false),
+                    TowerDamage = table.Column<double>(type: "REAL", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MagicCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MagicCards_Cards_Id",
+                        column: x => x.Id,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Players",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FavoriteCardId = table.Column<long>(type: "INTEGER", nullable: true),
+                    Level = table.Column<long>(type: "INTEGER", nullable: false),
+                    Nickname = table.Column<string>(type: "TEXT", nullable: true),
+                    TotalCardsFound = table.Column<long>(type: "INTEGER", nullable: false),
+                    TotalThrophies = table.Column<long>(type: "INTEGER", nullable: false),
+                    TotalWins = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Players", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Players_Cards_FavoriteCardId",
+                        column: x => x.FavoriteCardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StructCards",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    HitPoints = table.Column<double>(type: "REAL", nullable: false),
+                    RangeDamage = table.Column<double>(type: "REAL", nullable: false),
+                    AttackPaseRate = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StructCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StructCards_Cards_Id",
+                        column: x => x.Id,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TroopCards",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AreaDamage = table.Column<double>(type: "REAL", nullable: false),
+                    HitPoints = table.Column<double>(type: "REAL", nullable: false),
+                    UnitCount = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TroopCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TroopCards_Cards_Id",
+                        column: x => x.Id,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WarClans",
+                columns: table => new
+                {
+                    ClanId = table.Column<long>(type: "INTEGER", nullable: false),
+                    WarId = table.Column<long>(type: "INTEGER", nullable: false),
+                    WonThrophies = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WarClans", x => new { x.ClanId, x.WarId });
+                    table.ForeignKey(
+                        name: "FK_WarClans_Clans_ClanId",
+                        column: x => x.ClanId,
+                        principalTable: "Clans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WarClans_Wars_WarId",
+                        column: x => x.WarId,
+                        principalTable: "Wars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    PlayerId = table.Column<long>(type: "INTEGER", nullable: true),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Matches",
+                columns: table => new
+                {
+                    WinnerPlayerId = table.Column<long>(type: "INTEGER", nullable: false),
+                    LooserPlayerId = table.Column<long>(type: "INTEGER", nullable: false),
+                    BeginDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Matches", x => new { x.LooserPlayerId, x.WinnerPlayerId, x.BeginDate });
+                    table.ForeignKey(
+                        name: "FK_Matches_Players_LooserPlayerId",
+                        column: x => x.LooserPlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Matches_Players_WinnerPlayerId",
+                        column: x => x.WinnerPlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerCards",
+                columns: table => new
+                {
+                    CardId = table.Column<long>(type: "INTEGER", nullable: false),
+                    PlayerId = table.Column<long>(type: "INTEGER", nullable: false),
+                    Level = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerCards", x => new { x.CardId, x.PlayerId });
+                    table.ForeignKey(
+                        name: "FK_PlayerCards_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlayerCards_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerChallenges",
+                columns: table => new
+                {
+                    ChallengeId = table.Column<long>(type: "INTEGER", nullable: false),
+                    PlayerId = table.Column<long>(type: "INTEGER", nullable: false),
+                    WonThrophies = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerChallenges", x => new { x.ChallengeId, x.PlayerId });
+                    table.ForeignKey(
+                        name: "FK_PlayerChallenges_Challenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "Challenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlayerChallenges_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerClans",
+                columns: table => new
+                {
+                    ClanId = table.Column<long>(type: "INTEGER", nullable: false),
+                    PlayerId = table.Column<long>(type: "INTEGER", nullable: false),
+                    Role = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerClans", x => new { x.ClanId, x.PlayerId });
+                    table.ForeignKey(
+                        name: "FK_PlayerClans_Clans_ClanId",
+                        column: x => x.ClanId,
+                        principalTable: "Clans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlayerClans_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -282,54 +502,6 @@ namespace Framework.Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Players",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FavoriteCardId = table.Column<long>(type: "INTEGER", nullable: false),
-                    Level = table.Column<long>(type: "INTEGER", nullable: false),
-                    Nickname = table.Column<string>(type: "TEXT", nullable: true),
-                    TotalCardsFound = table.Column<long>(type: "INTEGER", nullable: false),
-                    TotalThrophies = table.Column<long>(type: "INTEGER", nullable: false),
-                    TotalWins = table.Column<long>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Players", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Players_Cards_FavoriteCardId",
-                        column: x => x.FavoriteCardId,
-                        principalTable: "Cards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WarClans",
-                columns: table => new
-                {
-                    ClanId = table.Column<long>(type: "INTEGER", nullable: false),
-                    WarId = table.Column<long>(type: "INTEGER", nullable: false),
-                    WonThrophies = table.Column<long>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_WarClans_Clans_ClanId",
-                        column: x => x.ClanId,
-                        principalTable: "Clans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_WarClans_Wars_WarId",
-                        column: x => x.WarId,
-                        principalTable: "Wars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CardGifts",
                 columns: table => new
                 {
@@ -339,12 +511,7 @@ namespace Framework.Persistance.Migrations
                 },
                 constraints: table =>
                 {
-                    table.ForeignKey(
-                        name: "FK_CardGifts_Cards_CardId",
-                        column: x => x.CardId,
-                        principalTable: "Cards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_CardGifts", x => new { x.ClanId, x.CardId, x.PlayerId });
                     table.ForeignKey(
                         name: "FK_CardGifts_Clans_ClanId",
                         column: x => x.ClanId,
@@ -352,107 +519,10 @@ namespace Framework.Persistance.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CardGifts_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Matches",
-                columns: table => new
-                {
-                    WinnerPlayerId = table.Column<long>(type: "INTEGER", nullable: false),
-                    LooserPlayerId = table.Column<long>(type: "INTEGER", nullable: false),
-                    BeginDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Duration = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_Matches_Players_LooserPlayerId",
-                        column: x => x.LooserPlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Matches_Players_WinnerPlayerId",
-                        column: x => x.WinnerPlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerCards",
-                columns: table => new
-                {
-                    CardId = table.Column<long>(type: "INTEGER", nullable: false),
-                    PlayerId = table.Column<long>(type: "INTEGER", nullable: false),
-                    Level = table.Column<long>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_PlayerCards_Cards_CardId",
-                        column: x => x.CardId,
-                        principalTable: "Cards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerCards_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerChallenges",
-                columns: table => new
-                {
-                    ChallengeId = table.Column<long>(type: "INTEGER", nullable: false),
-                    PlayerId = table.Column<long>(type: "INTEGER", nullable: false),
-                    WonThrophies = table.Column<long>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_PlayerChallenges_Challenges_ChallengeId",
-                        column: x => x.ChallengeId,
-                        principalTable: "Challenges",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerChallenges_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerClans",
-                columns: table => new
-                {
-                    ClanId = table.Column<long>(type: "INTEGER", nullable: false),
-                    PlayerId = table.Column<long>(type: "INTEGER", nullable: false),
-                    Role = table.Column<long>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_PlayerClans_Clans_ClanId",
-                        column: x => x.ClanId,
-                        principalTable: "Clans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerClans_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
+                        name: "FK_CardGifts_PlayerCards_CardId_PlayerId",
+                        columns: x => new { x.CardId, x.PlayerId },
+                        principalTable: "PlayerCards",
+                        principalColumns: new[] { "CardId", "PlayerId" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -488,25 +558,20 @@ namespace Framework.Persistance.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_PlayerId",
+                table: "AspNetUsers",
+                column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardGifts_CardId",
+                name: "IX_CardGifts_CardId_PlayerId",
                 table: "CardGifts",
-                column: "CardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CardGifts_ClanId",
-                table: "CardGifts",
-                column: "ClanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CardGifts_PlayerId",
-                table: "CardGifts",
-                column: "PlayerId");
+                columns: new[] { "CardId", "PlayerId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
@@ -523,11 +588,6 @@ namespace Framework.Persistance.Migrations
                 name: "IX_Keys_Use",
                 table: "Keys",
                 column: "Use");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Matches_LooserPlayerId",
-                table: "Matches",
-                column: "LooserPlayerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matches_WinnerPlayerId",
@@ -555,29 +615,14 @@ namespace Framework.Persistance.Migrations
                 columns: new[] { "SubjectId", "SessionId", "Type" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlayerCards_CardId",
-                table: "PlayerCards",
-                column: "CardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PlayerCards_PlayerId",
                 table: "PlayerCards",
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlayerChallenges_ChallengeId",
-                table: "PlayerChallenges",
-                column: "ChallengeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PlayerChallenges_PlayerId",
                 table: "PlayerChallenges",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerClans_ClanId",
-                table: "PlayerClans",
-                column: "ClanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlayerClans_PlayerId",
@@ -588,11 +633,6 @@ namespace Framework.Persistance.Migrations
                 name: "IX_Players_FavoriteCardId",
                 table: "Players",
                 column: "FavoriteCardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WarClans_ClanId",
-                table: "WarClans",
-                column: "ClanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WarClans_WarId",
@@ -628,19 +668,25 @@ namespace Framework.Persistance.Migrations
                 name: "Keys");
 
             migrationBuilder.DropTable(
+                name: "MagicCards");
+
+            migrationBuilder.DropTable(
                 name: "Matches");
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "PlayerCards");
-
-            migrationBuilder.DropTable(
                 name: "PlayerChallenges");
 
             migrationBuilder.DropTable(
                 name: "PlayerClans");
+
+            migrationBuilder.DropTable(
+                name: "StructCards");
+
+            migrationBuilder.DropTable(
+                name: "TroopCards");
 
             migrationBuilder.DropTable(
                 name: "WarClans");
@@ -652,16 +698,19 @@ namespace Framework.Persistance.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Challenges");
+                name: "PlayerCards");
 
             migrationBuilder.DropTable(
-                name: "Players");
+                name: "Challenges");
 
             migrationBuilder.DropTable(
                 name: "Clans");
 
             migrationBuilder.DropTable(
                 name: "Wars");
+
+            migrationBuilder.DropTable(
+                name: "Players");
 
             migrationBuilder.DropTable(
                 name: "Cards");

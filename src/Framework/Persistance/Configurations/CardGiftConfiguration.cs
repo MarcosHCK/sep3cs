@@ -24,7 +24,9 @@ namespace DataClash.Infrastructure.Persistence.Configurations
     {
       public void Configure (EntityTypeBuilder<CardGift> builder)
         {
-          builder.HasNoKey ();
+          builder.HasKey (e => new { e.ClanId, e.CardId, e.PlayerId });
+          builder.HasOne (e => e.Clan).WithMany ().HasForeignKey (e => e.ClanId);
+          builder.HasOne (e => e.PlayerCard).WithMany ().HasForeignKey (e => new { e.CardId, e.PlayerId, });
         }
     }
 }

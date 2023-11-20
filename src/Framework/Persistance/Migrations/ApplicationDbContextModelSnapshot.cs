@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Framework.Persistance.Migrations
+namespace Framework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -47,20 +47,18 @@ namespace Framework.Persistance.Migrations
 
             modelBuilder.Entity("DataClash.Domain.Entities.CardGift", b =>
                 {
-                    b.Property<long>("CardId")
+                    b.Property<long>("ClanId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ClanId")
+                    b.Property<long>("CardId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("PlayerId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("CardId");
+                    b.HasKey("ClanId", "CardId", "PlayerId");
 
-                    b.HasIndex("ClanId");
-
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("CardId", "PlayerId");
 
                     b.ToTable("CardGifts");
                 });
@@ -128,19 +126,19 @@ namespace Framework.Persistance.Migrations
 
             modelBuilder.Entity("DataClash.Domain.Entities.Match", b =>
                 {
-                    b.Property<DateTime>("BeginDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("TEXT");
-
                     b.Property<long>("LooserPlayerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("WinnerPlayerId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("LooserPlayerId");
+                    b.Property<DateTime>("BeginDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LooserPlayerId", "WinnerPlayerId", "BeginDate");
 
                     b.HasIndex("WinnerPlayerId");
 
@@ -183,13 +181,13 @@ namespace Framework.Persistance.Migrations
                     b.Property<long>("CardId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Level")
-                        .HasColumnType("INTEGER");
-
                     b.Property<long>("PlayerId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("CardId");
+                    b.Property<long>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CardId", "PlayerId");
 
                     b.HasIndex("PlayerId");
 
@@ -207,7 +205,7 @@ namespace Framework.Persistance.Migrations
                     b.Property<long>("WonThrophies")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("ChallengeId");
+                    b.HasKey("ChallengeId", "PlayerId");
 
                     b.HasIndex("PlayerId");
 
@@ -225,7 +223,7 @@ namespace Framework.Persistance.Migrations
                     b.Property<long>("Role")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("ClanId");
+                    b.HasKey("ClanId", "PlayerId");
 
                     b.HasIndex("PlayerId");
 
@@ -260,7 +258,7 @@ namespace Framework.Persistance.Migrations
                     b.Property<long>("WonThrophies")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("ClanId");
+                    b.HasKey("ClanId", "WarId");
 
                     b.HasIndex("WarId");
 
@@ -662,29 +660,21 @@ namespace Framework.Persistance.Migrations
 
             modelBuilder.Entity("DataClash.Domain.Entities.CardGift", b =>
                 {
-                    b.HasOne("DataClash.Domain.Entities.Card", "Card")
-                        .WithMany()
-                        .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataClash.Domain.Entities.Clan", "Clan")
                         .WithMany()
                         .HasForeignKey("ClanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataClash.Domain.Entities.Player", "Player")
+                    b.HasOne("DataClash.Domain.Entities.PlayerCard", "PlayerCard")
                         .WithMany()
-                        .HasForeignKey("PlayerId")
+                        .HasForeignKey("CardId", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Card");
-
                     b.Navigation("Clan");
 
-                    b.Navigation("Player");
+                    b.Navigation("PlayerCard");
                 });
 
             modelBuilder.Entity("DataClash.Domain.Entities.Clan", b =>
