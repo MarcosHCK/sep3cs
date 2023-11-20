@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataClash.Domain.Entities
 {
@@ -24,10 +23,7 @@ namespace DataClash.Domain.Entities
       public long PlayerId { get; set; }
       public long Level { get; set; }
 
-      [ForeignKey ("CardId")]
       public virtual Card? Card { get; set; }
-
-      [ForeignKey ("PlayerId")]
       public virtual Player? Player { get; set; }
     }
 }

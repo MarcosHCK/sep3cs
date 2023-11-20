@@ -15,7 +15,6 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 using DataClash.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataClash.Domain.Entities
 {
@@ -28,7 +27,6 @@ namespace DataClash.Domain.Entities
       public long TotalThrophies { get; set; }
       public long TotalWins { get; set; }
 
-      [ForeignKey ("FavoriteCardId")]
       public virtual Card? FavoriteCard { get; set; }
     }
 }

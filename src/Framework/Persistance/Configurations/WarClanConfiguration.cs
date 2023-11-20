@@ -24,7 +24,9 @@ namespace DataClash.Infrastructure.Persistence.Configurations
     {
       public void Configure (EntityTypeBuilder<WarClan> builder)
         {
-          builder.HasNoKey ();
+          builder.HasKey (e => new { e.ClanId, e.WarId });
+          builder.HasOne (e => e.Clan).WithMany ().HasForeignKey (e => e.ClanId);
+          builder.HasOne (e => e.War).WithMany ().HasForeignKey (e => e.WarId);
         }
     }
 }

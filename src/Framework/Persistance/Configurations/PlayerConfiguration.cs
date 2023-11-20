@@ -20,13 +20,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataClash.Infrastructure.Persistence.Configurations
 {
-  public class PlayerChallengeConfiguration : IEntityTypeConfiguration<PlayerChallenge>
+  public class PlayerConfiguration : IEntityTypeConfiguration<Player>
     {
-      public void Configure (EntityTypeBuilder<PlayerChallenge> builder)
+      public void Configure (EntityTypeBuilder<Player> builder)
         {
-          builder.HasKey (e => new { e.ChallengeId, e.PlayerId });
-          builder.HasOne (e => e.Challenge).WithMany ().HasForeignKey (e => e.ChallengeId);
-          builder.HasOne (e => e.Player).WithMany ().HasForeignKey (e => e.PlayerId);
+          builder.HasOne (e => e.FavoriteCard).WithMany ().HasForeignKey (e => e.FavoriteCardId);
         }
     }
 }
