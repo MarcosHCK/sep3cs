@@ -24,9 +24,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Wars.Commands.DeleteWar
 {
+  [Authorize (Roles = "Administrator")]
   public record DeleteWarCommand (long Id) : IRequest;
 
-  [Authorize (Roles = "Administrator")]
   public class DeleteWarCommandHandler : IRequestHandler<DeleteWarCommand>
     {
       private readonly IApplicationDbContext _context;
