@@ -16,7 +16,6 @@
  */
 using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Wars.Commands.CreateWar;
-using DataClash.Application.Wars.Commands.DeleteWar;
 using DataClash.Application.Wars.Commands.UpdateWar;
 using DataClash.Domain.Entities;
 using FluentAssertions;
@@ -27,7 +26,7 @@ namespace DataClash.Application.IntegrationTests.Wars.Commands
 {
   using static Testing;
 
-  public class UpdateWarsTests : BaseTestFixture
+  public class UpdateWarTests : BaseTestFixture
     {
       [Test]
       public async Task ShouldRequireAdministratorUser ()
