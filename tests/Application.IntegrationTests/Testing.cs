@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
@@ -31,61 +30,88 @@ namespace DataClash.Application.IntegrationTests
   public partial class Testing
     {
       private static WebApplicationFactory<Program> _factory = null!;
-      private static IConfiguration _configuration = null!;
       private static IServiceScopeFactory _scopeFactory = null!;
-      private static string? _currentUserId;
+      private static string? _currentUserId = null;
+
+      [TestFixture]
+      public abstract class BaseTestFixture
+        {
+          [SetUp]
+          public async Task TestSetUp ()
+            {
+              /*
+               * Respawn has no support for SQLite databases
+               * and i have no patience to create a trasaction-based
+               * checkpointing system, so recreate the application
+               * for every test should do it.
+               */
+              _currentUserId = null;
+
+              using (var scope = _scopeFactory.CreateScope ())
+                {
+                  var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
+                  var facade = context.Database;
+
+                  var script = "PRAGMA writable_schema = 1;"
+                         + "delete from sqlite_master where type in ('table', 'index', 'trigger');"
+                         + "PRAGMA writable_schema = 0; VACUUM;";
+                  await facade.ExecuteSqlRawAsync (script);
+                  await facade.MigrateAsync ();
+                }
+            }
+        }
 
       [OneTimeSetUp]
       public void RunBeforeAnyTests ()
         {
           _factory = new CustomWebApplicationFactory ();
-          _configuration = _factory.Services.GetRequiredService<IConfiguration> ();
           _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory> ();
-          CleanupDb ();
         }
 
-      internal static void CleanupDb ()
+      [OneTimeTearDown]
+      public void RunAfterAnyTests ()
         {
-          using (var db = new SqliteConnection (_configuration.GetConnectionString ("DefaultConnection")))
+        }
+
+      public static async Task AddAsync<TEntity> (TEntity entity)
+            where TEntity : class
+        {
+          using var scope = _scopeFactory.CreateScope ();
+          var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
+            context.Add (entity);
+          await context.SaveChangesAsync ();
+        }
+
+      public static async Task<int> CountAsync<TEntity> ()
+            where TEntity : class
+        {
+          using var scope = _scopeFactory.CreateScope ();
+          var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
+        return await context.Set<TEntity> ().CountAsync ();
+        }
+
+      public static async Task DropAllSqlite (string? target)
+        {
+          using (var connection = new SqliteConnection (target))
             {
-              var tableNames = new List<string> ();
-              db.Open ();
+              var script = "PRAGMA writable_schema = 1;"
+                         + "delete from sqlite_master where type in ('table', 'index', 'trigger');"
+                         + "PRAGMA writable_schema = 0; VACUUM;";
+              var command = new SqliteCommand (script, connection);
 
-              using (SqliteCommand cmd = new SqliteCommand ("SELECT name FROM sqlite_master WHERE type='table';", db))
-                {
-                  using (SqliteDataReader reader = cmd.ExecuteReader ())
-                    {
-                      while (reader.Read ())
-                        {
-                          tableNames.Add (reader.GetString (0));
-                        }
-                    }
-                }
-
-              tableNames.Remove ("__EFMigrationsHistory");
-
-              foreach (string tableName in tableNames)
-                {
-                  using (SqliteCommand cmd = new SqliteCommand ($"DELETE FROM {tableName};", db))
-                    {
-                      cmd.ExecuteNonQuery ();
-                    }
-                }
+              connection.Open ();
+              command.ExecuteNonQuery ();
             }
+
+          await Task.CompletedTask;
         }
 
-      public static async Task<TResponse> SendAsync<TResponse> (IRequest<TResponse> request)
+      public static async Task<TEntity?> FindAsync<TEntity> (params object[] keyValues)
+            where TEntity : class
         {
           using var scope = _scopeFactory.CreateScope ();
-          var mediator = scope.ServiceProvider.GetRequiredService<ISender> ();
-        return await mediator.Send (request);
-        }
-
-      public static async Task SendAsync (IBaseRequest request)
-        {
-          using var scope = _scopeFactory.CreateScope ();
-          var mediator = scope.ServiceProvider.GetRequiredService<ISender> ();
-          await mediator.Send (request);
+          var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
+        return await context.FindAsync<TEntity> (keyValues);
         }
 
       public static string? GetCurrentUserId ()
@@ -93,14 +119,14 @@ namespace DataClash.Application.IntegrationTests
           return _currentUserId;
         }
 
-      public static async Task<string> RunAsDefaultUserAsync ()
-        {
-          return await RunAsUserAsync ("test@local", "Testing1234!", Array.Empty<string>());
-        }
-
       public static async Task<string> RunAsAdministratorAsync ()
         {
           return await RunAsUserAsync ("administrator@local", "Administrator1234!", new[] { "Administrator" });
+        }
+
+      public static async Task<string> RunAsDefaultUserAsync ()
+        {
+          return await RunAsUserAsync ("test@local", "Testing1234!", Array.Empty<string>());
         }
 
       public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
@@ -133,41 +159,18 @@ namespace DataClash.Application.IntegrationTests
           throw new Exception ($"Unable to create {userName}.{Environment.NewLine}{errors}");
         }
 
-      public static async Task ResetState ()
-        {
-          _currentUserId = null;
-          CleanupDb ();
-          await Task.CompletedTask;
-        }
-
-      public static async Task<TEntity?> FindAsync<TEntity> (params object[] keyValues)
-            where TEntity : class
+      public static async Task SendAsync (IBaseRequest request)
         {
           using var scope = _scopeFactory.CreateScope ();
-          var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
-        return await context.FindAsync<TEntity> (keyValues);
+          var mediator = scope.ServiceProvider.GetRequiredService<ISender> ();
+          await mediator.Send (request);
         }
 
-      public static async Task AddAsync<TEntity> (TEntity entity)
-            where TEntity : class
+      public static async Task<TResponse> SendAsync<TResponse> (IRequest<TResponse> request)
         {
           using var scope = _scopeFactory.CreateScope ();
-          var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
-            context.Add (entity);
-          await context.SaveChangesAsync ();
-        }
-
-      public static async Task<int> CountAsync<TEntity> ()
-            where TEntity : class
-        {
-          using var scope = _scopeFactory.CreateScope ();
-          var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
-        return await context.Set<TEntity> ().CountAsync ();
-        }
-
-      [OneTimeTearDown]
-      public void RunAfterAnyTests ()
-        {
+          var mediator = scope.ServiceProvider.GetRequiredService<ISender> ();
+        return await mediator.Send (request);
         }
     }
 }
