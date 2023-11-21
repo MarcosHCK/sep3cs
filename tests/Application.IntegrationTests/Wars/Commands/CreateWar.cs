@@ -24,7 +24,7 @@ namespace DataClash.Application.IntegrationTests.Wars.Commands
 {
   using static Testing;
 
-  public class CreateWarsTests : BaseTestFixture
+  public class CreateWarTests : BaseTestFixture
     {
       [Test]
       public async Task ShouldRequireAdministratorUser ()
