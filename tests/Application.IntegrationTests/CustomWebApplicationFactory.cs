@@ -43,9 +43,6 @@ namespace DataClash.Application.IntegrationTests
 
           builder.ConfigureServices ((builder, services) =>
             {
-              DropAllSqlite (builder.Configuration.GetConnectionString ("DefaultConnection"))
-                .Wait ();
-
               services
                 .Remove<ICurrentUserService> ()
                 .AddTransient (provider => Mock.Of<ICurrentUserService> (s =>

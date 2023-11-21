@@ -45,18 +45,27 @@ namespace DataClash.Application.IntegrationTests
                * checkpointing system, so recreate the application
                * for every test should do it.
                */
-              _factory = new CustomWebApplicationFactory ();
-              _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory> ();
               _currentUserId = null;
-              await Task.CompletedTask;
+
+              using (var scope = _scopeFactory.CreateScope ())
+                {
+                  var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
+                  var facade = context.Database;
+
+                  var script = "PRAGMA writable_schema = 1;"
+                         + "delete from sqlite_master where type in ('table', 'index', 'trigger');"
+                         + "PRAGMA writable_schema = 0; VACUUM;";
+                  await facade.ExecuteSqlRawAsync (script);
+                  await facade.MigrateAsync ();
+                }
             }
         }
 
       [OneTimeSetUp]
       public void RunBeforeAnyTests ()
         {
-          //_factory = new CustomWebApplicationFactory ();
-          //_scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory> ();
+          _factory = new CustomWebApplicationFactory ();
+          _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory> ();
         }
 
       [OneTimeTearDown]
