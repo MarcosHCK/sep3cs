@@ -119,6 +119,18 @@ namespace DataClash.Application.IntegrationTests
           return _currentUserId;
         }
 
+      public static async Task<long> GetPlayerIdForUser (string userId)
+        {
+          using (var scope = _scopeFactory.CreateScope ())
+            {
+              var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext> ();
+              var playerId = await context.Users.FindAsync (userId);
+              return playerId == null
+                ? -1 : (playerId.PlayerId.HasValue == false
+                ? -1 : playerId.PlayerId.Value);
+            }
+        }
+
       public static async Task<string> RunAsAdministratorAsync ()
         {
           return await RunAsUserAsync ("administrator@local", "Administrator1234!", new[] { "Administrator" });
