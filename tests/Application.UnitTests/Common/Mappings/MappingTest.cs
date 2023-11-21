@@ -16,7 +16,10 @@
  */
 using System.Runtime.Serialization;
 using AutoMapper;
+using DataClash.Application.Challengess.Queries.GetChallenges;
 using DataClash.Application.Common.Mappings;
+using DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination;
+using DataClash.Application.Players.Queries.GetPlayersWithPagination;
 using DataClash.Application.Wars.Queries.GetWar;
 using DataClash.Domain.Entities;
 using NUnit.Framework;
@@ -41,7 +44,10 @@ namespace DataClash.Application.UnitTests.Common.Mappings
         }
 
       [Test]
-      [TestCase(typeof (War), typeof (WarBriefDto))]
+      [TestCase (typeof (Challenge), typeof (ChallengesBriefDto))]
+      [TestCase (typeof (Player), typeof (PlayerBriefDto))]
+      [TestCase (typeof (PlayerCard), typeof (PlayerCardBriefDto))]
+      [TestCase (typeof (War), typeof (WarBriefDto))]
       public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
         {
           _mapper.Map (GetInstanceOf (source), source, destination);
