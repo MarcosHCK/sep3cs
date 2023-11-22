@@ -25,7 +25,7 @@ import React from 'react'
 
 export function NavMenu ()
 {
-  const [ isReady, isAuthorized, userProfile ] = useAuthorize ()
+  const [ isReady, isAuthorized, inRole, userProfile ] = useAuthorize ()
 
   return (
     <header>
@@ -59,7 +59,7 @@ export function NavMenu ()
                       <NavLink tag={Link} className="text-dark" to='/challenges'>{'Challenges'}</NavLink>
                       <NavLink tag={Link} className="text-dark" to='/clans'>{'Clans'}</NavLink>
                       <NavLink tag={Link} className="text-dark" to='/matches'>{'Matches'}</NavLink>
-                    { userProfile.role === UserRoles.Administrator &&
+                    { inRole[UserRoles.Administrator] &&
                       <NavLink tag={Link} className="text-dark" to='/players'>{'Players'}</NavLink>
                     }
                       <NavLink tag={Link} className="text-dark" to='/wars'>{'Wars'}</NavLink>

@@ -33,8 +33,7 @@ export function Wars ()
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
-  const [ isReady, isAuthorized, userProfile ] = useAuthorize ()
-  const [ isAdministrator, setIsAdministrator ] = useState (false)
+  const [ isReady, isAuthorized, inRole ] = useAuthorize ()
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
   const [ warClient ] = useState (new WarClient ())
@@ -65,12 +64,6 @@ export function Wars ()
         data.duration = item.duration
       await warClient.update (item.id, data)
     }
-
-  useEffect (() =>
-    {
-      setIsAdministrator (userProfile.role === UserRoles.Administrator)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAuthorized])
 
   useEffect (() =>
     {
@@ -109,7 +102,7 @@ export function Wars ()
     }, [activePage])
 
   return (
-    (isLoading || !isReady)
+    (isLoading || !isReady || !isAuthorized)
       ? (<div></div>)
     : (
       <>
@@ -140,16 +133,16 @@ export function Wars ()
                   <DateTime
                     defaultValue={item.beginDay}
                     onChanged={(date) => { item.beginDay = date; updateWar (item) }}
-                    readOnly={!isAdministrator} />
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
                   <TimeSpan
                     defaultValue={item.duration}
                     onChanged={(span) => { item.duration = span; updateWar (item) }}
-                    readOnly={!isAdministrator} />
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
         {
-          (!isAdministrator)
+          (!inRole[UserRoles.Administrator])
           ? (<td />)
           : (
                 <td>
@@ -161,7 +154,7 @@ export function Wars ()
             </tbody>
             <tfoot>
         {
-          (!isAdministrator)
+          (!inRole[UserRoles.Administrator])
           ? (<tr />)
           : (
               <tr key='footer0'>

@@ -27,10 +27,10 @@ export function useAuthorize ()
 export function AuthorizeProvider (props)
 {
   const { children } = props
-  const [isAuthorized, setIsAuthorized] = useState (false)
-  const [isMounted, setIsMounted] = useState (false)
-  const [isReady, setIsReady] = useState (false)
-  const [userProfile, setUserProfile] = useState (undefined)
+  const [ inRole, setInRole ] = useState (undefined)
+  const [ isAuthorized, setIsAuthorized ] = useState (false)
+  const [ isReady, setIsReady ] = useState (false)
+  const [ userProfile, setUserProfile ] = useState (undefined)
 
   useEffect (() =>
     {
@@ -39,8 +39,16 @@ export function AuthorizeProvider (props)
           const promises = [ authService.isAuthenticated(), authService.getUser() ]
           const [ isAuthorized, userProfile ] = await Promise.all (promises)
 
+          const roles = typeof userProfile.role === 'string'
+                          ? { [userProfile.role] : true }
+                          : userProfile.role.reduce ((acc, role, index) =>
+                              {
+                                return { ...acc, [ role[index] ] : true }
+                              })
+
           setIsAuthorized (isAuthorized)
           setIsReady (true)
+          setInRole (roles)
           setUserProfile (userProfile)
         }
 
@@ -58,23 +66,15 @@ export function AuthorizeProvider (props)
           authenticationChanged ()
         })
 
-      setIsMounted (true)
       populateAuthenticationState ()
 
-      return () =>
-        {
-          if (isMounted)
-            {
-              setIsMounted (false)
-              authService.unsubscribe (subscription)
-            }
-        }
+      return () => { authService.unsubscribe(subscription) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
   return (
     <authContext.Provider
-      value={[ isReady, isAuthorized, userProfile ]}>
+      value={[ isReady, isAuthorized, inRole, userProfile ]}>
       {children}
     </authContext.Provider>)
 }

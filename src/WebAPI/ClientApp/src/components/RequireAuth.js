@@ -25,7 +25,7 @@ export function RequireAuth (props)
 {
   const { role, children } = props
   // eslint-disable-next-line no-unused-vars
-  const [ isReady, isAuthorized, userProfile ] = useAuthorize ()
+  const [ isReady, isAuthorized, inRoles ] = useAuthorize ()
 
   const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI(window.location.href)}`
 
@@ -34,7 +34,7 @@ export function RequireAuth (props)
     ? (<div></div>)
     : (!isAuthorized
       ? (<Navigate to={redirectUrl} />)
-    : (role !== undefined && (userProfile.role !== role))
+    : (role !== undefined && (inRoles[role]))
       ? (<Alert color='danger'>Restricted to '{ role }' users</Alert>)
     : children)
   )
