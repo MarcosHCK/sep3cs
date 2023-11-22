@@ -19,32 +19,32 @@ using AutoMapper.QueryableExtensions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Mappings;
 using DataClash.Application.Common.Models;
-using DataClash.Application.Challengess.Queries.GetChallenges;
+
 using MediatR;
 
-namespace DataClash.Application.Challengess.Queries.GetChallengessWithPagination
+namespace DataClash.Application.Challenges.Queries.GetChallengessWithPagination
 {
-  public record GetChallengessWithPaginationQuery : IRequest<PaginatedList<ChallengesBriefDto>>
+  public record GetChallengesWithPaginationQuery : IRequest<PaginatedList<ChallengeBriefDto>>
     {
       public int PageNumber { get; init; } = 1;
       public int PageSize { get; init; } = 10;
     }
 
-  public class GetChallengessWithPaginationQueryHandler : IRequestHandler<GetChallengessWithPaginationQuery, PaginatedList<ChallengesBriefDto>>
+  public class GetChallengesWithPaginationQueryHandler : IRequestHandler<GetChallengesWithPaginationQuery, PaginatedList<ChallengeBriefDto>>
     {
       private readonly IApplicationDbContext _context;
       private readonly IMapper _mapper;
 
-      public GetChallengessWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
+      public GetChallengesWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
         {
           _context = context;
           _mapper = mapper;
         }
 
-      public async Task<PaginatedList<ChallengesBriefDto>> Handle (GetChallengessWithPaginationQuery query, CancellationToken cancellationToken)
+      public async Task<PaginatedList<ChallengeBriefDto>> Handle (GetChallengesWithPaginationQuery query, CancellationToken cancellationToken)
         {
           return await _context.Challenges
-            .ProjectTo<ChallengesBriefDto> (_mapper.ConfigurationProvider)
+            .ProjectTo<ChallengeBriefDto> (_mapper.ConfigurationProvider)
             .PaginatedListAsync (query.PageNumber, query.PageSize);
         }
     }

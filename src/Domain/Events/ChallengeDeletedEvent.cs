@@ -14,25 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Events;
-using MediatR;
-using Microsoft.Extensions.Logging;
+using DataClash.Domain.Common;
+using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Challengess.EventHandlers
+namespace DataClash.Domain.Events
 {
-  public class ChallengesDeletedEventHandler : INotificationHandler<ChallengesDeletedEvent>
+  public class ChallengeDeletedEvent : BaseEvent
     {
-      private readonly ILogger<ChallengesDeletedEventHandler> _logger;
+      public Challenge Item { get; }
 
-      public ChallengesDeletedEventHandler (ILogger<ChallengesDeletedEventHandler> logger)
+      public ChallengeDeletedEvent (Challenge item)
         {
-          _logger = logger;
-        }
-
-      public Task Handle (ChallengesDeletedEvent notification, CancellationToken cancellationToken)
-        {
-          _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
-          return Task.CompletedTask;
+          Item = item;
         }
     }
 }

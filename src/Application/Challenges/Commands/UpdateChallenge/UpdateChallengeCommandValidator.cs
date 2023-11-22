@@ -14,22 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Mappings;
-using DataClash.Domain.Entities;
+using FluentValidation;
 
-namespace DataClash.Application.Challengess.Queries.GetChallenges
+namespace DataClash.Application.Challenges.Commands.UpdateChallenge
 {
-  public class ChallengesBriefDto : IMapFrom<Challenge>
+  public class UpdateChallengeCommandValidator : AbstractValidator<UpdateChallengeCommand>
     {
-      public long Id { get; init; }
-      public string? BeginDay { get; init; }
-      public long Bounty { get; init; }
-      public long Cost { get; init; }
-      public string? Description { get; init; }
-      public string? Duration { get; init; }
-      public long MaxLooses { get; init; }
-      public long MinLevel { get; init; }
-      public string? Name { get; init; }
-
+      public UpdateChallengeCommandValidator ()
+        {
+          RuleFor (v => v.BeginDay).NotEmpty ();
+          RuleFor (v => v.Bounty).NotEmpty ();
+          RuleFor (v => v.Cost).NotEmpty ();
+          RuleFor (v => v.Description).NotEmpty ();
+          RuleFor (v => v.Duration).NotEmpty ();
+          RuleFor (v => v.MaxLooses).NotEmpty ();
+          RuleFor (v => v.MinLevel).NotEmpty ();
+          RuleFor (v => v.Name).NotEmpty ();
+          
+        }
     }
 }
