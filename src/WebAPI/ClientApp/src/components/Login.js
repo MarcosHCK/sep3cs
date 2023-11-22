@@ -16,11 +16,11 @@
  */
 import { Alert } from 'reactstrap'
 import { ApplicationPaths } from '../services/AuthorizeConstants'
-import { AuthenticationResultStatus } from '../services/AuthorizeService'
+import { AuthenticationResultStatus } from '../services/AuthorizeService.ts'
 import { LoginActions } from '../services/AuthorizeConstants'
 import { QueryParameterNames } from '../services/AuthorizeConstants'
 import { WaitSpinner } from './WaitSpinner'
-import authService from '../services/AuthorizeService'
+import authService from '../services/AuthorizeService.ts'
 import React, { useEffect, useState } from 'react'
 
 export function Login (props)
