@@ -16,7 +16,7 @@
  */
 import { createContext, useContext } from 'react'
 import { useEffect, useState } from 'react'
-import authService from './AuthorizeService'
+import authService from './AuthorizeService.ts'
 const authContext = createContext ([ false, false, {} ])
 
 export function useAuthorize ()
