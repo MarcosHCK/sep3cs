@@ -74,7 +74,7 @@ export function AuthorizeProvider (props)
 
   return (
     <authContext.Provider
-      value={[ isReady, isAuthorized, inRole, userProfile ]}>
+      value={{ isReady, isAuthorized, inRole, userProfile }}>
       {children}
     </authContext.Provider>)
 }

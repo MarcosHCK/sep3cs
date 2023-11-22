@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { Button, Table } from 'reactstrap'
 import { CreateWarCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
+import { Navigate, useParams } from 'react-router-dom'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
 import { UpdateWarCommand } from '../webApiClient.ts'
 import { useAuthorize } from '../services/AuthorizeProvider'
-import { useParams } from 'react-router-dom'
 import { UserRoles } from '../services/AuthorizeConstants'
 import { WarClient } from '../webApiClient.ts'
 import React, { useEffect, useState } from 'react'
@@ -29,11 +30,11 @@ import React, { useEffect, useState } from 'react'
 export function Wars ()
 {
   const { initialPage } = useParams ()
+  const { isAuthorized, inRole }= useAuthorize ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
-  const [ isReady, isAuthorized, inRole ] = useAuthorize ()
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
   const [ warClient ] = useState (new WarClient ())
@@ -102,8 +103,11 @@ export function Wars ()
     }, [activePage])
 
   return (
-    (isLoading || !isReady || !isAuthorized)
-      ? (<div></div>)
+    isLoading
+    ? (<div></div>)
+    : (
+    !isAuthorized
+    ? (<Navigate to={ApplicationPaths.Login} />)
     : (
       <>
         <div className='d-flex justify-content-center'>
@@ -167,5 +171,5 @@ export function Wars ()
             </tfoot>
           </Table>
         </div>
-      </>))
+      </>)))
 }
