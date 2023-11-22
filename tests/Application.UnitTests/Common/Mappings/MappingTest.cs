@@ -16,7 +16,7 @@
  */
 using System.Runtime.Serialization;
 using AutoMapper;
-using DataClash.Application.Challengess.Queries.GetChallenges;
+using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
 using DataClash.Application.Common.Mappings;
 using DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination;
 using DataClash.Application.Players.Queries.GetPlayersWithPagination;
@@ -44,7 +44,7 @@ namespace DataClash.Application.UnitTests.Common.Mappings
         }
 
       [Test]
-      [TestCase (typeof (Challenge), typeof (ChallengesBriefDto))]
+      [TestCase (typeof (Challenge), typeof (ChallengeBriefDto))]
       [TestCase (typeof (Player), typeof (PlayerBriefDto))]
       [TestCase (typeof (PlayerCard), typeof (PlayerCardBriefDto))]
       [TestCase (typeof (War), typeof (WarBriefDto))]
