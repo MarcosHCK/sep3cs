@@ -15,7 +15,13 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths, ApplicationName } from './AuthorizeConstants'
-import { UserManager, WebStorageStateStore } from 'oidc-client'
+import { User, UserManager, WebStorageStateStore } from 'oidc-client'
+
+class Subscription
+{
+  public callback : Function;
+  public subscriptionId : number;
+}
 
 export const AuthenticationResultStatus =
 {
@@ -26,23 +32,25 @@ export const AuthenticationResultStatus =
 
 export class AuthorizeService
 {
-  _callbacks = []
-  _isAuthenticated = false
-  _nextSubscriptionId = 0
-  _popUpDisabled = true
-  _user = null
+  private _callbacks : Array<Subscription> = []
+  private _isAuthenticated : boolean = false
+  private _nextSubscriptionId : number = 0
+  private _popUpDisabled : boolean = true
+  private _user : User | undefined = undefined
 
-  createArguments (state)
+  public userManager : UserManager;
+
+  createArguments (state? : Object)
     {
       return { useReplaceToNavigate : true, data : state }
     }
 
-  error (message)
+  error (message : string)
     {
       return { status : AuthenticationResultStatus.Fail, message }
     }
 
-  notifySubscribers()
+  notifySubscribers ()
     {
       for (let i = 0; i < this._callbacks.length; i++)
         {
@@ -56,37 +64,37 @@ export class AuthorizeService
       return { status : AuthenticationResultStatus.Redirect }
     }
 
-  subscribe (callback)
+  subscribe (callback : Function)
     {
-      this._callbacks.push ({ callback, subscription : this._nextSubscriptionId++ })
+      this._callbacks.push ({ callback, subscriptionId : this._nextSubscriptionId++ })
       return this._nextSubscriptionId - 1
     }
 
-  success (state)
+  success (state : Object)
     {
       return { status : AuthenticationResultStatus.Success, state }
     }
 
-  unsubscribe (subscriptionId)
+  unsubscribe (subscriptionId : number)
     {
       const subscriptionIndex = this._callbacks
-        .map ((element, index) => element.subscription === subscriptionId ? { found : true, index } : { found : false })
+        .map ((element, index) => element.subscriptionId === subscriptionId ? { found : true, index } : { found : false })
         .filter (element => element.found === true)
   
       if (subscriptionIndex.length !== 1)
         throw new Error(`Found an invalid number of subscriptions ${subscriptionIndex.length}`);
 
-      this._callbacks = this._callbacks.splice (subscriptionIndex[0].index, 1)
+      this._callbacks = this._callbacks.splice (subscriptionIndex[0].index!, 1)
     }
 
-  updateState (user)
+  updateState (user : User | undefined)
     {
       this._user = user
       this._isAuthenticated = !!this._user
       this.notifySubscribers ()
     }
 
-  async completeSignIn(url)
+  async completeSignIn (url : string)
     {
       try
         {
@@ -102,15 +110,15 @@ export class AuthorizeService
         }
     }
 
-  async completeSignOut(url)
+  async completeSignOut (url : string)
     {
       await this.ensureUserManagerInitialized ()
 
       try
         {
           const response = await this.userManager.signoutCallback (url)
-          this.updateState (null)
-          return this.success (response && response.data)
+          this.updateState (undefined)
+          return this.success (response && response.state)
         }
       catch (error)
         {
@@ -163,7 +171,7 @@ export class AuthorizeService
     return user && user.profile
     }
 
-	async hasRole(role)
+	async hasRole (role : string)
     {
 		  const user = await this.getUser ();
 
@@ -192,7 +200,7 @@ export class AuthorizeService
   //    Pop-Up blocker or the user has disabled PopUps.
   // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
   //    redirect flow.
-  async signIn (state)
+  async signIn (state : Object)
     {
       await this.ensureUserManagerInitialized ()
 
@@ -242,7 +250,7 @@ export class AuthorizeService
   //    Pop-Up blocker or the user has disabled PopUps.
   // 2) If the method above fails, we redirect the browser to the IdP to perform a traditional
   //    post logout redirect flow.
-  async signOut(state)
+  async signOut (state : Object)
     {
       await this.ensureUserManagerInitialized ()
 

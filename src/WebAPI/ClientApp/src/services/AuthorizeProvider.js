@@ -14,45 +14,46 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import authService from './AuthorizeService'
+import { createContext, useContext } from 'react'
 import { useEffect, useState } from 'react'
+import authService from './AuthorizeService.ts'
+const authContext = createContext ([ false, false, {} ])
 
-export function useAuthorize (roles)
+export function useAuthorize ()
 {
-  const [hasRole, setHasRole] = useState (undefined)
-  const [isAuthorized, setIsAuthorized] = useState (false)
-  const [isReady, setIsReady] = useState (false)
-  const [userProfile, setUserProfile] = useState (undefined)
+  return useContext (authContext)
+}
 
-  if (typeof roles === 'undefined')
-    roles = [ ]
-  else if (typeof roles === 'string')
-    roles = [ roles, ]
-  else if ((Array.isArray (roles) && roles.every ((i) => typeof i == 'string')) === false)
-    throw TypeError ('useAuthorize takes a role or an array of roles')
+export function AuthorizeProvider (props)
+{
+  const { children } = props
+  const [ inRole, setInRole ] = useState (undefined)
+  const [ isAuthorized, setIsAuthorized ] = useState (false)
+  const [ isReady, setIsReady ] = useState (false)
+  const [ userProfile, setUserProfile ] = useState (undefined)
 
   useEffect (() =>
     {
       const populateAuthenticationState = async () =>
         {
-          const promises = [
-            authService.isAuthenticated(),
-            authService.getUser(),
-            ...roles.map ((role) => authService.hasRole (role))]
-          const [ isAuthorized, userProfile,
-            ...hasRolesList ] = await Promise.all (promises)
-          const hasRoles = roles.reduce ((acc, curr, index) =>
-            ({ ...acc, [curr] : hasRolesList[index] }), {})
+          const promises = [ authService.isAuthenticated(), authService.getUser() ]
+          const [ isAuthorized, userProfile ] = await Promise.all (promises)
 
-          setHasRole (hasRoles)
+          const roles = typeof userProfile.role === 'string'
+                          ? { [userProfile.role] : true }
+                          : userProfile.role.reduce ((acc, role, index) =>
+                              {
+                                return { ...acc, [ role[index] ] : true }
+                              })
+
           setIsAuthorized (isAuthorized)
           setIsReady (true)
+          setInRole (roles)
           setUserProfile (userProfile)
         }
 
       const authenticationChanged = async () =>
         {
-          setHasRole (undefined)
           setIsAuthorized (false)
           setIsReady (false)
           setUserProfile (undefined)
@@ -66,8 +67,14 @@ export function useAuthorize (roles)
         })
 
       populateAuthenticationState ()
-      return () => { authService.unsubscribe (subscription) }
+
+      return () => { authService.unsubscribe(subscription) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-return [ isReady, isAuthorized, userProfile, hasRole ]
+
+  return (
+    <authContext.Provider
+      value={{ isReady, isAuthorized, inRole, userProfile }}>
+      {children}
+    </authContext.Provider>)
 }

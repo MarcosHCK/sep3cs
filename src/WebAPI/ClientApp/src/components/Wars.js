@@ -14,25 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { Button, Table } from 'reactstrap'
 import { CreateWarCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
+import { Navigate, useParams } from 'react-router-dom'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
 import { UpdateWarCommand } from '../webApiClient.ts'
-import { useParams } from 'react-router-dom'
-import { UserRoles } from '../services/AuthorizeConstants.js'
+import { useAuthorize } from '../services/AuthorizeProvider'
+import { UserRoles } from '../services/AuthorizeConstants'
 import { WarClient } from '../webApiClient.ts'
-import authService from '../services/AuthorizeService'
 import React, { useEffect, useState } from 'react'
 
 export function Wars ()
 {
   const { initialPage } = useParams ()
+  const { isAuthorized, inRole }= useAuthorize ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
-  const [ isAdministrator, setIsAdministrator ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
@@ -64,19 +65,6 @@ export function Wars ()
         data.duration = item.duration
       await warClient.update (item.id, data)
     }
-
-  useEffect (() =>
-    {
-      const checkRole = async () =>
-        {
-          const hasRole = await authService.hasRole (UserRoles.Administrator)
-
-          setIsAdministrator (hasRole)
-        }
-
-      setIsLoading (true)
-      checkRole ().then (() => setIsLoading (false))
-    }, [])
 
   useEffect (() =>
     {
@@ -116,7 +104,10 @@ export function Wars ()
 
   return (
     isLoading
-      ? (<div></div>)
+    ? (<div></div>)
+    : (
+    !isAuthorized
+    ? (<Navigate to={ApplicationPaths.Login} />)
     : (
       <>
         <div className='d-flex justify-content-center'>
@@ -146,16 +137,16 @@ export function Wars ()
                   <DateTime
                     defaultValue={item.beginDay}
                     onChanged={(date) => { item.beginDay = date; updateWar (item) }}
-                    readOnly={!isAdministrator} />
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
                   <TimeSpan
                     defaultValue={item.duration}
                     onChanged={(span) => { item.duration = span; updateWar (item) }}
-                    readOnly={!isAdministrator} />
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
         {
-          (!isAdministrator)
+          (!inRole[UserRoles.Administrator])
           ? (<td />)
           : (
                 <td>
@@ -167,7 +158,7 @@ export function Wars ()
             </tbody>
             <tfoot>
         {
-          (!isAdministrator)
+          (!inRole[UserRoles.Administrator])
           ? (<tr />)
           : (
               <tr key='footer0'>
@@ -180,5 +171,5 @@ export function Wars ()
             </tfoot>
           </Table>
         </div>
-      </>))
+      </>)))
 }

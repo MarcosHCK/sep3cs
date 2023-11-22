@@ -15,6 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './custom.css'
+import { AuthorizeProvider } from './services/AuthorizeProvider'
 import { Layout } from "./components/Layout"
 import AppRoutes from './AppRoutes'
 import React from 'react'
@@ -22,9 +23,11 @@ import React from 'react'
 const App = () =>
 {
   return (
+    <AuthorizeProvider>
       <Layout>
         <AppRoutes />
-      </Layout>);
+      </Layout>
+    </AuthorizeProvider>)
 }
 
 export default App
