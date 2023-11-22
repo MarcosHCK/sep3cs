@@ -20,10 +20,10 @@ import { DateTime } from './DateTime'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
 import { UpdateWarCommand } from '../webApiClient.ts'
+import { useAuthorize } from '../services/AuthorizeProvider'
 import { useParams } from 'react-router-dom'
-import { UserRoles } from '../services/AuthorizeConstants.js'
+import { UserRoles } from '../services/AuthorizeConstants'
 import { WarClient } from '../webApiClient.ts'
-import authService from '../services/AuthorizeService'
 import React, { useEffect, useState } from 'react'
 
 export function Wars ()
@@ -32,8 +32,9 @@ export function Wars ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
-  const [ isAdministrator, setIsAdministrator ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
+  const [ isReady, isAuthorized, userProfile ] = useAuthorize ()
+  const [ isAdministrator, setIsAdministrator ] = useState (false)
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
   const [ warClient ] = useState (new WarClient ())
@@ -67,16 +68,9 @@ export function Wars ()
 
   useEffect (() =>
     {
-      const checkRole = async () =>
-        {
-          const hasRole = await authService.hasRole (UserRoles.Administrator)
-
-          setIsAdministrator (hasRole)
-        }
-
-      setIsLoading (true)
-      checkRole ().then (() => setIsLoading (false))
-    }, [])
+      setIsAdministrator (userProfile.role === UserRoles.Administrator)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthorized])
 
   useEffect (() =>
     {
@@ -115,7 +109,7 @@ export function Wars ()
     }, [activePage])
 
   return (
-    isLoading
+    (isLoading || !isReady)
       ? (<div></div>)
     : (
       <>

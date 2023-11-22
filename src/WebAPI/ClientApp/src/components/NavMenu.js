@@ -15,18 +15,17 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths } from '../services/AuthorizeConstants'
-import { UserRoles } from '../services/AuthorizeConstants'
 import { Avatar } from './Avatar'
 import { Link } from 'react-router-dom'
 import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap'
-import { useAuthorize } from '../services/AuthorizeReact';
+import { useAuthorize } from '../services/AuthorizeProvider'
 import { UserDashboard } from './UserDashboard'
+import { UserRoles } from '../services/AuthorizeConstants'
 import React from 'react'
 
 export function NavMenu ()
 {
-  const adminRole = UserRoles.Administrator
-  const [ isReady, isAuthorized, userProfile, hasRoles ] = useAuthorize (adminRole)
+  const [ isReady, isAuthorized, userProfile ] = useAuthorize ()
 
   return (
     <header>
@@ -60,7 +59,7 @@ export function NavMenu ()
                       <NavLink tag={Link} className="text-dark" to='/challenges'>{'Challenges'}</NavLink>
                       <NavLink tag={Link} className="text-dark" to='/clans'>{'Clans'}</NavLink>
                       <NavLink tag={Link} className="text-dark" to='/matches'>{'Matches'}</NavLink>
-                    { hasRoles[UserRoles.Administrator] &&
+                    { userProfile.role === UserRoles.Administrator &&
                       <NavLink tag={Link} className="text-dark" to='/players'>{'Players'}</NavLink>
                     }
                       <NavLink tag={Link} className="text-dark" to='/wars'>{'Wars'}</NavLink>

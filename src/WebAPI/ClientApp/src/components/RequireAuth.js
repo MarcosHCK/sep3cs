@@ -18,14 +18,14 @@ import { Alert } from 'reactstrap'
 import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { Navigate } from 'react-router-dom'
 import { QueryParameterNames } from '../services/AuthorizeConstants'
-import { useAuthorize } from '../services/AuthorizeReact'
+import { useAuthorize } from '../services/AuthorizeProvider'
 import React from 'react'
 
 export function RequireAuth (props)
 {
   const { role, children } = props
   // eslint-disable-next-line no-unused-vars
-  const [ isReady, isAuthorized, userProfile, hasRoles ] = useAuthorize (role)
+  const [ isReady, isAuthorized, userProfile ] = useAuthorize ()
 
   const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI(window.location.href)}`
 
@@ -34,7 +34,7 @@ export function RequireAuth (props)
     ? (<div></div>)
     : (!isAuthorized
       ? (<Navigate to={redirectUrl} />)
-    : (role !== undefined && !hasRoles[role])
+    : (role !== undefined && (userProfile.role !== role))
       ? (<Alert color='danger'>Restricted to '{ role }' users</Alert>)
     : children)
   )
