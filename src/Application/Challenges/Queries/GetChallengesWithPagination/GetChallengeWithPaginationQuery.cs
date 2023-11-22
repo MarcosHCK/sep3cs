@@ -22,7 +22,7 @@ using DataClash.Application.Common.Models;
 
 using MediatR;
 
-namespace DataClash.Application.Challenges.Queries.GetChallengessWithPagination
+namespace DataClash.Application.Challenges.Queries.GetChallengesWithPagination
 {
   public record GetChallengesWithPaginationQuery : IRequest<PaginatedList<ChallengeBriefDto>>
     {

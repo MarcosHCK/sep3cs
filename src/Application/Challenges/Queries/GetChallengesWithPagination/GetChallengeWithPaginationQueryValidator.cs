@@ -16,7 +16,7 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Challenges.Queries.GetChallengessWithPagination
+namespace DataClash.Application.Challenges.Queries.GetChallengesWithPagination
 {
   public class GetChallengesWithPaginationQueryValidator : AbstractValidator<GetChallengesWithPaginationQuery>
     {

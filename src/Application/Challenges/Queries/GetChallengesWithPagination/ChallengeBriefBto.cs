@@ -17,7 +17,7 @@
 using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Challenges.Queries.GetChallengessWithPagination
+namespace DataClash.Application.Challenges.Queries.GetChallengesWithPagination
 {
   public class ChallengeBriefDto : IMapFrom<Challenge>
     {
