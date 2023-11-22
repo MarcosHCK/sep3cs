@@ -15,7 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './custom.css'
-import { ErrorReporterProvider } from './components/ErrorReport'
+import { ErrorReporterProvider } from './components/ErrorReporter'
 import { Layout } from "./components/Layout"
 import AppRoutes from './AppRoutes'
 import React from 'react'
