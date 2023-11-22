@@ -19,6 +19,7 @@ import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { AuthenticationResultStatus } from '../services/AuthorizeService.ts'
 import { LogoutActions } from '../services/AuthorizeConstants'
 import { QueryParameterNames } from '../services/AuthorizeConstants'
+import { WaitSpinner } from './WaitSpinner'
 import authService from '../services/AuthorizeService.ts'
 import React, { useEffect, useState } from 'react'
 
@@ -90,7 +91,6 @@ export function Logout (props)
           default:
             throw new Error (`Invalid action ${action}`)
           case LogoutActions.LoggedOut:
-            setMessage ('Logged out')
             window.location.replace ('/')
             break;
           case LogoutActions.Logout:
@@ -113,11 +113,9 @@ export function Logout (props)
           default:
             throw new Error (`Invalid action ${action}`)
           case LogoutActions.LoggedOut:
-            return (<Alert color='notice'>{message}</Alert>)
           case LogoutActions.Logout:
-            return (<Alert color='notice'>Processing login</Alert>)
           case LogoutActions.LogoutCallback:
-            return (<Alert color='notice'>Processing login callback</Alert>)
+            return (<WaitSpinner />)
         }
     }
 }

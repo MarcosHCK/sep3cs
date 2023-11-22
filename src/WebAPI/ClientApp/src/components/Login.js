@@ -19,6 +19,7 @@ import { ApplicationPaths } from '../services/AuthorizeConstants'
 import { AuthenticationResultStatus } from '../services/AuthorizeService.ts'
 import { LoginActions } from '../services/AuthorizeConstants'
 import { QueryParameterNames } from '../services/AuthorizeConstants'
+import { WaitSpinner } from './WaitSpinner'
 import authService from '../services/AuthorizeService.ts'
 import React, { useEffect, useState } from 'react'
 
@@ -117,7 +118,7 @@ export function Login (props)
     }, [])
 
   if (!!message)
-      
+
     return (<Alert color='danger'>{message}</Alert>)
   else
     {
@@ -126,9 +127,8 @@ export function Login (props)
           default:
             throw new Error (`Invalid action '${action}'`)
           case LoginActions.Login:
-            return (<Alert color='notice'>Processing login</Alert>)
           case LoginActions.LoginCallback:
-            return (<Alert color='notice'>Processing login callback</Alert>)
+            return (<WaitSpinner />)
           case LoginActions.Profile:
           case LoginActions.Register:
             return (<div></div>)
