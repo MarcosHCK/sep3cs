@@ -20,19 +20,23 @@ import { Navigate } from 'react-router-dom'
 import { QueryParameterNames } from '../services/AuthorizeConstants'
 import { useAuthorize } from '../services/AuthorizeProvider'
 import React from 'react'
+import { WaitSpinner } from './WaitSpinner'
 
 export function RequireAuth (props)
 {
   const { role, children } = props
   // eslint-disable-next-line no-unused-vars
-  const { isAuthorized, inRole } = useAuthorize ()
+  const { isReady, isAuthorized, inRole } = useAuthorize ()
 
   const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI(window.location.href)}`
 
   return (
-    !isAuthorized
-    ? (<Navigate to={redirectUrl} />)
-    : ((role === undefined || (inRole[role]))
-      ? children
-      : (<Alert color='danger'>Restricted to '{ role }' users</Alert>)))
+    !isReady
+    ? <WaitSpinner />
+    : (
+      !isAuthorized
+      ? (<Navigate to={redirectUrl} />)
+      : ((role === undefined || (inRole[role]))
+        ? children
+        : (<Alert color='danger'>Restricted to '{ role }' users</Alert>))))
 }
