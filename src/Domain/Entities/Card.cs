@@ -26,7 +26,7 @@ namespace DataClash.Domain.Entities
       public long InitialLevel { get; set; }
       public string? Name { get; set; }
       public Quality Quality { get; set; }
-      public string? ImagePath { get; set; }
+      public string? Picture { get; set; }
     }
 
   public class MagicCard : Card
