@@ -14,25 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import './custom.css'
-import { AuthorizeProvider } from './services/AuthorizeProvider'
-import { ErrorReporterProvider } from './components/ErrorReporter'
-import { Layout } from "./components/Layout"
-import AppRoutes from './AppRoutes'
-import React from 'react'
+using DataClash.Application.Common.Security;
+using MediatR;
 
-const App = () =>
+namespace DataClash.Application.ErrorReports.Commands.DeleteErrorReport
 {
-  return (
-    <AuthorizeProvider>
-    <ErrorReporterProvider>
+  [Authorize]
+  public record DeleteErrorReportCommand (long Id) : IRequest;
 
-      <Layout>
-        <AppRoutes />
-      </Layout>
+  public class DeleteErrorReportCommandHandler : IRequestHandler<DeleteErrorReportCommand>
+    {
+      public DeleteErrorReportCommandHandler ()
+        {
+        }
 
-    </ErrorReporterProvider>
-    </AuthorizeProvider>)
+      public async Task Handle (DeleteErrorReportCommand command, CancellationToken cancellationToken)
+        {
+          await Task.CompletedTask;
+        }
+    }
 }
-
-export default App

@@ -17,6 +17,7 @@
 import { Pager } from './Pager'
 import { PlayerClient } from '../webApiClient.ts'
 import { Table } from 'reactstrap'
+import { useErrorReporter } from './ErrorReporter'
 import { useParams } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 
@@ -30,6 +31,7 @@ export function Players ()
   const [ items, setItems ] = useState (undefined)
   const [ playerClient ] = useState (new PlayerClient ())
   const [ totalPages, setTotalPages ] = useState (0)
+  const errorReporter = useErrorReporter ()
 
   const pageSize = 10
   const visibleIndices = 5
@@ -38,18 +40,28 @@ export function Players ()
     {
       const lastPage = async () =>
         {
-          const paginatedList = await playerClient.getWithPagination (1, pageSize)
-          return paginatedList.totalPages
+          try {
+            const paginatedList = await playerClient.getWithPagination (1, pageSize)
+            return paginatedList.totalPages
+          } catch (error)
+            {
+              errorReporter (error)
+            }
         }
 
       const refreshPage = async () =>
         {
-          const paginatedList = await playerClient.getWithPagination (activePage + 1, pageSize)
+          try {
+            const paginatedList = await playerClient.getWithPagination (activePage + 1, pageSize)
 
-          setHasNextPage (paginatedList.hasNextPage)
-          setHasPreviousPage (paginatedList.hasPreviousPage)
-          setItems (paginatedList.items)
-          setTotalPages (paginatedList.totalPages)
+            setHasNextPage (paginatedList.hasNextPage)
+            setHasPreviousPage (paginatedList.hasPreviousPage)
+            setItems (paginatedList.items)
+            setTotalPages (paginatedList.totalPages)
+          } catch (error)
+            {
+              errorReporter (error)
+            }
         }
 
       if (activePage >= 0)

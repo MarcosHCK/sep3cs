@@ -23,6 +23,7 @@ import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
 import { UpdateWarCommand } from '../webApiClient.ts'
 import { useAuthorize } from '../services/AuthorizeProvider'
+import { useErrorReporter } from './ErrorReporter'
 import { UserRoles } from '../services/AuthorizeConstants'
 import { WarClient } from '../webApiClient.ts'
 import React, { useEffect, useState } from 'react'
@@ -38,6 +39,7 @@ export function Wars ()
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
   const [ warClient ] = useState (new WarClient ())
+  const errorReporter = useErrorReporter ()
 
   const pageSize = 10
   const visibleIndices = 5
@@ -45,43 +47,73 @@ export function Wars ()
   const addWar = async () =>
     {
       const data = new CreateWarCommand ()
-        data.beginDay = new Date ()
-        data.duration = "00:00:01"
-      await warClient.create (data)
-      setActivePage (-1)
+
+      data.beginDay = new Date ()
+      data.duration = "00:00:01"
+
+      try {
+        await warClient.create (data)
+        setActivePage (-1)
+      } catch (error)
+        {
+          errorReporter (error)
+        }
     }
 
   const removeWar = async (item) =>
     {
-      await warClient.delete (item.id)
-      setActivePage (-1)
+      try {
+        await warClient.delete (item.id)
+        setActivePage (-1)
+      } catch (error)
+        {
+          errorReporter (error)
+        }
     }
 
   const updateWar = async (item) =>
     {
       const data = new UpdateWarCommand ()
-        data.id = item.id
-        data.beginDay = item.beginDay
-        data.duration = item.duration
-      await warClient.update (item.id, data)
+
+      data.id = item.id
+      data.beginDay = item.beginDay
+      data.duration = item.duration
+
+      try {
+        await warClient.update (item.id, data)
+      } catch (error)
+        {
+          errorReporter (error)
+        }
     }
 
   useEffect (() =>
     {
       const lastPage = async () =>
         {
-          const paginatedList = await warClient.getWithPagination (1, pageSize)
-          return paginatedList.totalPages
+          try {
+            const paginatedList = await warClient.getWithPagination(1, pageSize)
+            return paginatedList.totalPages
+          } catch (error)
+            {
+              errorReporter (error)
+              return 0
+            }
         }
 
       const refreshPage = async () =>
         {
-          const paginatedList = await warClient.getWithPagination (activePage + 1, pageSize)
+          try {
+            const paginatedList = await warClient.getWithPagination (activePage + 1, pageSize)
 
-          setHasNextPage (paginatedList.hasNextPage)
-          setHasPreviousPage (paginatedList.hasPreviousPage)
-          setItems (paginatedList.items)
-          setTotalPages (paginatedList.totalPages)
+            setHasNextPage (paginatedList.hasNextPage)
+            setHasPreviousPage (paginatedList.hasPreviousPage)
+            setItems (paginatedList.items)
+            setTotalPages (paginatedList.totalPages)
+          } catch (error)
+            {
+              errorReporter (error)
+            }
         }
 
       if (activePage >= 0)

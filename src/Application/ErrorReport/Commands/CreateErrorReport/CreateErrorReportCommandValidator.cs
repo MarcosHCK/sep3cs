@@ -14,25 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import './custom.css'
-import { AuthorizeProvider } from './services/AuthorizeProvider'
-import { ErrorReporterProvider } from './components/ErrorReporter'
-import { Layout } from "./components/Layout"
-import AppRoutes from './AppRoutes'
-import React from 'react'
+using FluentValidation;
 
-const App = () =>
+namespace DataClash.Application.ErrorReports.Commands.CreateErrorReport
 {
-  return (
-    <AuthorizeProvider>
-    <ErrorReporterProvider>
-
-      <Layout>
-        <AppRoutes />
-      </Layout>
-
-    </ErrorReporterProvider>
-    </AuthorizeProvider>)
+  public class CreateErrorReportCommandValidator : AbstractValidator<CreateErrorReportCommand>
+    {
+      public CreateErrorReportCommandValidator ()
+        {
+          RuleFor (v => v.userId).NotEmpty ();
+          RuleFor (v => v.Message).NotEmpty ().MaximumLength (256);
+        }
+    }
 }
-
-export default App
