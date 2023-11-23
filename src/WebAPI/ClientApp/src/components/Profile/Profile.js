@@ -18,6 +18,7 @@ import { Avatar } from '../Avatar'
 import { Col, Container, Row } from 'reactstrap'
 import { Nav, NavItem, NavLink } from 'reactstrap'
 import { ProfileIdentity } from './ProfileIdentity'
+import { ProfilePlayer } from './ProfilePlayer'
 import { useAuthorize } from '../../services/AuthorizeProvider'
 import { WaitSpinner } from '../WaitSpinner'
 import React, { useState } from 'react'
@@ -29,7 +30,8 @@ export function Profile ()
 
   const pages =
     [
-      { title: 'Identity', component: ProfileIdentity },
+      { title: 'Identity', component: <ProfileIdentity userProfile={userProfile} /> },
+      { title: 'Player', component: <ProfilePlayer userProfile={userProfile} /> },
     ]
 
   return (
@@ -60,7 +62,7 @@ export function Profile ()
             </Nav>
           </Col>
           <Col xs='10'>
-            { pages[activeIndex].component ({ userProfile }) }
+            { pages[activeIndex].component }
           </Col>
         </Row>
       </Container>)

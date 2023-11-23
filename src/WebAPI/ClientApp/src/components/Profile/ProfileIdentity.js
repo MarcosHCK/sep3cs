@@ -23,18 +23,13 @@ export function ProfileIdentity (props)
 {
   const { userProfile } = props
   const [ userName, setUserName ] = useState (userProfile.name)
-  const [ userNick, setUserNick ] = useState (userProfile.nickname)
   const [ userEmail, setUserEmail ] = useState (userProfile.email)
   const errorReporter = useErrorReporter ()
 
   const onSubmit = (e) =>
     {
       e.preventDefault ()
-
-      if (userProfile.name !== userName)
-        {
-          errorReporter (new Error ('Unimplemented'))
-        }
+      errorReporter (new Error ('unimplemented'))
     }
 
   return (
@@ -47,10 +42,6 @@ export function ProfileIdentity (props)
         <FormGroup floating>
           <Input id='identity-input-username' type='text' onChange={(e) => setUserName (e.target.value)} value={userName} />
           <Label for='identity-input-username'>Username</Label>
-        </FormGroup>
-        <FormGroup floating>
-          <Input id='identity-input-usernick' type='text' onChange={(e) => setUserNick (e.target.value)} value={userNick} />
-          <Label for='identity-input-usernick'>Nickname</Label>
         </FormGroup>
         <Button color='primary'>Update</Button>
       </Form>
