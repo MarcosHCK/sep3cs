@@ -24,9 +24,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Challenges.Commands.DeleteChallenge
 {
+  [Authorize (Roles = "Administrator")]
   public record DeleteChallengeCommand (long Id) : IRequest;
 
-  [Authorize (Roles = "Administrator")]
   public class DeleteChallengeCommandHandler : IRequestHandler<DeleteChallengeCommand>
     {
       private readonly IApplicationDbContext _context;

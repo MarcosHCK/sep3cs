@@ -123,14 +123,14 @@ namespace DataClash.Application.IntegrationTests.Challenges.Commands
           item.Should ().HasProperty ("Duration");
 
           item!.Id.Should ().Be (itemId);
-          item!.BeginDay.Should ().Be (challenge.BeginDay);
-          item!.Bounty.Should ().Be (challenge.Bounty);
-          item!.Cost.Should ().Be (challenge.Cost);
-          item!.Description.Should ().Be (challenge.Description);
-          item!.Duration.Should ().Be (challenge.Duration);
-          item!.MaxLooses.Should ().Be (challenge.MaxLooses);
-          item!.MinLevel.Should ().Be (challenge.MinLevel);
-          item!.Name.Should ().Be (challenge.Name);
+          item!.BeginDay.Should ().Be (command.BeginDay);
+          item!.Bounty.Should ().Be (command.Bounty);
+          item!.Cost.Should ().Be (command.Cost);
+          item!.Description.Should ().Be (command.Description);
+          item!.Duration.Should ().Be (command.Duration);
+          item!.MaxLooses.Should ().Be (command.MaxLooses);
+          item!.MinLevel.Should ().Be (command.MinLevel);
+          item!.Name.Should ().Be (command.Name);
         }
     }
 }

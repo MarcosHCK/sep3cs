@@ -18,7 +18,7 @@ using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace DataClash.Application.Challengess.EventHandlers
+namespace DataClash.Application.Challenges.EventHandlers
 {
   public class ChallengeDeletedEventHandler : INotificationHandler<ChallengeDeletedEvent>
     {
