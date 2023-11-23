@@ -14,25 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Events;
-using MediatR;
-using Microsoft.Extensions.Logging;
+using DataClash.Application.Common.Exceptions;
+using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
+using FluentAssertions;
+using NUnit.Framework;
 
-namespace DataClash.Application.Challenges.EventHandlers
+namespace DataClash.Application.IntegrationTests.Challenges.Commands
 {
-  public class ChallengeDeletedEventHandler : INotificationHandler<ChallengeDeletedEvent>
+  using static Testing;
+
+  public class GetChallengesWithPagination : BaseTestFixture
     {
-      private readonly ILogger<ChallengeDeletedEventHandler> _logger;
-
-      public ChallengeDeletedEventHandler (ILogger<ChallengeDeletedEventHandler> logger)
+      [Test]
+      public async Task ShouldNotRequireAdministrator ()
         {
-          _logger = logger;
-        }
-
-      public Task Handle (ChallengeDeletedEvent notification, CancellationToken cancellationToken)
-        {
-          _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
-          return Task.CompletedTask;
+          await RunAsDefaultUserAsync ();
+          var command = new GetChallengesWithPaginationQuery { PageNumber = 1, PageSize = 10, };
+          await FluentActions.Invoking (() => SendAsync (command)).Should ().NotThrowAsync<ForbiddenAccessException> ();
         }
     }
 }

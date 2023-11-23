@@ -22,11 +22,11 @@ namespace DataClash.Application.Challenges.Queries.GetChallengesWithPagination
   public class ChallengeBriefDto : IMapFrom<Challenge>
     {
       public long Id { get; init; }
-      public string? BeginDay { get; init; }
+      public DateTime? BeginDay { get; init; }
       public long Bounty { get; init; }
       public long Cost { get; init; }
       public string? Description { get; init; }
-      public string? Duration { get; init; }
+      public TimeSpan? Duration { get; init; }
       public long MaxLooses { get; init; }
       public long MinLevel { get; init; }
       public string? Name { get; init; }
