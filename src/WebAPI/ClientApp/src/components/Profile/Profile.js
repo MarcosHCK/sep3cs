@@ -17,22 +17,53 @@
 import { Avatar } from '../Avatar'
 import { Col, Container, Row } from 'reactstrap'
 import { Nav, NavItem, NavLink } from 'reactstrap'
+import { PlayerClient } from '../../webApiClient.ts'
+import { ProfileClan } from './ProfileClan'
+import { ProfileDeck } from './ProfileDeck'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
 import { useAuthorize } from '../../services/AuthorizeProvider'
+import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export function Profile ()
 {
   const { isAuthorized, userProfile } = useAuthorize ()
   const [ activeIndex, setActiveIndex ] = useState (0)
+  const [ playerProfile, setPlayerProfile ] = useState (-1)
+  const [ playerClient ] = useState (new PlayerClient ())
+  const errorReporter = useErrorReporter ()
+
+  const downProps = { playerProfile, userProfile }
 
   const pages =
     [
-      { title: 'Identity', component: <ProfileIdentity userProfile={userProfile} /> },
-      { title: 'Player', component: <ProfilePlayer userProfile={userProfile} /> },
+      { title: 'Identity', component: <ProfileIdentity {...downProps} /> },
+      { title: 'Player', component: <ProfilePlayer {...downProps} /> },
+      { separator : true },
+      { title: 'Clan', component: <ProfileClan {...downProps} /> },
+      { title: 'Deck', component: <ProfileDeck {...downProps} /> },
     ]
+
+  useEffect (() =>
+    {
+      const refreshPlayer = async () =>
+        {
+          if (isAuthorized) try
+            {
+              return await playerClient.get (-1)
+            }
+          catch (error)
+            {
+              errorReporter (error)
+            }
+        }
+
+      setPlayerProfile (undefined)
+      refreshPlayer ().then ((player) => setPlayerProfile (player))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthorized])
 
   return (
     !isAuthorized

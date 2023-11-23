@@ -32,18 +32,21 @@ export function ProfileIdentity (props)
       errorReporter (new Error ('unimplemented'))
     }
 
-  return (
-    <ProfilePage title='Identity'>
-      <Form onSubmit={(e) => { onSubmit (e) }}>
-        <FormGroup floating>
-          <Input id='identity-input-useremail' type='text' onChange={(e) => setUserEmail (e.target.value)} value={userEmail} disabled/>
-          <Label for='identity-input-useremail'>Email</Label>
-        </FormGroup>
-        <FormGroup floating>
-          <Input id='identity-input-username' type='text' onChange={(e) => setUserName (e.target.value)} value={userName} />
-          <Label for='identity-input-username'>Username</Label>
-        </FormGroup>
-        <Button color='primary'>Update</Button>
-      </Form>
-    </ProfilePage>)
+  if (!userProfile)
+    throw new Error ('This was unexpected')
+  else
+    return (
+      <ProfilePage title='Identity'>
+        <Form onSubmit={(e) => { onSubmit (e) }}>
+          <FormGroup floating>
+            <Input id='identity-input-useremail' type='text' onChange={(e) => setUserEmail (e.target.value)} value={userEmail} disabled/>
+            <Label for='identity-input-useremail'>Email</Label>
+          </FormGroup>
+          <FormGroup floating>
+            <Input id='identity-input-username' type='text' onChange={(e) => setUserName (e.target.value)} value={userName} />
+            <Label for='identity-input-username'>Username</Label>
+          </FormGroup>
+          <Button color='primary'>Update</Button>
+        </Form>
+      </ProfilePage>)
 }
