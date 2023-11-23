@@ -51,7 +51,7 @@ export function NavMenu ()
                       userName={userProfile.name}
                       userEmail={userProfile.email} >
                     <NavLink tag={Link} className="text-dark" to='/'>{'Home'}</NavLink>
-                    <NavLink tag={Link} className="text-dark" to={`${ApplicationPaths.Profile}`}>{'Profile'}</NavLink>
+                    <NavLink tag={Link} className="text-dark" to='/profile'>{'Profile'}</NavLink>
                     <hr />
                     <NavLink tag={Link} className="text-dark" to='/cards'>{'Cards'}</NavLink>
                     <NavLink tag={Link} className="text-dark" to='/challenges'>{'Challenges'}</NavLink>

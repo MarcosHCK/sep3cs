@@ -22,8 +22,8 @@ namespace DataClash.Application.Players.Commands.UpdatePlayer
     {
       public UpdateWarCommandValidator ()
         {
-          RuleFor (v => v.Level).GreaterThanOrEqualTo (0).WithMessage ("Level must be greater or equal to 0");
-          RuleFor (v => v.Nickname).NotNull ().MaximumLength (128).WithMessage ("Title must not exceed 128 characters.");
+          RuleFor (v => v.Level).GreaterThan (0).WithMessage ("Level must be greater than 0");
+          RuleFor (v => v.Nickname).MaximumLength (128).WithMessage ("Title must not exceed 128 characters.");
           RuleFor (v => v.TotalCardsFound).GreaterThanOrEqualTo (0).WithMessage ("Level must be greater or equal to 0");
           RuleFor (v => v.TotalThrophies).GreaterThanOrEqualTo (0).WithMessage ("Level must be greater or equal to 0");
           RuleFor (v => v.TotalWins).GreaterThanOrEqualTo (0).WithMessage ("Level must be greater or equal to 0");

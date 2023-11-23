@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using System.Runtime.Serialization;
 using AutoMapper;
 using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
 using DataClash.Application.Common.Mappings;
 using DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination;
-using DataClash.Application.Players.Queries.GetPlayersWithPagination;
+using DataClash.Application.Players.Queries.GetPlayer;
 using DataClash.Application.Wars.Queries.GetWar;
 using DataClash.Domain.Entities;
 using NUnit.Framework;
+using System.Runtime.Serialization;
 
 namespace DataClash.Application.UnitTests.Common.Mappings
 {

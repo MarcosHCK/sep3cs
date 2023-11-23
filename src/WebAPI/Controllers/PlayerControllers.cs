@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Models;
 using DataClash.Application.Players.Commands.UpdatePlayer;
+using DataClash.Application.Players.Queries.GetPlayer;
 using DataClash.Application.Players.Queries.GetPlayersWithPagination;
 using DataClash.Framework.Persistence;
 using Microsoft.AspNetCore.Authorization;
@@ -29,30 +31,68 @@ namespace DataClash.WebUI.Controllers
       private ApplicationDbContext? _context;
       public ApplicationDbContext DbContext => _context ??= HttpContext.RequestServices.GetRequiredService<ApplicationDbContext> ();
 
+      [HttpGet ("{id}")]
+      [ProducesResponseType (StatusCodes.Status200OK)]
+      [ProducesResponseType (StatusCodes.Status400BadRequest)]
+      [ProducesResponseType (StatusCodes.Status401Unauthorized)]
+      public async Task<ActionResult<PlayerBriefDto>> Get (long id)
+        {
+          var userKey = new object[] { CurrentUser.UserId! };
+          var user = await DbContext.Users.FindAsync (userKey);
+
+          if (!user!.PlayerId.HasValue)
+            throw new Exception ("User is not a player");
+          else
+            {
+              var playerId = user!.PlayerId.Value;
+
+              if (id >= 0 && playerId != id)
+                return BadRequest ();
+              else
+                {
+                  var query = new GetPlayerQuery (playerId);
+                  return await Mediator.Send (query);
+                }
+            }
+        }
+
       [HttpGet]
+      [ProducesResponseType (StatusCodes.Status200OK)]
+      [ProducesResponseType (StatusCodes.Status401Unauthorized)]
       public async Task<ActionResult<PaginatedList<PlayerBriefDto>>> GetWithPagination ([FromQuery] GetPlayersWithPaginationQuery query)
         {
           return await Mediator.Send (query);
         }
 
-      [HttpPut]
+      [HttpPut ("{id}")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
-      [ProducesResponseType (StatusCodes.Status401Unauthorized)]
       [ProducesResponseType (StatusCodes.Status400BadRequest)]
+      [ProducesResponseType (StatusCodes.Status401Unauthorized)]
       [ProducesDefaultResponseType]
-      public async Task<IActionResult> Update (UpdatePlayerCommand command)
+      public async Task<IActionResult> Update (long id, UpdatePlayerCommand command)
         {
-          var userId = CurrentUser.UserId!;
-          var userKey = new object[] { userId };
+          var userKey = new object[] { CurrentUser.UserId! };
+          var user = await DbContext.Users.FindAsync (userKey);
 
-          if (command.Id != (await DbContext.Users.FindAsync (userKey))!.PlayerId)
+          if (command.Id != id)
+            return BadRequest ();
+          else if (await Identity.IsInRoleAsync (CurrentUser.UserId!, "Administrator"))
             {
-              if (!await Identity.IsInRoleAsync (userId, "Administrator"))
-                return Unauthorized ();
+              await Mediator.Send (command);
+              return NoContent ();
             }
-
-          await Mediator.Send (command);
-        return NoContent ();
+          else
+            {
+              if (user!.PlayerId.HasValue == false)
+                throw new Exception ("User is not a player");
+              else if (user!.PlayerId.Value != id)
+                throw new ForbiddenAccessException ();
+              else
+                {
+                  await Mediator.Send (command);
+                  return NoContent ();
+                }
+            }
         }
     }
 }
