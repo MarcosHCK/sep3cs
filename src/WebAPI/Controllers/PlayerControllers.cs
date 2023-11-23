@@ -16,6 +16,7 @@
  */
 using DataClash.Application.Common.Models;
 using DataClash.Application.Players.Commands.UpdatePlayer;
+using DataClash.Application.Players.Queries.GetPlayer;
 using DataClash.Application.Players.Queries.GetPlayersWithPagination;
 using DataClash.Framework.Persistence;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +31,23 @@ namespace DataClash.WebUI.Controllers
       public ApplicationDbContext DbContext => _context ??= HttpContext.RequestServices.GetRequiredService<ApplicationDbContext> ();
 
       [HttpGet]
+      public async Task<ActionResult<PlayerBriefDto>> Get ()
+        {
+          var userKey = new object[] { CurrentUser.UserId! };
+          var user = await DbContext.Users.FindAsync (userKey);
+
+          if (!user!.PlayerId.HasValue)
+            return BadRequest ();
+          else
+            {
+              var playerId = user!.PlayerId.Value;
+              var query = new GetPlayerQuery (playerId);
+              return await Mediator.Send (query);
+            }
+        }
+
+      [HttpGet]
+      [Route ("List")]
       public async Task<ActionResult<PaginatedList<PlayerBriefDto>>> GetWithPagination ([FromQuery] GetPlayersWithPaginationQuery query)
         {
           return await Mediator.Send (query);
@@ -37,21 +55,26 @@ namespace DataClash.WebUI.Controllers
 
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
-      [ProducesResponseType (StatusCodes.Status401Unauthorized)]
       [ProducesResponseType (StatusCodes.Status400BadRequest)]
+      [ProducesResponseType (StatusCodes.Status401Unauthorized)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdatePlayerCommand command)
         {
-          var userId = CurrentUser.UserId!;
-          var userKey = new object[] { userId };
+          var userKey = new object[] { CurrentUser.UserId! };
+          var user = await DbContext.Users.FindAsync (userKey);
 
-          if (command.Id != (await DbContext.Users.FindAsync (userKey))!.PlayerId)
+          if (!user!.PlayerId.HasValue)
+            return BadRequest ();
+          else
             {
-              if (!await Identity.IsInRoleAsync (userId, "Administrator"))
-                return Unauthorized ();
-            }
+              var playerId = user!.PlayerId.Value;
 
-          await Mediator.Send (command);
+              if (command.Id != playerId &&
+                !await Identity.IsInRoleAsync (CurrentUser.UserId!, "Administrator"))
+                return Unauthorized ();
+
+              await Mediator.Send (command);
+            }
         return NoContent ();
         }
     }

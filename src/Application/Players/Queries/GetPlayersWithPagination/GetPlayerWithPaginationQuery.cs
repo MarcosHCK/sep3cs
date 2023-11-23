@@ -20,6 +20,7 @@ using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Mappings;
 using DataClash.Application.Common.Models;
 using DataClash.Application.Common.Security;
+using DataClash.Application.Players.Queries.GetPlayer;
 using MediatR;
 
 namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
