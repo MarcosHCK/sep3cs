@@ -14,56 +14,55 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Events;
 using MediatR;
 
-namespace DataClash.Application.Challenges.Commands.CreateChallenges
+namespace DataClash.Application.Challenges.Commands.UpdateChallenge
 {
   [Authorize (Roles = "Administrator")]
-  public record CreateChallengesCommand : IRequest<long>
+  public record UpdateChallengeCommand : IRequest
     {
+      public long Id { get; init; }
       public DateTime BeginDay { get; init; }
       public long Bounty { get; init; }
       public long Cost { get; init; }
-      public string? Description { get; init; }
+      public string? Description { get; init; } 
       public TimeSpan Duration { get; init; }
       public long MaxLooses { get; init; }
       public long MinLevel { get; init; }
       public string? Name { get; init; }
 
+
     }
 
-  public class CreateChallengesCommandHandler : IRequestHandler<CreateChallengesCommand, long>
+  public class UpdateChallengeCommandHandler : IRequestHandler<UpdateChallengeCommand>
     {
       private readonly IApplicationDbContext _context;
 
-      public CreateChallengesCommandHandler (IApplicationDbContext context)
+      public UpdateChallengeCommandHandler (IApplicationDbContext context)
         {
           _context = context;
         }
 
-      public async Task<long> Handle (CreateChallengesCommand request, CancellationToken cancellationToken)
+      public async Task Handle (UpdateChallengeCommand request, CancellationToken cancellationToken)
         {
-          var entity = new Challenge
-            {
-              BeginDay = request.BeginDay,
-              Bounty = request.Bounty,
-              Cost = request.Cost,
-              Description = request.Description,
-              Duration = request.Duration,
-              MaxLooses = request.MaxLooses,
-              MinLevel = request.MinLevel,
-              Name = request.Name
-            };
+          var entity = await _context.Challenges.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Challenge), request.Id);
+            entity.BeginDay = request.BeginDay;
+            entity.Bounty= request.Bounty;
+            entity.Cost= request.Cost;
+            entity.Description= request.Description;
+            entity.Duration= request.Duration;
+            entity.MaxLooses= request.MaxLooses;
+            entity.MinLevel= request.MinLevel;
+            entity.Name= request.Name;
 
-          entity.AddDomainEvent (new ChallengesCreatedEvent (entity));
-          _context.Challenges.Add (entity);
 
+          entity.AddDomainEvent (new ChallengeUpdatedEvent (entity));
           await _context.SaveChangesAsync (cancellationToken);
-        return entity.Id;
         }
     }
 }

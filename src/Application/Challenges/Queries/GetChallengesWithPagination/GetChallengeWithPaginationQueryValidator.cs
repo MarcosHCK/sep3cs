@@ -14,18 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
-using DataClash.Domain.Entities;
+using FluentValidation;
 
-namespace DataClash.Domain.Events
+namespace DataClash.Application.Challenges.Queries.GetChallengesWithPagination
 {
-  public class ChallengesDeletedEvent : BaseEvent
+  public class GetChallengesWithPaginationQueryValidator : AbstractValidator<GetChallengesWithPaginationQuery>
     {
-      public Challenge Item { get; }
-
-      public ChallengesDeletedEvent (Challenge item)
+      public GetChallengesWithPaginationQueryValidator ()
         {
-          Item = item;
+          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
         }
     }
 }

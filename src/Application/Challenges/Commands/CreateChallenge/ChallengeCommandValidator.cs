@@ -16,14 +16,23 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Challengess.Queries.GetChallengessWithPagination
+namespace DataClash.Application.Challenges.Commands.CreateChallenge
 {
-  public class GetChallengessWithPaginationQueryValidator : AbstractValidator<GetChallengessWithPaginationQuery>
+  public class CreateChallengeCommandValidator : AbstractValidator<CreateChallengeCommand>
     {
-      public GetChallengessWithPaginationQueryValidator ()
+      public CreateChallengeCommandValidator ()
         {
-          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
-          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
+
+          RuleFor (v => v.BeginDay).NotEmpty ();
+          RuleFor (v => v.Bounty).NotEmpty ();
+          RuleFor (v => v.Cost).NotEmpty ();
+          RuleFor (v => v.Description).NotEmpty ();
+          RuleFor (v => v.Duration).NotEmpty ();
+          RuleFor (v => v.MaxLooses).NotEmpty ();
+          RuleFor (v => v.MinLevel).NotEmpty ();
+          RuleFor (v => v.Name).NotEmpty ();
+          
+
         }
     }
 }

@@ -18,18 +18,18 @@ using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace DataClash.Application.Challengess.EventHandlers
+namespace DataClash.Application.Challenges.EventHandlers
 {
-  public class ChallengesDeletedEventHandler : INotificationHandler<ChallengesDeletedEvent>
+  public class ChallengeUpdatedEventHandler : INotificationHandler<ChallengeUpdatedEvent>
     {
-      private readonly ILogger<ChallengesDeletedEventHandler> _logger;
+      private readonly ILogger<ChallengeUpdatedEventHandler> _logger;
 
-      public ChallengesDeletedEventHandler (ILogger<ChallengesDeletedEventHandler> logger)
+      public ChallengeUpdatedEventHandler (ILogger<ChallengeUpdatedEventHandler> logger)
         {
           _logger = logger;
         }
 
-      public Task Handle (ChallengesDeletedEvent notification, CancellationToken cancellationToken)
+      public Task Handle (ChallengeUpdatedEvent notification, CancellationToken cancellationToken)
         {
           _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
           return Task.CompletedTask;

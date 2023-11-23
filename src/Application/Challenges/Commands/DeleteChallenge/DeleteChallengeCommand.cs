@@ -22,21 +22,21 @@ using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataClash.Application.Challenges.Commands.DeleteChallenges
+namespace DataClash.Application.Challenges.Commands.DeleteChallenge
 {
-  public record DeleteChallengesCommand (long Id) : IRequest;
+  public record DeleteChallengeCommand (long Id) : IRequest;
 
   [Authorize (Roles = "Administrator")]
-  public class DeleteChallengesCommandHandler : IRequestHandler<DeleteChallengesCommand>
+  public class DeleteChallengeCommandHandler : IRequestHandler<DeleteChallengeCommand>
     {
       private readonly IApplicationDbContext _context;
 
-      public DeleteChallengesCommandHandler (IApplicationDbContext context)
+      public DeleteChallengeCommandHandler (IApplicationDbContext context)
         {
             _context = context;
         }
 
-      public async Task Handle (DeleteChallengesCommand request, CancellationToken cancellationToken)
+      public async Task Handle (DeleteChallengeCommand request, CancellationToken cancellationToken)
         {
           var entity = await _context.Challenges
             .Where (l => l.Id == request.Id)
@@ -44,7 +44,7 @@ namespace DataClash.Application.Challenges.Commands.DeleteChallenges
            ?? throw new NotFoundException (nameof (Challenges), request.Id);
 
           _context.Challenges.Remove (entity);
-          entity.AddDomainEvent (new ChallengesDeletedEvent (entity));
+          entity.AddDomainEvent (new ChallengeDeletedEvent (entity));
 
           await _context.SaveChangesAsync (cancellationToken);
         }

@@ -14,32 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import authService from './AuthorizeService.ts'
+using DataClash.Domain.Events;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
-export class ApiClientBase
+namespace DataClash.Application.Challengess.EventHandlers
 {
-  protected constructor ()
+  public class ChallengeDeletedEventHandler : INotificationHandler<ChallengeDeletedEvent>
     {
-    }
+      private readonly ILogger<ChallengeDeletedEventHandler> _logger;
 
-  protected transformOptions = (options: RequestInit) : Promise<RequestInit> =>
-    {
-      return new Promise<RequestInit> (async (resolve, reject) =>
+      public ChallengeDeletedEventHandler (ILogger<ChallengeDeletedEventHandler> logger)
         {
-          const token = await authService.getAccessToken ()
+          _logger = logger;
+        }
 
-          if (typeof token !== 'string')
-
-            reject ('Unauthorized user missis JWT token')
-          else
-            {
-              options.headers =
-                {
-                  ...options.headers,
-                  'Authorization': `Bearer ${token}`,
-                }
-              resolve (options)
-            }
-        })
-    };
+      public Task Handle (ChallengeDeletedEvent notification, CancellationToken cancellationToken)
+        {
+          _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
+          return Task.CompletedTask;
+        }
+    }
 }

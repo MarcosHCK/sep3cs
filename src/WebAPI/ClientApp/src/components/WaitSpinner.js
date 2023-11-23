@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
-using DataClash.Domain.Entities;
+import './WaitSpinner.css'
+import { Modal, ModalBody, Spinner } from 'reactstrap'
+import React from 'react'
 
-namespace DataClash.Domain.Events
+export function WaitSpinner ()
 {
-  public class ChallengesCreatedEvent : BaseEvent
-    {
-      public Challenge Item { get; }
-
-      public ChallengesCreatedEvent (Challenge item)
-        {
-          Item = item;
-        }
-    }
+  return (
+    <Modal centered className='wait-spinner' fade={false} fullscreen isOpen={true}>
+      <ModalBody className='d-flex justify-content-center align-items-center'>
+        <div className='wait-spinner-wrapper'>
+          <Spinner className='wait-spinner-object' color='primary' />
+        </div>
+      </ModalBody>
+    </Modal>)
 }

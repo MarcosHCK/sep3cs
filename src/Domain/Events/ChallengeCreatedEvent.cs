@@ -14,22 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Mappings;
+using DataClash.Domain.Common;
 using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Challengess.Queries.GetChallenges
+namespace DataClash.Domain.Events
 {
-  public class ChallengesBriefDto : IMapFrom<Challenge>
+  public class ChallengeCreatedEvent : BaseEvent
     {
-      public long Id { get; init; }
-      public string? BeginDay { get; init; }
-      public long Bounty { get; init; }
-      public long Cost { get; init; }
-      public string? Description { get; init; }
-      public string? Duration { get; init; }
-      public long MaxLooses { get; init; }
-      public long MinLevel { get; init; }
-      public string? Name { get; init; }
+      public Challenge Item { get; }
 
+      public ChallengeCreatedEvent (Challenge item)
+        {
+          Item = item;
+        }
     }
 }

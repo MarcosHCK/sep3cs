@@ -14,18 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
-using DataClash.Domain.Entities;
 
-namespace DataClash.Domain.Events
+div.wait-spinner div.modal-content
 {
-  public class ChallengesUpdatedEvent : BaseEvent
-    {
-      public Challenge Item { get; }
+  background-color: transparent;
+}
 
-      public ChallengesUpdatedEvent (Challenge item)
-        {
-          Item = item;
-        }
-    }
+div.wait-spinner div.wait-spinner-object
+{
+  height: 11rem;
+  width: 11rem;
+}
+
+div.wait-spinner div.wait-spinner-wrapper
+{
+  padding: 13px;
+  height: fit-content;
+  width: fit-content;
 }
