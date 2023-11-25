@@ -20,31 +20,25 @@ using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
-using DataClash.Domain.ValueObjects;
 using MediatR;
 
-namespace DataClash.Application.Clans.Commands.UpdateClan
+namespace DataClash.Application.Clans.Commands.RemovePlayer
 {
   [Authorize]
-  public record UpdateClanCommand : IRequest
+  public record RemovePlayerCommand : IRequest
     {
-      public long Id { get; init; }
-      public string? Description { get; init; }
-      public string? Name { get; init; }
-      public Region? Region { get; init; }
-      public long TotalTrophiesToEnter { get; init; }
-      public long TotalTrophiesWonOnWar { get; init; }
-      public ClanType Type { get; init; }
+      public long ClanId { get; init; }
+      public long PlayerId { get; init; }
     }
 
-  public class UpdateClanCommandHandler : IRequestHandler<UpdateClanCommand>
+  public class RemovePlayerCommandHandler : IRequestHandler<RemovePlayerCommand>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
       private readonly ICurrentUserService _currentUser;
       private readonly IIdentityService _identityService;
 
-      public UpdateClanCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
+      public RemovePlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
           _context = context;
           _currentPlayer = currentPlayer;
@@ -52,25 +46,23 @@ namespace DataClash.Application.Clans.Commands.UpdateClan
           _identityService = identityService;
         }
 
-      public async Task Handle (UpdateClanCommand request, CancellationToken cancellationToken)
+      public async Task Handle (RemovePlayerCommand request, CancellationToken cancellationToken)
         {
           var userId = _currentUser.UserId!;
-          var entity = await _context.Clans.FindAsync (new object[] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.Id);
+          var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.ClanId);
           var playerId = _currentPlayer.PlayerId!;
-          var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.Id, playerId }, cancellationToken);
+          var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, playerId }, cancellationToken);
 
           if (playerClan?.Role != ClanRole.Chief || await _identityService.IsInRoleAsync (userId, Roles.Administrator))
             throw new ForbiddenAccessException ();
           else
             {
-              entity.Description = request.Description;
-              entity.Name = request.Name;
-              entity.Region = request.Region;
-              entity.TotalTrophiesToEnter = request.TotalTrophiesToEnter;
-              entity.TotalTrophiesWonOnWar = request.TotalTrophiesWonOnWar;
-              entity.Type = request.Type;
+              var entity = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, request.PlayerId }, cancellationToken)
+                              ?? throw new NotFoundException (nameof (PlayerClan), new object[] { request.ClanId, request.PlayerId });
 
-              entity.AddDomainEvent (new ClanUpdatedEvent (entity));
+              _context.PlayerClans.Remove (entity);
+              clan.AddDomainEvent (new PlayerRemovedEvent (entity));
+
               await _context.SaveChangesAsync (cancellationToken);
             }
         }
