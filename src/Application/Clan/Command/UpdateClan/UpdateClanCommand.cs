@@ -40,25 +40,39 @@ namespace DataClash.Application.Clans.Commands.UpdateClan
   public class UpdateClanCommandHandler : IRequestHandler<UpdateClanCommand>
     {
       private readonly IApplicationDbContext _context;
+      private readonly ICurrentPlayerService _currentPlayer;
+      private readonly ICurrentUserService _currentUser;
+      private readonly IIdentityService _identityService;
 
-      public UpdateClanCommandHandler (IApplicationDbContext context)
+      public UpdateClanCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
           _context = context;
+          _currentPlayer = currentPlayer;
+          _currentUser = currentUser;
+          _identityService = identityService;
         }
 
       public async Task Handle (UpdateClanCommand request, CancellationToken cancellationToken)
         {
-          var entity = await _context.Clans.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.Id);
+          var userId = _currentUser.UserId!;
+          var entity = await _context.Clans.FindAsync (new object[] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.Id);
+          var playerId = _currentPlayer.PlayerId!;
+          var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.Id, playerId }, cancellationToken);
 
-          entity.Description = request.Description;
-          entity.Name = request.Name;
-          entity.Region = request.Region;
-          entity.TotalTrophiesToEnter = request.TotalTrophiesToEnter;
-          entity.TotalTrophiesWonOnWar = request.TotalTrophiesWonOnWar;
-          entity.Type = request.Type;
+          if (playerClan?.Role != Domain.Enums.ClanRole.Chief || await _identityService.IsInRoleAsync (userId, Roles.Administrator))
+            throw new ForbiddenAccessException ();
+          else
+            {
+              entity.Description = request.Description;
+              entity.Name = request.Name;
+              entity.Region = request.Region;
+              entity.TotalTrophiesToEnter = request.TotalTrophiesToEnter;
+              entity.TotalTrophiesWonOnWar = request.TotalTrophiesWonOnWar;
+              entity.Type = request.Type;
 
-          entity.AddDomainEvent (new ClanUpdatedEvent (entity));
-          await _context.SaveChangesAsync (cancellationToken);
+              entity.AddDomainEvent (new ClanUpdatedEvent (entity));
+              await _context.SaveChangesAsync (cancellationToken);
+            }
         }
     }
 }

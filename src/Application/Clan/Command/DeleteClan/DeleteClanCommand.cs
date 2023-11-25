@@ -18,9 +18,9 @@ using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Clans.Commands.DeleteClan
 {
@@ -30,23 +30,34 @@ namespace DataClash.Application.Clans.Commands.DeleteClan
   public class DeleteClanCommandHandler : IRequestHandler<DeleteClanCommand>
     {
       private readonly IApplicationDbContext _context;
+      private readonly ICurrentPlayerService _currentPlayer;
+      private readonly ICurrentUserService _currentUser;
+      private readonly IIdentityService _identityService;
 
-      public DeleteClanCommandHandler (IApplicationDbContext context)
+      public DeleteClanCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
-            _context = context;
+          _context = context;
+          _currentPlayer = currentPlayer;
+          _currentUser = currentUser;
+          _identityService = identityService;
         }
 
       public async Task Handle (DeleteClanCommand request, CancellationToken cancellationToken)
         {
-          var entity = await _context.Clans
-            .Where (l => l.Id == request.Id)
-            .SingleOrDefaultAsync (cancellationToken)
-           ?? throw new NotFoundException (nameof (Clan), request.Id);
+          var userId = _currentUser.UserId!;
+          var entity = await _context.Clans.FindAsync (new object[] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.Id);
+          var playerId = _currentPlayer.PlayerId!;
+          var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.Id, playerId }, cancellationToken);
 
-          _context.Clans.Remove (entity);
-          entity.AddDomainEvent (new ClanDeletedEvent (entity));
+          if (playerClan?.Role != Domain.Enums.ClanRole.Chief || await _identityService.IsInRoleAsync (userId, Roles.Administrator))
+            throw new ForbiddenAccessException ();
+          else
+            {
+              _context.Clans.Remove (entity);
+              entity.AddDomainEvent (new ClanDeletedEvent (entity));
 
-          await _context.SaveChangesAsync (cancellationToken);
+              await _context.SaveChangesAsync (cancellationToken);
+            }
         }
     }
 }
