@@ -40,11 +40,11 @@ export function AuthorizeProvider (props)
           const [ isAuthorized, userProfile ] = await Promise.all (promises)
 
           const roles = typeof userProfile.role === 'string'
-                          ? { [userProfile.role] : true }
-                          : userProfile.role.reduce ((acc, role, index) =>
-                              {
-                                return { ...acc, [ role[index] ] : true }
-                              })
+                          ? ({ [userProfile.role] : true })
+                      : (Array.isArray (userProfile.role) === false
+                          ? ({ })
+                      : userProfile.role.reduce ((acc, role, index) =>
+                            ({ ...acc, [ role[index] ] : true })))
 
           setIsAuthorized (isAuthorized)
           setIsReady (true)
