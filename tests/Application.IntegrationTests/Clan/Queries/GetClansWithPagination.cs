@@ -14,20 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using FluentValidation;
+using DataClash.Application.Clans.Queries.GetClansWithPagination;
+using DataClash.Application.Common.Exceptions;
+using FluentAssertions;
+using NUnit.Framework;
 
-namespace DataClash.Application.Clans.Commands.CreateClan
+namespace DataClash.Application.IntegrationTests.Clans.Queries
 {
-  public class CreateClanCommandValidator : AbstractValidator<CreateClanCommand>
+  using static Testing;
+
+  public class GetClansWithPagination : BaseTestFixture
     {
-      public CreateClanCommandValidator ()
+      [Test]
+      public async Task ShouldNotRequireAdministrator ()
         {
-          RuleFor (v => v.Description).NotEmpty ().MaximumLength (256);
-          RuleFor (v => v.Name).NotEmpty ().MaximumLength (128);
-          RuleFor (v => v.Region).NotEmpty ();
-          RuleFor (v => v.TotalTrophiesToEnter).GreaterThanOrEqualTo (0);
-          RuleFor (v => v.TotalTrophiesWonOnWar).GreaterThanOrEqualTo (0);
-          RuleFor (v => v.Type).IsInEnum ();
+          await RunAsDefaultUserAsync ();
+          var command = new GetClansWithPaginationQuery { PageNumber = 1, PageSize = 10, };
+          await FluentActions.Invoking (() => SendAsync (command)).Should ().NotThrowAsync<ForbiddenAccessException> ();
         }
     }
 }

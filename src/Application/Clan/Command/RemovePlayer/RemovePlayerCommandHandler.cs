@@ -53,7 +53,7 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
           var playerId = _currentPlayer.PlayerId!;
           var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, playerId }, cancellationToken);
 
-          if (playerClan?.Role != ClanRole.Chief || await _identityService.IsInRoleAsync (userId, Roles.Administrator))
+          if (playerClan?.Role != ClanRole.Chief && await _identityService.IsInRoleAsync (userId, Roles.Administrator) == false)
             throw new ForbiddenAccessException ();
           else
             {

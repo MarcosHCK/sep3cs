@@ -28,7 +28,7 @@ namespace DataClash.Application.Clans.Commands.UpdateClan
           RuleFor (v => v.Region).NotEmpty ();
           RuleFor (v => v.TotalTrophiesToEnter).GreaterThanOrEqualTo (0);
           RuleFor (v => v.TotalTrophiesWonOnWar).GreaterThanOrEqualTo (0);
-          RuleFor (v => v.Type).NotEmpty ();
+          RuleFor (v => v.Type).IsInEnum ();
         }
     }
 }

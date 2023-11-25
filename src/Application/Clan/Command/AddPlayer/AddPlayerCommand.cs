@@ -54,8 +54,10 @@ namespace DataClash.Application.Clans.Commands.AddPlayer
           var playerId = _currentPlayer.PlayerId!;
           var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, playerId }, cancellationToken);
 
-          if (playerClan?.Role != ClanRole.Chief || await _identityService.IsInRoleAsync (userId, Roles.Administrator))
+          if (playerClan?.Role != ClanRole.Chief && await _identityService.IsInRoleAsync (userId, Roles.Administrator) == false)
             throw new ForbiddenAccessException ();
+          else if (_context.PlayerClans.Where (e => e.ClanId == clan.Id && e.Role == ClanRole.Chief).Any ())
+            throw new ApplicationConstraintException ("Application constraint violation");
           else
             {
               var entity = new PlayerClan { ClanId = request.ClanId, PlayerId = request.PlayerId, Role = request.Role, };

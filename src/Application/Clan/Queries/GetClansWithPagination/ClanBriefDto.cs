@@ -23,6 +23,7 @@ namespace DataClash.Application.Clans.Queries.GetClansWithPagination
 {
   public class ClanBriefDto : IMapFrom<Clan>
     {
+      public long Id { get; init; }
       public string? Description { get; init; }
       public string? Name { get; init; }
       public Region? Region { get; init; }

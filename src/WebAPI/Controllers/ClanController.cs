@@ -17,6 +17,7 @@
 using DataClash.Application.Clans.Commands.CreateClan;
 using DataClash.Application.Clans.Commands.DeleteClan;
 using DataClash.Application.Clans.Commands.UpdateClan;
+using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
 using DataClash.Application.Clans.Queries.GetClansWithPagination;
 using DataClash.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,13 @@ namespace DataClash.WebUI.Controllers
     {
       [HttpGet]
       public async Task<ActionResult<PaginatedList<ClanBriefDto>>> GetWithPagination ([FromQuery] GetClansWithPaginationQuery query)
+        {
+          return await Mediator.Send (query);
+        }
+
+      [HttpGet]
+      [Route ("current")]
+      public async Task<ActionResult<ClanBriefDto?>> GetForCurrentUser ([FromQuery] GetClanForCurrentPlayerQuery query)
         {
           return await Mediator.Send (query);
         }

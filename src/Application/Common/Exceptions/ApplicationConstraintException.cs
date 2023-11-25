@@ -14,20 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using FluentValidation;
 
-namespace DataClash.Application.Clans.Commands.CreateClan
+namespace DataClash.Application.Common.Exceptions
 {
-  public class CreateClanCommandValidator : AbstractValidator<CreateClanCommand>
+  public class ApplicationConstraintException : Exception
     {
-      public CreateClanCommandValidator ()
-        {
-          RuleFor (v => v.Description).NotEmpty ().MaximumLength (256);
-          RuleFor (v => v.Name).NotEmpty ().MaximumLength (128);
-          RuleFor (v => v.Region).NotEmpty ();
-          RuleFor (v => v.TotalTrophiesToEnter).GreaterThanOrEqualTo (0);
-          RuleFor (v => v.TotalTrophiesWonOnWar).GreaterThanOrEqualTo (0);
-          RuleFor (v => v.Type).IsInEnum ();
-        }
+      public ApplicationConstraintException () : base () { }
+      public ApplicationConstraintException (string message) : base (message) { }
+      public ApplicationConstraintException (string message, Exception innerException) : base (message, innerException) { }
     }
 }

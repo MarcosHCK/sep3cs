@@ -16,11 +16,11 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Clans.Commands.CreateClan
+namespace DataClash.Application.Clans.Commands.CreateClanWithChief
 {
-  public class CreateClanCommandValidator : AbstractValidator<CreateClanCommand>
+  public class CreateClanWithChiefCommandValidator : AbstractValidator<CreateClanWithChiefCommand>
     {
-      public CreateClanCommandValidator ()
+      public CreateClanWithChiefCommandValidator ()
         {
           RuleFor (v => v.Description).NotEmpty ().MaximumLength (256);
           RuleFor (v => v.Name).NotEmpty ().MaximumLength (128);
