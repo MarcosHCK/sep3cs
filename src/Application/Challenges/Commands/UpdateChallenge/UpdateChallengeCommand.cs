@@ -60,6 +60,7 @@ namespace DataClash.Application.Challenges.Commands.UpdateChallenge
             entity.MinLevel= request.MinLevel;
             entity.Name= request.Name;
 
+
           entity.AddDomainEvent (new ChallengeUpdatedEvent (entity));
           await _context.SaveChangesAsync (cancellationToken);
         }

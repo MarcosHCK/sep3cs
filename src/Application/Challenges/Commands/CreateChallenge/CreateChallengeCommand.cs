@@ -33,6 +33,7 @@ namespace DataClash.Application.Challenges.Commands.CreateChallenge
       public long MaxLooses { get; init; }
       public long MinLevel { get; init; }
       public string? Name { get; init; }
+
     }
 
   public class CreateChallengeCommandHandler : IRequestHandler<CreateChallengeCommand, long>

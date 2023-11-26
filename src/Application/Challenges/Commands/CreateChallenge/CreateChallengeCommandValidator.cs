@@ -24,12 +24,12 @@ namespace DataClash.Application.Challenges.Commands.CreateChallenge
         {
 
           RuleFor (v => v.BeginDay).NotEmpty ();
-          RuleFor (v => v.Bounty).NotEmpty ();
-          RuleFor (v => v.Cost).NotEmpty ();
+          RuleFor (v => v.Bounty).GreaterThanOrEqualTo(0);
+          RuleFor (v => v.Cost).GreaterThanOrEqualTo(0);
           RuleFor (v => v.Description).NotEmpty ();
           RuleFor (v => v.Duration).NotEmpty ();
-          RuleFor (v => v.MaxLooses).NotEmpty ();
-          RuleFor (v => v.MinLevel).NotEmpty ();
+          RuleFor (v => v.MaxLooses).GreaterThanOrEqualTo(0);
+          RuleFor (v => v.MinLevel).GreaterThanOrEqualTo(0);
           RuleFor (v => v.Name).NotEmpty ();
           
 

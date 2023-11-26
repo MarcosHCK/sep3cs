@@ -19,6 +19,7 @@ using AutoMapper.QueryableExtensions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Mappings;
 using DataClash.Application.Common.Models;
+
 using MediatR;
 
 namespace DataClash.Application.Challenges.Queries.GetChallengesWithPagination
