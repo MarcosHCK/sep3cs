@@ -21,6 +21,7 @@ using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
+using DataClash.Domain.ValueObjects;
 using MediatR;
 
 namespace DataClash.Application.Clans.Commands.CreateClanWithChief
@@ -53,7 +54,7 @@ namespace DataClash.Application.Clans.Commands.CreateClanWithChief
             {
               Description = request.Description,
               Name = request.Name,
-              Region = request.Region,
+              Region = (Region) request.Region!,
               TotalTrophiesToEnter = request.TotalTrophiesToEnter,
               TotalTrophiesWonOnWar = request.TotalTrophiesWonOnWar,
               Type = request.Type,

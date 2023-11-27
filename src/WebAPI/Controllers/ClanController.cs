@@ -15,6 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 using DataClash.Application.Clans.Commands.CreateClan;
+using DataClash.Application.Clans.Commands.CreateClanWithChief;
 using DataClash.Application.Clans.Commands.DeleteClan;
 using DataClash.Application.Clans.Commands.UpdateClan;
 using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
@@ -36,13 +37,19 @@ namespace DataClash.WebUI.Controllers
 
       [HttpGet]
       [Route ("current")]
-      public async Task<ActionResult<ClanBriefDto?>> GetForCurrentUser ([FromQuery] GetClanForCurrentPlayerQuery query)
+      public async Task<ActionResult<ClanBriefDto?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
         {
           return await Mediator.Send (query);
         }
 
       [HttpPost]
       public async Task<ActionResult<long>> Create (CreateClanCommand command)
+        {
+          return await Mediator.Send (command);
+        }
+
+      [HttpPost ("withchief")]
+      public async Task<ActionResult<long>> CreateWithChief (CreateClanWithChiefCommand command)
         {
           return await Mediator.Send (command);
         }

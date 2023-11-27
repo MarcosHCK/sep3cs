@@ -21,7 +21,6 @@ using DataClash.Domain.Entities;
 using DataClash.Domain.ValueObjects;
 using DataClash.Framework.Identity;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Namotion.Reflection;
 using NUnit.Framework;
 
@@ -38,48 +37,6 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
           var command = new CreateClanWithChiefCommand ();
 
           await FluentActions.Invoking (() => SendAsync (command)).Should ().ThrowAsync<ValidationException> ();
-        }
-
-      [Test]
-      public async Task ShouldCreateClanWithChief ()
-        {
-          var userId = await RunAsDefaultUserAsync ();
-          var user = await FindAsync<ApplicationUser> (userId);
-          var playerId = user!.PlayerId!.Value;
-
-          var command = new CreateClanWithChiefCommand
-            {
-              Description = "Test clan",
-              Name = "Test clan",
-              Region = Region.Somewhere,
-              TotalTrophiesToEnter = 0,
-              TotalTrophiesWonOnWar = 0,
-              Type = Domain.Enums.ClanType.Normal,
-            };
-
-          var clanId = await SendAsync (command);
-
-          var clanItem = await FindAsync<Clan> (clanId);
-          var playerClanItem = await FindAsync<PlayerClan> (clanId, playerId);
-
-          clanItem.Should ().NotBeNull ();
-          clanItem.Should ().HasProperty ("Description");
-          clanItem.Should ().HasProperty ("Name");
-          clanItem.Should ().HasProperty ("Region");
-
-          clanItem!.Description.Should ().Be (command.Description);
-          clanItem!.Name.Should ().Be (command.Name);
-          clanItem!.Region.Should ().Be (command.Region);
-          clanItem!.TotalTrophiesToEnter.Should ().Be (command.TotalTrophiesToEnter);
-          clanItem!.TotalTrophiesWonOnWar.Should ().Be (command.TotalTrophiesWonOnWar);
-          clanItem!.Type.Should ().Be (command.Type);
-
-          playerClanItem.Should ().NotBeNull ();
-          playerClanItem.Should ().HasProperty ("ClanId");
-          playerClanItem.Should ().HasProperty ("PlayerId");
-
-          playerClanItem!.ClanId.Should ().Be (clanId);
-          playerClanItem!.PlayerId.Should ().Be (playerId);
         }
 
       [Test]
@@ -142,6 +99,48 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
             };
 
           await FluentActions.Invoking (() => SendAsync (addPlayerCommand)).Should ().ThrowAsync<ApplicationConstraintException> ();
+        }
+
+      [Test]
+      public async Task ShouldCreateClanWithChief ()
+        {
+          var userId = await RunAsDefaultUserAsync ();
+          var user = await FindAsync<ApplicationUser> (userId);
+          var playerId = user!.PlayerId!.Value;
+
+          var command = new CreateClanWithChiefCommand
+            {
+              Description = "Test clan",
+              Name = "Test clan",
+              Region = Region.Somewhere,
+              TotalTrophiesToEnter = 0,
+              TotalTrophiesWonOnWar = 0,
+              Type = Domain.Enums.ClanType.Normal,
+            };
+
+          var clanId = await SendAsync (command);
+
+          var clanItem = await FindAsync<Clan> (clanId);
+          var playerClanItem = await FindAsync<PlayerClan> (clanId, playerId);
+
+          clanItem.Should ().NotBeNull ();
+          clanItem.Should ().HasProperty ("Description");
+          clanItem.Should ().HasProperty ("Name");
+          clanItem.Should ().HasProperty ("Region");
+
+          clanItem!.Description.Should ().Be (command.Description);
+          clanItem!.Name.Should ().Be (command.Name);
+          clanItem!.Region.Should ().Be ((Region) command.Region);
+          clanItem!.TotalTrophiesToEnter.Should ().Be (command.TotalTrophiesToEnter);
+          clanItem!.TotalTrophiesWonOnWar.Should ().Be (command.TotalTrophiesWonOnWar);
+          clanItem!.Type.Should ().Be (command.Type);
+
+          playerClanItem.Should ().NotBeNull ();
+          playerClanItem.Should ().HasProperty ("ClanId");
+          playerClanItem.Should ().HasProperty ("PlayerId");
+
+          playerClanItem!.ClanId.Should ().Be (clanId);
+          playerClanItem!.PlayerId.Should ().Be (playerId);
         }
     }
 }

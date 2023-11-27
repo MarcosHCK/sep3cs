@@ -29,7 +29,7 @@ namespace DataClash.Application.Clans.Commands.CreateClan
     {
       public string? Description { get; init; }
       public string? Name { get; init; }
-      public Region? Region { get; init; }
+      public string? Region { get; init; }
       public long TotalTrophiesToEnter { get; init; }
       public long TotalTrophiesWonOnWar { get; init; }
       public ClanType Type { get; init; }
@@ -50,7 +50,7 @@ namespace DataClash.Application.Clans.Commands.CreateClan
             {
               Description = request.Description,
               Name = request.Name,
-              Region = request.Region,
+              Region = Region.From (request.Region!),
               TotalTrophiesToEnter = request.TotalTrophiesToEnter,
               TotalTrophiesWonOnWar = request.TotalTrophiesWonOnWar,
               Type = request.Type,

@@ -17,7 +17,6 @@
 using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
-using DataClash.Domain.ValueObjects;
 
 namespace DataClash.Application.Clans.Queries.GetClansWithPagination
 {
@@ -26,7 +25,7 @@ namespace DataClash.Application.Clans.Queries.GetClansWithPagination
       public long Id { get; init; }
       public string? Description { get; init; }
       public string? Name { get; init; }
-      public Region? Region { get; init; }
+      public string? Region { get; init; }
       public long TotalTrophiesToEnter { get; init; }
       public long TotalTrophiesWonOnWar { get; init; }
       public ClanType Type { get; init; }

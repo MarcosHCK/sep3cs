@@ -14,17 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Domain.Exceptions;
+using DataClash.Domain.ValueObjects;
 using FluentValidation;
 
 namespace DataClash.Application.Clans.Commands.CreateClanWithChief
 {
   public class CreateClanWithChiefCommandValidator : AbstractValidator<CreateClanWithChiefCommand>
     {
+      private static Region? RegionTryFrom (string code)
+        {
+          try { return Region.From (code); }
+          catch (UnknownRegionException) {}
+        return null;
+        }
+
       public CreateClanWithChiefCommandValidator ()
         {
           RuleFor (v => v.Description).NotEmpty ().MaximumLength (256);
           RuleFor (v => v.Name).NotEmpty ().MaximumLength (128);
-          RuleFor (v => v.Region).NotEmpty ();
+          RuleFor (v => v.Region).NotEmpty ().NotNull ()
+            .Must (p => null != RegionTryFrom (p!));
           RuleFor (v => v.TotalTrophiesToEnter).GreaterThanOrEqualTo (0);
           RuleFor (v => v.TotalTrophiesWonOnWar).GreaterThanOrEqualTo (0);
           RuleFor (v => v.Type).IsInEnum ();

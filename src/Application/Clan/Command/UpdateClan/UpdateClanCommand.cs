@@ -31,7 +31,7 @@ namespace DataClash.Application.Clans.Commands.UpdateClan
       public long Id { get; init; }
       public string? Description { get; init; }
       public string? Name { get; init; }
-      public Region? Region { get; init; }
+      public string? Region { get; init; }
       public long TotalTrophiesToEnter { get; init; }
       public long TotalTrophiesWonOnWar { get; init; }
       public ClanType Type { get; init; }
@@ -65,7 +65,7 @@ namespace DataClash.Application.Clans.Commands.UpdateClan
             {
               entity.Description = request.Description;
               entity.Name = request.Name;
-              entity.Region = request.Region;
+              entity.Region = (Region) request.Region!;
               entity.TotalTrophiesToEnter = request.TotalTrophiesToEnter;
               entity.TotalTrophiesWonOnWar = request.TotalTrophiesWonOnWar;
               entity.Type = request.Type;

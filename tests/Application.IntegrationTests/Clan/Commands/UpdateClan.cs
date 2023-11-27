@@ -166,7 +166,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
 
           item!.Description.Should ().Be (command.Description);
           item!.Name.Should ().Be (command.Name);
-          item!.Region.Should ().Be (command.Region);
+          item!.Region.Should ().Be ((Region) command.Region);
           item!.TotalTrophiesToEnter.Should ().Be (command.TotalTrophiesToEnter);
           item!.TotalTrophiesWonOnWar.Should ().Be (command.TotalTrophiesWonOnWar);
           item!.Type.Should ().Be (command.Type);
