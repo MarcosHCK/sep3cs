@@ -19,6 +19,7 @@ import { Col, Container, Row } from 'reactstrap'
 import { Nav, NavItem, NavLink } from 'reactstrap'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
+import { ProfileChallenge } from './ProfileChalenge'
 import { useAuthorize } from '../../services/AuthorizeProvider'
 import { WaitSpinner } from '../WaitSpinner'
 import React, { useState } from 'react'
@@ -29,9 +30,11 @@ export function Profile ()
   const [ activeIndex, setActiveIndex ] = useState (0)
 
   const pages =
-    [
+    [ 
+      {title:'Chalenges', component: <ProfileChallenge userProfile={userProfile}/>},
       { title: 'Identity', component: <ProfileIdentity userProfile={userProfile} /> },
       { title: 'Player', component: <ProfilePlayer userProfile={userProfile} /> },
+      
     ]
 
   return (

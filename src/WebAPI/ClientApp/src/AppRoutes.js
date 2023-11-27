@@ -17,6 +17,7 @@
 import { ApplicationPaths } from './services/AuthorizeConstants'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
+import { Profile } from './components/Profile'
 import { LoginActions } from './services/AuthorizeConstants'
 import { Logout } from './components/Logout'
 import { LogoutActions } from './services/AuthorizeConstants'
@@ -25,6 +26,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Players } from './components/Players'
 import { Wars } from './components/Wars'
 import { Challenges } from './components/Challenges'
+
 
 const loginAction = (name) => (<Login action={name}></Login>)
 const logoutAction = (name) => (<Logout action={name}></Logout>)
@@ -38,6 +40,7 @@ const AppRoutes = () => (
       <Route path={'/clans'} element={<RequireAuth><p>Clans component placeholdes</p></RequireAuth>}/>
       <Route path={'/matches'} element={<RequireAuth><p>Matches component placeholdes</p></RequireAuth>}/>
       <Route path={'/players'} element={<RequireAuth role='Administrator'><Players /></RequireAuth>}/>
+      <Route path={'/profile'} element ={<RequireAuth><Profile /></RequireAuth>}/>
       <Route path={'/wars'} element={<RequireAuth><Wars /></RequireAuth>}/>
 
       <Route path={ApplicationPaths.ApiAuthorizationPrefix}>
