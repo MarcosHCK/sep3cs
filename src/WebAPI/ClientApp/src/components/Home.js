@@ -15,20 +15,39 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { HomeCarousel } from './HomeCarousel'
-import Table    from './HomeTable';
+import Table from './HomeTable';
+import './Home.css';
 import React, { useEffect, useState } from 'react';
-
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 export function Home ()
 {
-
  const [bestPlayers, setBestPlayers] = useState([]);
+ const [warIds, setWarIds] = useState([]);
+ const [dropdownOpen, setDropdownOpen] = useState(false);
+ const [selectedWarId, setSelectedWarId] = useState(null);
 
  useEffect(() => {
-  fetch('/api/BestPlayers')
-    .then(response => response.json())
-    .then(data => setBestPlayers(data));
+ fetch('/api/BestPlayers')
+  .then(response => response.json())
+  .then(data => setBestPlayers(data));
 }, []);
+
+ useEffect(() => {
+ fetch('/api/BestPlayers/warIds')
+  .then(response => response.json())
+  .then(data => setWarIds(data));
+}, []);
+
+ useEffect(() => {
+ if (selectedWarId) {
+ fetch(`/api/BestPlayers/${selectedWarId}`)
+   .then(response => response.json())
+   .then(data => setBestPlayers(data));
+ }
+}, [selectedWarId]);
+
+ const toggle = () => setDropdownOpen(prevState => !prevState);
 
  const columns = ['Jugador', 'Clan', 'Trofeos'];
  const data = [
@@ -81,8 +100,24 @@ export function Home ()
   ]} />
   <div className="tableContainer">
 
-    <h1>Top Players in Wars</h1>
-     <Table columns={['Jugador', 'Clan', 'Trofeos']} data={bestPlayers} />
+<div className="headerContainer">
+ <h1>Top Players in Wars</h1>
+ <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+   <DropdownToggle caret>
+     Select a war
+   </DropdownToggle>
+   <DropdownMenu>
+     {warIds.map((id, index) => (
+       <DropdownItem key={index} onClick={() => setSelectedWarId(id)}>
+         {id}
+       </DropdownItem>
+     ))}
+   </DropdownMenu>
+ </Dropdown>
+</div>
+<Table columns={['Jugador', 'Clan', 'Trofeos']} data={bestPlayers} />
+
+
     <h1>Top Clans in Regions</h1>
     <Table columns={clanColumns} data={clanData} />
     <h1>Top Cards in Regions</h1>

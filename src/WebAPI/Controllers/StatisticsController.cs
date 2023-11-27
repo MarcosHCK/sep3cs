@@ -23,23 +23,29 @@ using System.Threading.Tasks;
 
 namespace DataClash.WebUI.Controllers
 {
-   [ApiController]
-   [Route("api/[controller]")]
-   public class BestPlayersController : ControllerBase
-    {
-        private readonly IApplicationDbContext _context;
+ [ApiController]
+ [Route("api/[controller]")]
+ public class BestPlayersController : ControllerBase
+ {
+     private readonly IApplicationDbContext _context;
+     private readonly BestPlayers _bestPlayers;
 
-        public BestPlayersController(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+     public BestPlayersController(IApplicationDbContext context)
+     {
+         _context = context;
+         _bestPlayers = new BestPlayers();
+     }
 
-        [HttpGet]
-        public IEnumerable<dynamic> GetBestPlayers()
-        {
-            var bestPlayers = new BestPlayers();
-            return bestPlayers.BestPlayer(_context);
-        }
+     [HttpGet("{warId}")]
+     public IEnumerable<dynamic> GetBestPlayers(int warId)
+     {
+         return _bestPlayers.BestPlayer(_context, warId);
+     }
 
-    }
+     [HttpGet("warIds")]
+     public IEnumerable<long> GetAllWarIds()
+     {
+         return _bestPlayers.GetAllWarIds(_context);
+     }
+ }
 }

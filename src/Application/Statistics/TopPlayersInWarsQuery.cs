@@ -17,25 +17,33 @@
 
 
 using DataClash.Application.Common.Interfaces;
+using DataClash.Domain.Entities;
 
 namespace DataClash.Application.Statistics.TopPlayersInWars
 {
     public class BestPlayers
     {
-        public IEnumerable<dynamic> BestPlayer(IApplicationDbContext context)
+        public IEnumerable<Tuple<Player, Clan, long>> BestPlayer(IApplicationDbContext context, int warId)
         {
             var bestPlayers = (from pc in context.PlayerClans
                                join wc in context.WarClans on pc.ClanId equals wc.ClanId
                                join w in context.Wars on wc.WarId equals w.Id
                                join p in context.Players on pc.PlayerId equals p.Id
-                               orderby p.TotalThrophies descending
-                               select new { Player = p, War = w })
-                           .Take(10)
-                           .ToList();
+                               where w.Id == warId
+                               let clan = context.Clans.FirstOrDefault(c => c.Id == pc.ClanId)
+                               group new { Player = p, Clan = clan, Trophies = p.TotalThrophies } by clan into g
+                               select new Tuple<Player, Clan, long>(g.OrderByDescending(x => x.Trophies).First().Player, g.Key, g.OrderByDescending(x => x.Trophies).First().Trophies))
+                         .ToList();
 
             return bestPlayers;
         }
 
-    }
+        public IEnumerable<long> GetAllWarIds(IApplicationDbContext context)
+        {
+            var allWarIds = context.Wars.Select(w => w.Id).ToList();
+            return allWarIds;
+        }
 
+
+    }
 }
