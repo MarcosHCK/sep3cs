@@ -14,22 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Clans.Queries.GetClansWithPagination;
+using AutoMapper;
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
-using MediatR;
-using AutoMapper;
 using FluentValidation;
-using System.Data;
-using DataClash.Application.Common.Exceptions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace DataClash.Application.Clans.Queries.GetClanForCurrentPlayer
 {
   [Authorize]
-  public record GetClanForCurrentPlayerQuery () : IRequest<ClanBriefDto?>;
+  public record GetClanForCurrentPlayerQuery () : IRequest<PlayerClanBriefDto?>;
 
-  public class GetClanForCurrentPlayerQueryHandler : IRequestHandler<GetClanForCurrentPlayerQuery, ClanBriefDto?>
+  public class GetClanForCurrentPlayerQueryHandler : IRequestHandler<GetClanForCurrentPlayerQuery, PlayerClanBriefDto?>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
@@ -42,19 +41,11 @@ namespace DataClash.Application.Clans.Queries.GetClanForCurrentPlayer
           _mapper = mapper;
         }
 
-      public async Task<ClanBriefDto?> Handle (GetClanForCurrentPlayerQuery query, CancellationToken cancellationToken)
+      public async Task<PlayerClanBriefDto?> Handle (GetClanForCurrentPlayerQuery query, CancellationToken cancellationToken)
         {
-          var playerIdProxy = _currentPlayer.PlayerId;
-          long playerId;
-
-          if (!playerIdProxy.HasValue)
-            throw new ApplicationConstraintException ("User is not a player");
-          else
-            playerId = playerIdProxy.Value;
-
-          var playerClan = await _context.PlayerClans.Where (e => e.PlayerId == playerId).FirstOrDefaultAsync (cancellationToken);
-          var clan = playerClan == null ? null : await _context.Clans.FindAsync (new object[] { playerClan.ClanId }, cancellationToken);
-        return clan == null ? null : _mapper.Map<ClanBriefDto> (clan);
+          var playerId = _currentPlayer.PlayerId ?? throw new ApplicationConstraintException ("User is not a player");
+          var playerClan = await _context.PlayerClans.Include (e => e.Clan).Where (e => e.PlayerId == playerId).FirstOrDefaultAsync (cancellationToken);
+        return playerClan == null ? null : _mapper.Map<PlayerClanBriefDto> (playerClan);
         }
     }
 }

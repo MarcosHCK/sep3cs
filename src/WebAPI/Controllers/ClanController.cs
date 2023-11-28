@@ -37,7 +37,7 @@ namespace DataClash.WebUI.Controllers
 
       [HttpGet]
       [Route ("current")]
-      public async Task<ActionResult<ClanBriefDto?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
+      public async Task<ActionResult<PlayerClanBriefDto?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
         {
           return await Mediator.Send (query);
         }

@@ -15,7 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Alert, Button, Form, FormGroup, Input, Label } from 'reactstrap'
-import { ClanClient, ClanType } from '../../webApiClient.ts'
+import { ClanClient, ClanRole, ClanType } from '../../webApiClient.ts'
 import { CreateClanWithChiefCommand } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
 import { UpdateClanCommand } from '../../webApiClient.ts'
@@ -31,6 +31,7 @@ export function ProfileClan (props)
   const [ clanId, setClanId ] = useState ()
   const [ clanName, setClanName ] = useState ()
   const [ clanRegion, setClanRegion ] = useState ()
+  const [ clanRole, setClanRole ] = useState ()
   const [ clanTotalTrophiesToEnter, setClanTotalTrophiesToEnter ] = useState ()
   const [ clanTotalTrophiesWonOnWar, setClanTotalTrophiesWonOnWar ] = useState ()
   const [ clanType, setClanType ] = useState ()
@@ -42,18 +43,21 @@ export function ProfileClan (props)
     {
       if (!!playerProfile) try
         {
-          const clan = await clanClient.getForCurrentPlayer ()
+          const playerClan = await clanClient.getForCurrentPlayer ()
 
-          if (clan === null)
+          if (playerClan === null)
             setHasClan (false)
           else
             {
               setHasClan (true)
-              setClanId (clan.id)
+              const clan = playerClan.clan
+              const role = playerClan.role
 
               setClanDescription (clan.description)
+              setClanId (clan.id)
               setClanName (clan.name)
               setClanRegion (clan.region)
+              setClanRole (role)
               setClanTotalTrophiesToEnter (clan.totalTrophiesToEnter)
               setClanTotalTrophiesWonOnWar (clan.totalTrophiesWonOnWar)
               setClanType (clan.type)
@@ -171,7 +175,9 @@ export function ProfileClan (props)
             <div className='d-flex gap-2'>
               <Button color='primary'>Submit</Button>
               <span className='flex-grow-1'/>
-              <Button color='danger' onClick={() => { setIsLoading (true); deleteClan ().then (() => setIsLoading (false)) }}>Delete</Button>
+            { clanRole !== ClanRole.Chief
+              ? <></>
+              : <Button color='danger' onClick={() => { setIsLoading (true); deleteClan ().then (() => setIsLoading (false)) }}>Delete</Button> }
             </div>
           </FormGroup>
         </Form>)}

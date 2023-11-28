@@ -17,6 +17,7 @@
 using DataClash.Application.Clans.Commands.CreateClan;
 using DataClash.Application.Clans.Commands.CreateClanWithChief;
 using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
+using DataClash.Domain.Enums;
 using DataClash.Domain.ValueObjects;
 using FluentAssertions;
 using NUnit.Framework;
@@ -39,7 +40,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
               Region = Region.Somewhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
-              Type = Domain.Enums.ClanType.Normal,
+              Type = ClanType.Normal,
             };
 
           var newId = await SendAsync (command);
@@ -60,14 +61,22 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
               Region = Region.Somewhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
-              Type = Domain.Enums.ClanType.Normal,
+              Type = ClanType.Normal,
             };
 
           var newId = await SendAsync (command);
           var dto = await SendAsync (new GetClanForCurrentPlayerQuery ());
 
           dto.Should ().NotBeNull ();
-          dto!.Id.Should ().Be (newId);
+
+          dto!.Clan!.Description.Should ().Be (command.Description);
+          dto!.Clan!.Id.Should ().Be (newId);
+          dto!.Clan!.Name.Should ().Be (command.Name);
+          dto!.Clan!.Region.Should ().Be ((Region) command.Region);
+          dto!.Clan!.TotalTrophiesToEnter.Should ().Be (command.TotalTrophiesToEnter);
+          dto!.Clan!.TotalTrophiesWonOnWar.Should ().Be (command.TotalTrophiesWonOnWar);
+          dto!.Clan!.Type.Should ().Be (command.Type);
+          dto!.Role.Should ().Be (ClanRole.Chief);
         }
     }
 }
