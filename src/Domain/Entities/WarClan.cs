@@ -23,7 +23,7 @@ namespace DataClash.Domain.Entities
       public long WarId { get; set; }
       public long WonThrophies { get; set; }
 
-      public virtual Clan? Clan { get; set; }
-      public virtual War? War { get; set; }
+      public Clan Clan { get; set; } = null!;
+      public War War { get; set; } = null!;
     }
 }

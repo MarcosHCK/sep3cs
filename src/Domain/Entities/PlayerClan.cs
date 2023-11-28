@@ -24,7 +24,7 @@ namespace DataClash.Domain.Entities
       public long PlayerId { get; set; }
       public ClanRole Role { get; set; }
 
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
+      public Clan Clan { get; set; } = null!;
+      public Player Player { get; set; } = null!;
     }
 }
