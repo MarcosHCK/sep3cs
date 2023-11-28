@@ -27,6 +27,7 @@ namespace DataClash.Domain.Entities
       public string? Name { get; set; }
       public Quality Quality { get; set; }
       public string? Picture { get; set; }
+      public CardType Type { get; set;}
     }
 
   public class MagicCard : Card
@@ -35,6 +36,7 @@ namespace DataClash.Domain.Entities
       public double AreaDamage { get; set; }
       public double TowerDamage { get; set; }
       public TimeSpan Duration { get; set; }
+
     }
 
   public class StructCard : Card

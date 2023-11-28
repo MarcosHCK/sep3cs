@@ -20,113 +20,148 @@ import './Home.css';
 import React, { useEffect, useState } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
-export function Home ()
-{
- const [bestPlayers, setBestPlayers] = useState([]);
- const [warIds, setWarIds] = useState([]);
- const [dropdownOpen, setDropdownOpen] = useState(false);
- const [selectedWarId, setSelectedWarId] = useState(null);
+export function Home() {
+  
+  const [bestPlayers, setBestPlayers] = useState([]);
+  const [warIds, setWarIds] = useState([]);
+  const [dropdownOpenWar, setDropdownOpenWar] = useState(false);
+  const [selectedWarId, setSelectedWarId] = useState(null);
 
- useEffect(() => {
- fetch('/api/BestPlayers')
-  .then(response => response.json())
-  .then(data => setBestPlayers(data));
-}, []);
+  useEffect(() => {
+    fetch('/api/BestPlayers')
+      .then(response => response.json())
+      .then(data => setBestPlayers(data));
+  }, []);
 
- useEffect(() => {
- fetch('/api/BestPlayers/warIds')
-  .then(response => response.json())
-  .then(data => setWarIds(data));
-}, []);
+  useEffect(() => {
+    fetch('/api/BestPlayers/warIds')
+      .then(response => response.json())
+      .then(data => setWarIds(data));
+  }, []);
 
- useEffect(() => {
- if (selectedWarId) {
- fetch(`/api/BestPlayers/${selectedWarId}`)
-   .then(response => response.json())
-   .then(data => setBestPlayers(data));
- }
-}, [selectedWarId]);
+  useEffect(() => {
+    if (selectedWarId) {
+      fetch(`/api/BestPlayers/${selectedWarId}`)
+        .then(response => response.json())
+        .then(data => setBestPlayers(data));
+    }
+  }, [selectedWarId]);
 
- const toggle = () => setDropdownOpen(prevState => !prevState);
+  const toggleWar = () => setDropdownOpenWar(prevState => !prevState);
 
- const columns = ['Jugador', 'Clan', 'Trofeos'];
- const data = [
- { Jugador: 'Jugador 1', Clan: 'Clan 1', Trofeos: 100 },
- { Jugador: 'Jugador 2', Clan: 'Clan 2', Trofeos: 80 },
+  const [topClans, setTopClans] = useState([]);
 
- // Agrega más jugadores aquí
- ];
+  useEffect(() => {
+    fetch('/api/BestClans')
+      .then(response => response.json())
+      .then(data => setTopClans(data));
+  }, []);
 
- const clanColumns = ['Clan', 'Guerras ganadas', 'Trofeos'];
- const clanData = [
- { Clan: 'Clan 1', 'Guerras ganadas': 10, Trofeos: 100 },
- { Clan: 'Clan 2', 'Guerras ganadas': 8, Trofeos: 80 },
- { Clan: 'Clan 3', 'Guerras ganadas': 6, Trofeos: 60 },
- // Agrega más clanes aquí
- ];
 
- const cardsColumns = ['Carta', 'Cantidad de donaciones'];
- const cardsData = [
- { Carta: 'Carta 1', 'Cantidad de donaciones': 10 },
- { Carta: 'Carta 2', 'Cantidad de donaciones': 8 },
- { Carta: 'Carta 3', 'Cantidad de donaciones': 6},
- // Agrega más cartas aquí
- ];
-
- const favColumns = ['Carta'];
- const favData = [
- { Carta: 'Carta 1' },
- { Carta: 'Carta 2'},
- // Agrega más jugadores aquí
- ];
-
- const challengeColumns = ['Challenge', 'Player'];
- const challengeData = [
- { Challenge: 'Challenge 1', Player : 'Player 1' },
+  //
+  const [completedChallenges, setCompletedChallenges] = useState([]);
+  useEffect(() => {
+    fetch('/api/CompletedChallenges')
+      .then(response => response.json())
+      .then(data => setCompletedChallenges(data));
+   }, []);
+    
+   //
+   const [popularCards, setPopularCards] = useState([]);
+   const [clanName, setClanNames] = useState([]);
+   const [dropdownOpenClan, setDropdownOpenClan] = useState(false);
+   const [selectedClanName, setSelectedClanName] = useState(null);
  
- // Agrega más jugadores aquí
- ];
+   useEffect(() => {
+     fetch('/api/MostPopularCards')
+       .then(response => response.json())
+       .then(data => setPopularCards(data));
+   }, []);
+ 
+   useEffect(() => {
+     fetch('/api/MostPopularCards/clanNames')
+       .then(response => response.json())
+       .then(data => setClanNames(data));
+   }, []);
+ 
+   useEffect(() => {
+     if (selectedWarId) {
+       fetch(`/api/MostPopularCards/${selectedClanName}`)
+         .then(response => response.json())
+         .then(data => setPopularCards(data));
+     }
+   }, [selectedClanName]);
+ 
+   const toggleClan = () => setDropdownOpenClan(prevState => !prevState);
 
- return (
- <div>
-  <HomeCarousel items={[
-    { caption : 'Administrator working', src : '/comic/administrator.jpeg', },
-    { caption : 'Querying cards statistics', src : '/comic/query_card_stats.jpeg', },
-    { caption : 'Querying challenges statistics', src : '/comic/query_challenge_stats.jpeg', },
-    { caption : 'Querying clans statistics', src : '/comic/query_clan_stats.jpeg', },
-    { caption : 'Querying wars statistics', src : '/comic/query_clan_war_stats.jpeg', },
-    { caption : 'Querying matches statistics', src : '/comic/query_match_stats.jpeg', },
-    { caption : 'User signing up for DataClash', src : '/comic/registration.jpeg', },
-  ]} />
-  <div className="tableContainer">
+    //
+   const [mostDonatedCards, setMostDonatedCards] = useState([]);
 
-<div className="headerContainer">
- <h1>Top Players in Wars</h1>
- <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-   <DropdownToggle caret>
-     Select a war
-   </DropdownToggle>
-   <DropdownMenu>
-     {warIds.map((id, index) => (
-       <DropdownItem key={index} onClick={() => setSelectedWarId(id)}>
-         {id}
-       </DropdownItem>
-     ))}
-   </DropdownMenu>
- </Dropdown>
-</div>
-<Table columns={['Jugador', 'Clan', 'Trofeos']} data={bestPlayers} />
+   useEffect(() => {
+    fetch('/api/MostGiftedCards')
+      .then(response => response.json())
+      .then(data => setMostDonatedCards(data));
+   }, []);
+   
+
+  return (
+    <div>
+      <HomeCarousel items={[
+        { caption: 'Administrator working', src: '/comic/administrator.jpeg', },
+        { caption: 'Querying cards statistics', src: '/comic/query_card_stats.jpeg', },
+        { caption: 'Querying challenges statistics', src: '/comic/query_challenge_stats.jpeg', },
+        { caption: 'Querying clans statistics', src: '/comic/query_clan_stats.jpeg', },
+        { caption: 'Querying wars statistics', src: '/comic/query_clan_war_stats.jpeg', },
+        { caption: 'Querying matches statistics', src: '/comic/query_match_stats.jpeg', },
+        { caption: 'User signing up for DataClash', src: '/comic/registration.jpeg', },
+      ]} />
+      <div className="tableContainer">
+
+        <div className="headerContainer">
+          <h1>Top Players by Wars</h1>
+          <Dropdown isOpen={dropdownOpenWar} toggle={toggleWar}>
+            <DropdownToggle caret>
+              Select a war
+            </DropdownToggle>
+            <DropdownMenu>
+              {warIds.map((id, index) => (
+                <DropdownItem key={index} onClick={() => setSelectedWarId(id)}>
+                  {id}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        <Table columns={['Jugador', 'Clan', 'Trofeos']} data={bestPlayers} />
+
+        <h1>Top Clans by Regions</h1>
+        <Table columns={['Clan', 'Region', 'Trofeos']} data={topClans} />
+
+        <h1>Completed Challenges</h1>
+        <Table columns={['Player', 'Challenge']} data={completedChallenges} />
+
+        <div className="headerContainer">
+          <h1>Most Popular Cards by Clans</h1>
+          <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
+            <DropdownToggle caret>
+              Select a clan
+            </DropdownToggle>
+            <DropdownMenu>
+              {clanName.map((name, index) => (
+                <DropdownItem key={index} onClick={() => setSelectedClanName(name)}>
+                  {name}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
+
+        <h1>Most Donated Cards by Region</h1>
+        <Table columns={['Card', 'Region', 'Amount of Donations']} data={mostDonatedCards} />
 
 
-    <h1>Top Clans in Regions</h1>
-    <Table columns={clanColumns} data={clanData} />
-    <h1>Top Cards in Regions</h1>
-    <Table columns={cardsColumns} data={cardsData} />
-    <h1>Most Popular Cards in Clans</h1>
-    <Table columns={favColumns} data={favData} />
-    <h1>Complete Challenges</h1>
-    <Table columns={challengeColumns} data={challengeData} />
-  </div>
- </div>
- )
+      </div>
+    </div>
+  )
 }

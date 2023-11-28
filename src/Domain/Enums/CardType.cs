@@ -15,17 +15,12 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Domain.Enums
 {
-  public class CardGift
+  public enum CardType
     {
-      public long CardId { get; set; }
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-
-      public DateTime Date{get; set;}
-
-      public virtual Clan? Clan { get; set; }
-      public virtual PlayerCard? PlayerCard { get; set; }
+      Magic,
+      Struct,
+      Troop,
     }
 }

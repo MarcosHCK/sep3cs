@@ -23,7 +23,7 @@ namespace DataClash.Application.Statistics.TopPlayersInWars
 {
     public class BestPlayers
     {
-        public IEnumerable<Tuple<Player, Clan, long>> BestPlayer(IApplicationDbContext context, int warId)
+        public IEnumerable<Tuple<Player, Clan, long>> GetBestPlayer(IApplicationDbContext context, int warId)
         {
             var bestPlayers = (from pc in context.PlayerClans
                                join wc in context.WarClans on pc.ClanId equals wc.ClanId

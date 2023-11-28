@@ -15,17 +15,26 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace DataClash.Domain.Entities
+
+using DataClash.Application.Common.Interfaces;
+using DataClash.Domain.Entities;
+using DataClash.Domain.ValueObjects;
+
+namespace DataClash.Application.Statistics.TopClansByRegion
 {
-  public class CardGift
+    public class BestClans
     {
-      public long CardId { get; set; }
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
+        public async Task<IEnumerable<Tuple<Clan, Region, long>>> GetTopClansByRegion(IApplicationDbContext context)
+        {
+            var topClans = context.Clans
+                .GroupBy(c => c.Region.Code)
+                .Select(g => g.OrderByDescending(c => c.TotalTrophiesWonOnWar).First())
+                .Select(c => Tuple.Create(c, c.Region, c.TotalTrophiesWonOnWar))
+                .ToList();
 
-      public DateTime Date{get; set;}
+            return topClans;
+        }
 
-      public virtual Clan? Clan { get; set; }
-      public virtual PlayerCard? PlayerCard { get; set; }
+
     }
 }
