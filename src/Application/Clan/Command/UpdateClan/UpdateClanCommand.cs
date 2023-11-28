@@ -30,8 +30,8 @@ namespace DataClash.Application.Clans.Commands.UpdateClan
     {
       public long Id { get; init; }
       public string? Description { get; init; }
-      public string? Name { get; init; }
-      public string? Region { get; init; }
+      public string Name { get; init; } = null!;
+      public string Region { get; init; } = null!;
       public long TotalTrophiesToEnter { get; init; }
       public long TotalTrophiesWonOnWar { get; init; }
       public ClanType Type { get; init; }

@@ -24,9 +24,9 @@ namespace DataClash.Domain.Entities
       public string? Description { get; set; }
       public double ElixirCost { get; set; }
       public long InitialLevel { get; set; }
-      public string? Name { get; set; }
+      public string Name { get; set; } = null!;
       public Quality Quality { get; set; }
-      public string? Picture { get; set; }
+      public string Picture { get; set; } = null!;
     }
 
   public class MagicCard : Card

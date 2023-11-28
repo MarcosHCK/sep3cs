@@ -27,6 +27,6 @@ namespace DataClash.Domain.Entities
       public TimeSpan Duration { get; set; }
       public long MaxLooses { get; set; }
       public long MinLevel { get; set; }
-      public string? Name { get; set; }
+      public string Name { get; set; } = null!;
     }
 }

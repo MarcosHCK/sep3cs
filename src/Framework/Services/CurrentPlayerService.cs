@@ -26,19 +26,19 @@ namespace DataClash.Framework.Services
       private readonly ICurrentUserService _currentUser;
 
       public long? PlayerId
-      {
-        get
         {
-          var userId = _currentUser.UserId;
-          if (userId == null)
-            return null;
-          else
-            {
-              var user = _context.Users.Find (new object[] { userId });
-              return user?.PlayerId;
-            }
+          get
+          {
+            var userId = _currentUser.UserId;
+            if (userId == null)
+              return null;
+            else
+              {
+                var user = _context.Users.Find (new object[] { userId });
+                return user?.PlayerId;
+              }
+          }
         }
-      }
 
       public CurrentPlayerService (ApplicationDbContext context, ICurrentUserService currentUser)
         {

@@ -24,7 +24,7 @@ namespace DataClash.Domain.Entities
       public DateTime BeginDate { get; set; }
       public TimeSpan Duration { get; set; }
 
-      public virtual Player? LooserPlayer { get; set; }
-      public virtual Player? WinnerPlayer { get; set; }
+      public Player LooserPlayer { get; set; } = null!;
+      public Player WinnerPlayer { get; set; } = null!;
     }
 }
