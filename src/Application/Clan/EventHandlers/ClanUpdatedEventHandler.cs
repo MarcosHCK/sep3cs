@@ -14,17 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Enums;
+using DataClash.Domain.Events;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Clans.EventHandlers
 {
-  public class PlayerClan
+  public class ClanUpdatedEventHandler : INotificationHandler<ClanUpdatedEvent>
     {
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-      public ClanRole Role { get; set; }
+      private readonly ILogger<ClanUpdatedEventHandler> _logger;
 
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
+      public ClanUpdatedEventHandler (ILogger<ClanUpdatedEventHandler> logger)
+        {
+          _logger = logger;
+        }
+
+      public Task Handle (ClanUpdatedEvent notification, CancellationToken cancellationToken)
+        {
+          _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
+          return Task.CompletedTask;
+        }
     }
 }

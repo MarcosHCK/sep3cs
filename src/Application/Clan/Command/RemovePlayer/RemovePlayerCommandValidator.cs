@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Enums;
+using FluentValidation;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Clans.Commands.RemovePlayer
 {
-  public class PlayerClan
+  public class RemovePlayerCommandValidator : AbstractValidator<RemovePlayerCommand>
     {
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-      public ClanRole Role { get; set; }
-
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
+      public RemovePlayerCommandValidator ()
+        {
+          RuleFor (v => v.ClanId).NotEmpty ();
+          RuleFor (v => v.PlayerId).NotEmpty ();
+        }
     }
 }

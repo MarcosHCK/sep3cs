@@ -14,17 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Enums;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Common.Exceptions
 {
-  public class PlayerClan
+  public class ApplicationConstraintException : Exception
     {
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-      public ClanRole Role { get; set; }
-
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
+      public ApplicationConstraintException () : base () { }
+      public ApplicationConstraintException (string message) : base (message) { }
+      public ApplicationConstraintException (string message, Exception innerException) : base (message, innerException) { }
     }
 }

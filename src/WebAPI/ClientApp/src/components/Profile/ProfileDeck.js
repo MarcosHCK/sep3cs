@@ -14,17 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Enums;
+import { Alert } from 'reactstrap'
+import { WaitSpinner } from '../WaitSpinner'
+import React, { useState } from 'react'
+import { ProfilePage } from './ProfilePage'
 
-namespace DataClash.Domain.Entities
+export function ProfileDeck (props)
 {
-  public class PlayerClan
-    {
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-      public ClanRole Role { get; set; }
+  const { playerProfile } = props
+  const [ isLoading, setIsLoading ] = useState (false)
 
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
-    }
+  if (!playerProfile)
+    return (<Alert color='warning'>User has not player status</Alert>)
+  else
+    return (
+      isLoading
+      ? <WaitSpinner />
+      : <ProfilePage title='Deck'>
+          <p>Player cards placeholder</p>
+        </ProfilePage>)
 }

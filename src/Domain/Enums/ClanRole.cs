@@ -14,17 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Enums;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Domain.Enums
 {
-  public class PlayerClan
+  public enum ClanRole
     {
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-      public ClanRole Role { get; set; }
-
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
+      Chief,
+      Commoner,
     }
 }

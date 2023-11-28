@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Enums;
+using FluentValidation;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Clans.Queries.GetClansWithPagination
 {
-  public class PlayerClan
+  public class GetClansWithPaginationQueryValidator : AbstractValidator<GetClansWithPaginationQuery>
     {
-      public long ClanId { get; set; }
-      public long PlayerId { get; set; }
-      public ClanRole Role { get; set; }
-
-      public virtual Clan? Clan { get; set; }
-      public virtual Player? Player { get; set; }
+      public GetClansWithPaginationQueryValidator ()
+        {
+          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
+        }
     }
 }
