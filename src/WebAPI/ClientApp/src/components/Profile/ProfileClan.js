@@ -144,42 +144,58 @@ export function ProfileClan (props)
         </>
       : (<Form onSubmit={(e) => { e.preventDefault (); setIsLoading (true); onSubmit ().then (() => setIsLoading (false)) }}>
           <FormGroup floating>
-            <Input id='clan-input-description' type='text' value={clanDescription} onChange={(e) => setClanDescription (e.target.value)} />
+            <Input id='clan-input-description' type='text'
+              disabled={clanRole !== ClanRole.Chief}
+              onChange={(e) => setClanDescription (e.target.value)}
+              value={clanDescription} />
             <Label for='clan-input-description'>Clan description</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-name' type='text' value={clanName} onChange={(e) => setClanName (e.target.value)} />
+            <Input id='clan-input-name' type='text'
+              disabled={clanRole !== ClanRole.Chief}
+              onChange={(e) => setClanName (e.target.value)}
+              value={clanName} />
             <Label for='clan-input-name'>Clan name</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-region' type='text' value={clanRegion} onChange={(e) => setClanRegion (e.target.value)} />
+            <Input id='clan-input-region' type='text'
+              disabled={clanRole !== ClanRole.Chief}
+              onChange={(e) => setClanRegion (e.target.value)}
+              value={clanRegion} />
             <Label for='clan-input-region'>Clan region</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-total-trophies-to-enter' type='number' value={clanTotalTrophiesToEnter} onChange={(e) => setClanTotalTrophiesToEnter (e.target.value)} />
+            <Input id='clan-input-total-trophies-to-enter' type='number'
+              disabled={clanRole !== ClanRole.Chief}
+              onChange={(e) => setClanTotalTrophiesToEnter (e.target.value)}
+              value={clanTotalTrophiesToEnter} />
             <Label for='clan-input-total-trophies-to-enter'>Throphies needed to enter</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-total-trophies-won-on-war' type='number' value={clanTotalTrophiesWonOnWar} onChange={(e) => setClanTotalTrophiesWonOnWar (e.target.value)} />
+            <Input id='clan-input-total-trophies-won-on-war' type='number'
+              disabled={clanRole !== ClanRole.Chief}
+              onChange={(e) => setClanTotalTrophiesWonOnWar (e.target.value)}
+              value={clanTotalTrophiesWonOnWar} />
             <Label for='clan-input-total-trophies-won-on-war'>Total trophies won on clan wars</Label>
           </FormGroup>
           <FormGroup floating>
             <Input id='clan-input-type' type='select'
-                value={clanTypes.find (k => k === ClanType[clanType])}
-                onChange={(e) => setClanType (ClanType[e.target.value])}>
-              { clanTypes.map ((type) => !isNaN (Number (type)) ? <></> : <option>{type}</option>) }
+              disabled={clanRole !== ClanRole.Chief}
+              onChange={(e) => setClanType (ClanType[e.target.value])}
+              value={clanTypes.find (k => k === ClanType[clanType])} >
+            { clanTypes.map ((type) => !isNaN (Number (type)) ? <></> : <option>{type}</option>) }
             </Input>
             <Label for='clan-input-type'>Clan type</Label>
           </FormGroup>
-          <FormGroup>
+      { clanRole !== ClanRole.Chief
+        ? <></>
+        : <FormGroup>
             <div className='d-flex gap-2'>
               <Button color='primary'>Submit</Button>
               <span className='flex-grow-1'/>
-            { clanRole !== ClanRole.Chief
-              ? <></>
-              : <Button color='danger' onClick={() => { setIsLoading (true); deleteClan ().then (() => setIsLoading (false)) }}>Delete</Button> }
+              <Button color='danger' onClick={() => { setIsLoading (true); deleteClan ().then (() => setIsLoading (false)) }}>Delete</Button>
             </div>
-          </FormGroup>
+          </FormGroup>}
         </Form>)}
       </ProfilePage>)
 }
