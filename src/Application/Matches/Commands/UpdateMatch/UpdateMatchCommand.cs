@@ -31,8 +31,8 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
         public long LooserPlayerId { get; init; }
         public DateTime BeginDate { get; init; }
         public TimeSpan Duration { get; init; }
-        public Player? LooserPlayer { get; init; }
-        public Player? WinnerPlayer { get; init; }
+        //public Player? LooserPlayer { get; init; }
+        //public Player? WinnerPlayer { get; init; }
     }
 
     public class UpdateMatchCommandHandler : IRequestHandler<UpdateMatchCommand>
@@ -51,10 +51,10 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
             entity.LooserPlayerId = request.LooserPlayerId;
             entity.BeginDate = request.BeginDate;
             entity.Duration = request.Duration;
-            entity.WinnerPlayer = request.WinnerPlayer;
-            entity.LooserPlayer = request.LooserPlayer;
+            //entity.WinnerPlayer = request.WinnerPlayer;
+            //entity.LooserPlayer = request.LooserPlayer;
 
-            entity.AddDomainEvent (new MatchUpdatedEvent (entity));
+            //entity.AddDomainEvent (new MatchUpdatedEvent (entity));
             await _context.SaveChangesAsync (cancellationToken);
         }
     }

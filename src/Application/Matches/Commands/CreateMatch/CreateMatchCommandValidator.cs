@@ -22,7 +22,8 @@ namespace DataClash.Application.Matches.Commands.CreateMatch
     {
       public CreateMatchCommandValidator ()
         {
-            //falta validar los id de jugadores
+            RuleFor(v => v.WinnerPlayerId).NotEmpty();
+            RuleFor(v => v.LooserPlayerId).NotEmpty();
             RuleFor (v => v.BeginDate).NotEmpty ();
             RuleFor (v => v.Duration).NotEmpty ();
         }

@@ -22,7 +22,8 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
     {
         public UpdateMatchCommandValidator ()
         {
-            //falta validar los id
+            RuleFor(v => v.WinnerPlayerId).NotEmpty();
+            RuleFor(v => v.LooserPlayerId).NotEmpty();
             RuleFor (v => v.BeginDate).NotEmpty ();
             RuleFor (v => v.Duration).NotEmpty ();
         }

@@ -21,7 +21,7 @@ namespace DataClash.Application.Matches.Queries.GetMatch
 {
     public class MatchBriefDto : IMapFrom<Match>
     {
-        public long Id { get; init; }
+        //public long Id { get; init; }
         public long WinnerPlayerId { get; init; }
         public long LooserPlayerId { get; init; }
         public DateTime BeginDate { get; init; }

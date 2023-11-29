@@ -25,7 +25,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataClash.WebUI.Controllers
 {
-    [Authorize]
     public class MatchController : ApiControllerBase
     {
         [HttpGet]
@@ -35,27 +34,27 @@ namespace DataClash.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<long>> Create (CreateMatchCommand command)
+        public async Task<ActionResult<(long, long, DateTime)>> Create (CreateMatchCommand command)
         {
             return await Mediator.Send (command);
         }
 
-        [HttpDelete ("{id}")]
+        [HttpDelete ("{(winnerPlayerId,looserPlayerId,beginDate)}")]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Delete (long id)
+        public async Task<IActionResult> Delete ((long,long,DateTime) id)
         {
             await Mediator.Send (new DeleteMatchCommand (id));
             return NoContent ();
         }
 
-        [HttpPut ("{id}")]
+        [HttpPut ("{(winnerPlayerId,looserPlayerId,beginDate)}")]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesResponseType (StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Update (long id, UpdateMatchCommand command)
+        public async Task<IActionResult> Update ((long,long,DateTime) id, UpdateMatchCommand command)
         {
-            if (id != command.Id)
+            if (id.Item1 != command.WinnerPlayerId || id.Item2 != command.LooserPlayerId || id.Item3 != command.BeginDate)
                 return BadRequest ();
 
             await Mediator.Send (command);

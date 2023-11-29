@@ -26,7 +26,7 @@ namespace DataClash.Application.Matches.Queries.GetMatchesWithPagination
 {
     public record GetMatchesWithPaginationQuery : IRequest<PaginatedList<MatchBriefDto>>
     {
-        public int PageNumber { get; init; } = 1;//posible error
+        public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 10;
     }
 

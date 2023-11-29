@@ -15,7 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Button, Table } from 'reactstrap'
-import { CreateMatchCommand } from '../webApiClient.ts'//probablemente de error
+import { CreateMatchCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime.js'
 import { Pager } from './Pager.js'
 import { TimeSpan } from './TimeSpan.js'
@@ -25,6 +25,7 @@ import { UserRoles } from '../services/AuthorizeConstants.js'
 import { MatchClient } from '../webApiClient.ts'
 import authService from '../services/AuthorizeService.ts'
 import React, { useEffect, useState } from 'react'
+import { WaitSpinner } from './WaitSpinner.js'
 
 export function Matches ()
 {
@@ -32,11 +33,14 @@ export function Matches ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
-  const [ isAdministrator, setIsAdministrator ] = useState (false)
+  const { isAuthorized, inRole }= useAuthorize ()
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
   const [ matchClient ] = useState (new MatchClient ())
+  const errorReporter = useErrorReporter ()
+
+  
 
   const pageSize = 10
   const visibleIndices = 5
@@ -44,31 +48,53 @@ export function Matches ()
   const addMatch = async () =>
     {
       const data = new CreateMatchCommand ()
-        data.winnerPlayerId = 1
-        data.looserPlayerId = 2
-        data.beginDay = new Date ()
-        data.duration = "00:00:01"
-      await matchClient.create (data)
-      setActivePage (-1)
+      data.winnerPlayerId = 1
+      data.looserPlayerId = 2
+      data.beginDate = new Date ()
+      data.duration = "00:00:01"
+      try
+      {
+        await matchClient.create (data)
+        setActivePage (-1)
+      }
+      catch(error)
+      {
+        errorReporter(error)
+      }
+      
     }
 
   const removeMatch = async (item) =>
     {
-      await matchClient.delete (item.id)
-      setActivePage (-1)
+      try
+      {
+        await matchClient.delete (item.id)
+        setActivePage (-1)
+      }
+      catch(error)
+      {
+        errorReporter(error)
+      }
     }
 
   const updateMatch = async (item) =>
     {
       const data = new UpdateMatchCommand ()
-        data.id = item.id
-        data.winnerPlayerId = item.winnerPlayerId
-        data.looserPlayerId = item.looserPlayerId
-        data.beginDay = item.beginDay
-        data.duration = item.duration
-      await matchClient.update (item.id, data)
+      //data.id = item.id
+      data.winnerPlayerId = item.winnerPlayerId
+      data.looserPlayerId = item.looserPlayerId
+      data.beginDate = item.beginDate
+      data.duration = item.duration
+      try
+      {
+        await matchClient.update (item.id, data)
+      }
+      catch(error)
+      {
+        errorReporter(error)
+      }
     }
-
+/*
   useEffect (() =>
     {
       const checkRole = async () =>
@@ -81,23 +107,39 @@ export function Matches ()
       setIsLoading (true)
       checkRole ().then (() => setIsLoading (false))
     }, [])
-
+*/
   useEffect (() =>
     {
       const lastPage = async () =>
         {
-          const paginatedList = await matchClient.getWithPagination (1, pageSize)
-          return paginatedList.totalPages
+          try
+          {
+            const paginatedList = await matchClient.getWithPagination (1, pageSize)
+            return paginatedList.totalPages
+          }
+          catch(error)
+          {
+            errorReporter(error)
+            return 0
+          }
+          
         }
 
       const refreshPage = async () =>
         {
-          const paginatedList = await matchClient.getWithPagination (activePage + 1, pageSize)
+          try
+          {
+            const paginatedList = await matchClient.getWithPagination (activePage + 1, pageSize)
 
-          setHasNextPage (paginatedList.hasNextPage)
-          setHasPreviousPage (paginatedList.hasPreviousPage)
-          setItems (paginatedList.items)
-          setTotalPages (paginatedList.totalPages)
+            setHasNextPage (paginatedList.hasNextPage)
+            setHasPreviousPage (paginatedList.hasPreviousPage)
+            setItems (paginatedList.items)
+            setTotalPages (paginatedList.totalPages)
+          }
+          catch(error)
+          {
+            errorReporter(error)
+          }
         }
 
       if (activePage >= 0)
@@ -119,8 +161,8 @@ export function Matches ()
     }, [activePage])
 
   return (
-    isLoading
-      ? (<div></div>)
+    isLoading || !isAuthorized
+      ? (<WaitSpinner/>)
     : (
       <>
         <div className='d-flex justify-content-center'>
@@ -136,10 +178,9 @@ export function Matches ()
           <Table>
             <thead>
               <tr>
-                <th>{'#'}</th>
                 <th>{'Winner player'}</th>
                 <th>{'Looser player'}</th>
-                <th>{'Begin day'}</th>
+                <th>{'Begin date'}</th>
                 <th>{'Duration'}</th>
                 <th />
               </tr>
@@ -147,7 +188,6 @@ export function Matches ()
             <tbody>
         { (items ?? []).map ((item, index) => (
               <tr key={`body${index}`}>
-                <th scope="row">{ item.id }</th>
                 <td>
                   <p>{ item.winnerPlayerId }</p>
                 </td>
@@ -156,18 +196,18 @@ export function Matches ()
                 </td>
                 <td>
                   <DateTime
-                    defaultValue={item.beginDay}
-                    onChanged={(date) => { item.beginDay = date; updateMatch (item) }}
-                    readOnly={!isAdministrator} />
+                    defaultValue={item.beginDate}
+                    onChanged={(date) => { item.beginDate = date; updateMatch (item) }}
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
                   <TimeSpan
                     defaultValue={item.duration}
                     onChanged={(span) => { item.duration = span; updateMatch (item) }}
-                    readOnly={!isAdministrator} />
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
         {
-          (!isAdministrator)
+          (!inRole[UserRoles.Administrator])
           ? (<td />)
           : (
                 <td>
@@ -179,7 +219,7 @@ export function Matches ()
             </tbody>
             <tfoot>
         {
-          (!isAdministrator)
+          (!inRole[UserRoles.Administrator])
           ? (<tr />)
           : (
               <tr key='footer0'>

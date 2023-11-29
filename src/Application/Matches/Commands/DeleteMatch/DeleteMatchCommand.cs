@@ -24,7 +24,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Matches.Commands.DeleteMatch
 {
-    public record DeleteMatchCommand (long Id) : IRequest;
+    public record DeleteMatchCommand ((long WinnerPlayerId,long LooserPlayerId, DateTime BeginDate) Key) : IRequest;
 
     [Authorize (Roles = "Administrator")]
     public class DeleteMatchCommandHandler : IRequestHandler<DeleteMatchCommand>
@@ -39,12 +39,15 @@ namespace DataClash.Application.Matches.Commands.DeleteMatch
         public async Task Handle (DeleteMatchCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Matches
-                .Where (l => l.Id == request.Id)
+                .Where (l => l.WinnerPlayerId == request.Key.WinnerPlayerId 
+                && l.LooserPlayerId == request.Key.LooserPlayerId 
+                && l.BeginDate == request.Key.BeginDate)
                 .SingleOrDefaultAsync (cancellationToken)
-            ?? throw new NotFoundException (nameof (Match), request.Id);
+            ?? throw new NotFoundException (nameof (Match),
+             (request.Key.WinnerPlayerId,request.Key.LooserPlayerId,request.Key.BeginDate));
 
             _context.Matches.Remove (entity);
-            entity.AddDomainEvent (new MatchDeletedEvent (entity));
+            //entity.AddDomainEvent (new MatchDeletedEvent (entity));
 
             await _context.SaveChangesAsync (cancellationToken);
         }

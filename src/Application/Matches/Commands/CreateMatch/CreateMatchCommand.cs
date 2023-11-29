@@ -20,17 +20,17 @@ using MediatR;
 namespace DataClash.Application.Matches.Commands.CreateMatch
 {
     [Authorize (Roles = "Administrator")]
-    public record CreateMatchCommand : IRequest<long>
+    public record CreateMatchCommand : IRequest<(long, long, DateTime)>
     {
         public long WinnerPlayerId { get; init; }
         public long LooserPlayerId { get; init; }
         public DateTime BeginDate { get; init; }
         public TimeSpan Duration { get; init; }
-        public Player? LooserPlayer { get; init; }
-        public Player? WinnerPlayer { get; init; }
+        //public Player? LooserPlayer { get; init; }
+        //public Player? WinnerPlayer { get; init; }
 
     }
-    public class CreateMatchCommandHandler : IRequestHandler<CreateMatchCommand,long>
+    public class CreateMatchCommandHandler : IRequestHandler<CreateMatchCommand, (long, long, DateTime)>
     {
         private readonly IApplicationDbContext _context;
 
@@ -39,7 +39,7 @@ namespace DataClash.Application.Matches.Commands.CreateMatch
             _context = context;
         }
 
-        public async Task<long> Handle (CreateMatchCommand request, CancellationToken cancellationToken)
+        public async Task<(long,long,DateTime)> Handle (CreateMatchCommand request, CancellationToken cancellationToken)
         {
           var entity = new Match
             {
@@ -47,15 +47,15 @@ namespace DataClash.Application.Matches.Commands.CreateMatch
                 LooserPlayerId = request.LooserPlayerId,
                 BeginDate = request.BeginDate,
                 Duration = request.Duration,
-                WinnerPlayer = request.WinnerPlayer,
-                LooserPlayer = request.LooserPlayer
+                //WinnerPlayer = request.WinnerPlayer,
+                //LooserPlayer = request.LooserPlayer
             };
 
-          entity.AddDomainEvent (new MatchCreatedEvent (entity));
+          //entity.AddDomainEvent (new MatchCreatedEvent (entity));
           _context.Matches.Add (entity);
 
           await _context.SaveChangesAsync (cancellationToken);
-          return entity.Id;
+          return (entity.WinnerPlayerId,entity.LooserPlayerId,entity.BeginDate);
         }
     }
 

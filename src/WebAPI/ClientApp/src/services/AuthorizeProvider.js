@@ -39,7 +39,9 @@ export function AuthorizeProvider (props)
           const promises = [ authService.isAuthenticated(), authService.getUser() ]
           const [ isAuthorized, userProfile ] = await Promise.all (promises)
 
-          const roles = typeof userProfile.role === 'string'
+          const roles = !isAuthorized
+                      ? undefined
+                      : typeof userProfile.role === 'string'
                           ? ({ [userProfile.role] : true })
                       : (Array.isArray (userProfile.role) === false
                           ? ({ })
