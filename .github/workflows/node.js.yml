@@ -24,13 +24,14 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        node-version: ${{ matrix.node-version }}
+      working-directory: src/WebAPI/ClientApp/
     - run: |
         cd src/WebAPI/ClientApp/
         npm ci
     - run: |
-        cd cd src/WebAPI/ClientApp/
+        cd src/WebAPI/ClientApp/
         npm run build --if-present
     - run: |
         cd src/WebAPI/ClientApp/
