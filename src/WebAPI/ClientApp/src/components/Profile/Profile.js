@@ -22,6 +22,7 @@ import { ProfileClan } from './ProfileClan'
 import { ProfileDeck } from './ProfileDeck'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
+import { ProfileChallenge } from './ProfileChallenge'
 import { useAuthorize } from '../../services/AuthorizeProvider'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
@@ -42,6 +43,7 @@ export function Profile ()
       { title: 'Identity', component: <ProfileIdentity {...downProps} /> },
       { title: 'Player', component: <ProfilePlayer {...downProps} /> },
       { separator : true },
+      { title: 'Challenges', component: <ProfileChallenge {...downProps}> },
       { title: 'Clan', component: <ProfileClan {...downProps} /> },
       { title: 'Deck', component: <ProfileDeck {...downProps} /> },
     ]

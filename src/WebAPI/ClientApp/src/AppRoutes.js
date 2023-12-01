@@ -17,6 +17,7 @@
 import { ApplicationPaths } from './services/AuthorizeConstants'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
+import { Profile } from './components/Profile'
 import { LoginActions } from './services/AuthorizeConstants'
 import { Logout } from './components/Logout'
 import { LogoutActions } from './services/AuthorizeConstants'
@@ -25,6 +26,7 @@ import { Profile } from './components/Profile'
 import { RequireAuth } from './components/RequireAuth'
 import { Route, Routes } from 'react-router-dom'
 import { Wars } from './components/Wars'
+
 
 const loginAction = (name) => (<Login action={name}></Login>)
 const logoutAction = (name) => (<Logout action={name}></Logout>)
