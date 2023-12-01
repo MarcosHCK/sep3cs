@@ -15,13 +15,14 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths } from './services/AuthorizeConstants'
+import { Challenges } from './components/Challenges'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
-import { Players } from './components/Players'
-import { Profile } from './components/Profile'
 import { LoginActions } from './services/AuthorizeConstants'
 import { Logout } from './components/Logout'
 import { LogoutActions } from './services/AuthorizeConstants'
+import { Players } from './components/Players'
+import { Profile } from './components/Profile'
 import { RequireAuth } from './components/RequireAuth'
 import { Route, Routes } from 'react-router-dom'
 import { Wars } from './components/Wars'
@@ -35,7 +36,7 @@ const AppRoutes = () => (
       <Route path={'/'} element={<Home />} index={true} />
 
       <Route path={'/cards'} element={<RequireAuth><p>Cards component placeholdes</p></RequireAuth>}/>
-      <Route path={'/challenges'} element={<RequireAuth><p>Challenges component placeholdes</p></RequireAuth>}/>
+      <Route path={'/challenges'} element={<RequireAuth><Challenges /></RequireAuth>}/>
       <Route path={'/clans'} element={<RequireAuth><p>Clans component placeholdes</p></RequireAuth>}/>
       <Route path={'/matches'} element={<RequireAuth><p>Matches component placeholdes</p></RequireAuth>}/>
       <Route path={'/players'} element={<RequireAuth role='Administrator'><Players /></RequireAuth>}/>
