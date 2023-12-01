@@ -23,8 +23,8 @@ namespace DataClash.Domain.Entities
   public class Clan : BaseEntity
   {
     public string? Description { get; set; }
-    public string? Name { get; set; }
-    public Region? Region { get; set; }
+    public string Name { get; set; } = null!;
+    public Region Region { get; set; } = null!;
     public long TotalTrophiesToEnter { get; set; }
     public long TotalTrophiesWonOnWar { get; set; }
     public ClanType Type { get; set; }

@@ -19,11 +19,11 @@ using DataClash.Domain.Entities;
 
 namespace DataClash.Domain.Events
 {
-  public class PlayerRemovedEvent : BaseEvent
+  public class PlayerRemovedEvent<T> : BaseEvent
     {
-      public PlayerChallenge Item { get; }
+      public T Item { get; }
 
-      public PlayerRemovedEvent (PlayerChallenge item)
+      public PlayerRemovedEvent (T item)
         {
           Item = item;
         }
