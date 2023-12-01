@@ -61,7 +61,7 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
                               ?? throw new NotFoundException (nameof (PlayerClan), new object[] { request.ClanId, request.PlayerId });
 
               _context.PlayerClans.Remove (entity);
-              clan.AddDomainEvent (new PlayerRemovedEvent (entity));
+              clan.AddDomainEvent (new PlayerRemovedEvent<PlayerClan> (entity));
 
               await _context.SaveChangesAsync (cancellationToken);
             }
