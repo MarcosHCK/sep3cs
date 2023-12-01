@@ -44,7 +44,7 @@ namespace DataClash.Application.Clans.Queries.GetClansWithPagination
 
       public async Task<PaginatedList<ClanBriefDto>> Handle (GetClansWithPaginationQuery query, CancellationToken cancellationToken)
         {
-          return await _context.Wars
+          return await _context.Clans
             .ProjectTo<ClanBriefDto> (_mapper.ConfigurationProvider)
             .PaginatedListAsync (query.PageNumber, query.PageSize);
         }
