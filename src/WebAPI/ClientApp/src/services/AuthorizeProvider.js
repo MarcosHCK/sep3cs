@@ -39,7 +39,8 @@ export function AuthorizeProvider (props)
           const promises = [ authService.isAuthenticated(), authService.getUser() ]
           const [ isAuthorized, userProfile ] = await Promise.all (promises)
 
-          const roles = typeof userProfile.role === 'string'
+          const roles = !userProfile ? undefined
+                      : typeof userProfile.role === 'string'
                           ? ({ [userProfile.role] : true })
                       : (Array.isArray (userProfile.role) === false
                           ? ({ })
@@ -68,7 +69,7 @@ export function AuthorizeProvider (props)
 
       populateAuthenticationState ()
 
-      return () => { authService.unsubscribe(subscription) }
+      return () => { authService.unsubscribe (subscription) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
