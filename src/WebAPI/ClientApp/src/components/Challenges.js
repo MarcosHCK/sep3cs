@@ -15,7 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths } from '../services/AuthorizeConstants'
-import { Button, Table } from 'reactstrap'
+import { Button, Table,Input } from 'reactstrap'
 import { CreateChallengeCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
 import { Navigate, useParams } from 'react-router-dom'
@@ -26,6 +26,8 @@ import { useAuthorize } from '../services/AuthorizeProvider'
 import { UserRoles } from '../services/AuthorizeConstants'
 import { ChallengeClient } from '../webApiClient.ts'
 import React, { useEffect, useState } from 'react'
+import { WaitSpinner } from './WaitSpinner'
+import { useErrorReporter } from './ErrorReporter'
 
 export function Challenges ()
 {
@@ -38,7 +40,8 @@ export function Challenges ()
   const [ items, setItems ] = useState (undefined)
   const [ totalPages, setTotalPages ] = useState (0)
   const [ challengeClient ] = useState (new ChallengeClient ())
-
+  const errorReporter = useErrorReporter ()
+  var error
   const pageSize = 10
   const visibleIndices = 5
 
@@ -47,21 +50,31 @@ export function Challenges ()
       const data = new CreateChallengeCommand ()
         data.beginDay = new Date ()
         data.duration = "00:00:01"
-        data.bounty=0
-        data.cost=0
+        data.bounty=1
+        data.cost=1
         data.description="<no text>"
-        data.maxLooses=0
-        data.minLevel=0
+        data.maxLooses=1
+        data.minLevel=1
         data.name="<no text>"
-
+      try{
       await challengeClient.create (data)
       setActivePage (-1)
+      }catch(error)
+      {
+        errorReporter (error)
+      }
     }
 
   const removeChallenge = async (item) =>
     {
+      try{
       await challengeClient.delete (item.id)
       setActivePage (-1)
+      }
+      catch(error)
+     {
+      errorReporter (error)
+     }
     }
 
   const updateChallenge = async (item) =>
@@ -76,26 +89,42 @@ export function Challenges ()
         data.maxLooses=item.maxLooses
         data.minLevel=item.minLevel
         data.name=item.name
-        
-      await challengeClient.update (item.id, data)
+      try{  
+        await challengeClient.update (item.id, data)
+      }catch(error)
+      {
+        errorReporter (error)
+      }
     }
 
   useEffect (() =>
     {
       const lastPage = async () =>
         {
+          try{
           const paginatedList = await challengeClient.getWithPagination (1, pageSize)
           return paginatedList.totalPages
+          }
+          catch(error)
+          {
+            errorReporter (error)
+            return 0
+          }
         }
 
       const refreshPage = async () =>
         {
+          try{
           const paginatedList = await challengeClient.getWithPagination (activePage + 1, pageSize)
 
           setHasNextPage (paginatedList.hasNextPage)
           setHasPreviousPage (paginatedList.hasPreviousPage)
           setItems (paginatedList.items)
           setTotalPages (paginatedList.totalPages)
+          }
+          catch{
+            errorReporter (error)
+          }
         }
 
       if (activePage >= 0)
@@ -117,11 +146,8 @@ export function Challenges ()
     }, [activePage])
 
   return (
-    isLoading
-    ? (<div></div>)
-    : (
-    !isAuthorized
-    ? (<Navigate to={ApplicationPaths.Login} />)
+    isLoading||!isAuthorized
+    ? (<WaitSpinner />)
     : (
       <>
         <div className='d-flex justify-content-center'>
@@ -167,45 +193,46 @@ export function Challenges ()
                     readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
-                  <input
+                  <Input
                     type='text'
                     defaultValue={item.bounty}
-                    onChanged={(number) => { item.bounty = number; updateChallenge (item) }}
+                    onChanged={(e) => { e.preventDefault();item.bounty = e.target.value; updateChallenge (item) }}
                     readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
-                  <input
+                  <Input
                     type='number'
                     defaultValue={item.cost}
-                    onChanged={(number) => { item.cost = number; updateChallenge (item) }}
+                    onChanged={(e) => {e.preventDefault(); item.cost = e.target.value; updateChallenge (item) }}
                     readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
-                  <input
+                  <Input
                     type='text'
                     defaultValue={item.description}
-                    onChanged={(string) => { item.description = string; updateChallenge (item) }}
+                    onChange={(e) => { e.preventDefault (); item.description = e.target.value; updateChallenge (item) }}
                     readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
-                  <input
+                  <Input
                     type='number'
                     defaultValue={item.maxLooses}
-                    onChanged={(number) => { item.maxLooses = number; updateChallenge (item) }}
+                    onChanged={(e) => {e.preventDefault(); item.maxLooses = e.target.value; updateChallenge (item) }}
                     readOnly={!inRole[UserRoles.Administrator]} />
+                    
                 </td>
                 <td>
-                  <input
+                  <Input
                     type='number'
                     defaultValue={item.minLevel}
-                    onChanged={(number) => { item.minLevel = number; updateChallenge (item) }}
+                    onChanged={(e) => {e.preventDefault(); item.minLevel = e.target.value; updateChallenge (item) }}
                     readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
                 <td>
-                  <input
+                  <Input
                     type='text'
                     defaultValue={item.name}
-                    onChanged={(string) => { item.name = string; updateChallenge (item) }}
+                    onChanged={(e) => {e.preventDefault(); item.name = e.target.value; updateChallenge (item) }}
                     readOnly={!inRole[UserRoles.Administrator]} />
                 </td>
 
@@ -235,5 +262,5 @@ export function Challenges ()
             </tfoot>
           </Table>
         </div>
-      </>)))
+      </>))
 }

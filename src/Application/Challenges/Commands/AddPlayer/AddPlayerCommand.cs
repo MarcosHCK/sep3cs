@@ -22,23 +22,25 @@ using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
 using MediatR;
 
-namespace DataClash.Application.Clans.Commands.RemovePlayer
+namespace DataClash.Application.Challenges.Commands.AddPlayer
 {
   [Authorize]
-  public record RemovePlayerCommand : IRequest
+  public record AddPlayerCommand : IRequest
     {
-      public long ClanId { get; init; }
+      public long ChallengeId { get; init; }
       public long PlayerId { get; init; }
+      public long WonThrophies { get; init; }
+
     }
 
-  public class RemovePlayerCommandHandler : IRequestHandler<RemovePlayerCommand>
+  public class AddPlayerCommandHandler : IRequestHandler<AddPlayerCommand>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
       private readonly ICurrentUserService _currentUser;
       private readonly IIdentityService _identityService;
 
-      public RemovePlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
+      public AddPlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
           _context = context;
           _currentPlayer = currentPlayer;
@@ -46,25 +48,22 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
           _identityService = identityService;
         }
 
-      public async Task Handle (RemovePlayerCommand request, CancellationToken cancellationToken)
+      public async Task Handle (AddPlayerCommand request, CancellationToken cancellationToken)
         {
           var userId = _currentUser.UserId!;
-          var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.ClanId);
+          var challenge = await _context.Challenges.FindAsync (new object[] { request.ChallengeId }, cancellationToken) ?? throw new NotFoundException (nameof (Challenge), request.ChallengeId);
           var playerId = _currentPlayer.PlayerId!;
-          var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, playerId }, cancellationToken);
+          var playerChallenge = await _context.PlayerChallenges.FindAsync (new object[] { request.ChallengeId, playerId }, cancellationToken);
 
-          if (playerClan?.Role != ClanRole.Chief && await _identityService.IsInRoleAsync (userId, Roles.Administrator) == false)
-            throw new ForbiddenAccessException ();
-          else
-            {
-              var entity = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, request.PlayerId }, cancellationToken)
-                              ?? throw new NotFoundException (nameof (PlayerClan), new object[] { request.ClanId, request.PlayerId });
+          
+          
+          var entity = new PlayerChallenge { ChallengeId = request.ChallengeId, PlayerId = request.PlayerId, WonThrophies=request.WonThrophies, };
 
-              _context.PlayerClans.Remove (entity);
-              clan.AddDomainEvent (new PlayerRemovedEvent<PlayerClan> (entity));
+          challenge.AddDomainEvent (new PlayerAddedEvent<PlayerChallenge> (entity));
+          _context.PlayerChallenges.Add (entity);
 
-              await _context.SaveChangesAsync (cancellationToken);
-            }
+          await _context.SaveChangesAsync (cancellationToken);
+            
         }
     }
 }

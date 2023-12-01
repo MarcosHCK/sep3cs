@@ -80,7 +80,7 @@ namespace DataClash.Application.Common.Seeders
     public void SeedAsync(IApplicationDbContext context)
       {
         AddCard<TroopCard>(context, "angry_barbarian description", 1, 1, "angry_barbarian", Quality.Normal, "angry_barbarian", 100, 100, 1);
-        AddCard<TroopCard>(context, "archer description", 1, 1, "archer", Quality.Normal, "archer", 100, 100, 1);
+        AddCard<TroopCard>(context, "A pair of lightly armored ranged attackers. They'll help you take down ground and air units, but you're on your own with hair coloring advice.", 3, 1, "archer", Quality.Normal, "archer", 42, 119, 2);
         AddCard<TroopCard>(context, "archerqueen description", 1, 1, "archerqueen", Quality.Normal, "archerqueen", 100, 100, 1);
         AddCard<TroopCard>(context, "baby_dragon description", 1, 1, "baby_dragon", Quality.Normal, "baby_dragon", 100, 100, 1);
         AddCard<TroopCard>(context, "bandit description", 1, 1, "bandit", Quality.Normal, "bandit", 100, 100, 1);
@@ -121,10 +121,10 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "flying_machine description", 1, 1, "flying_machine", Quality.Normal, "flying_machine", 100, 100, 1);
         AddCard<TroopCard>(context, "freeze description", 1, 1, "freeze", Quality.Normal, "freeze", 100, 100, 1);
         AddCard<TroopCard>(context, "ghost description", 1, 1, "ghost", Quality.Normal, "ghost", 100, 100, 1);
-        AddCard<TroopCard>(context, "giant description", 1, 1, "giant", Quality.Normal, "giant", 100, 100, 1);
+        AddCard<TroopCard>(context, "Slow but durable, only attacks buildings. A real one-man wrecking crew!", 5, 1, "giant", Quality.Rare, "giant", 120, 1930, 1);
         AddCard<TroopCard>(context, "giant_skeleton description", 1, 1, "giant_skeleton", Quality.Normal, "giant_skeleton", 100, 100, 1);
         AddCard<TroopCard>(context, "goblindrill description", 1, 1, "goblindrill", Quality.Normal, "goblindrill", 100, 100, 1);
-        AddCard<TroopCard>(context, "goblins description", 1, 1, "goblins", Quality.Normal, "goblins", 100, 100, 1);
+        AddCard<TroopCard>(context, " Four fast, unarmored melee attackers. Small, fast, green and mean!", 2, 1, "goblins", Quality.Normal, "goblins", 47, 79, 4);
         AddCard<TroopCard>(context, "goblin_archer description", 1, 1, "goblin_archer", Quality.Normal, "goblin_archer", 100, 100, 1);
         AddCard<TroopCard>(context, "goblin_barrel description", 1, 1, "goblin_barrel", Quality.Normal, "goblin_barrel", 100, 100, 1);
         AddCard<TroopCard>(context, "goblin_cage description", 1, 1, "goblin_cage", Quality.Normal, "goblin_cage", 100, 100, 1);
@@ -139,7 +139,7 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "icegolem description", 1, 1, "icegolem", Quality.Normal, "icegolem", 100, 100, 1);
         AddCard<TroopCard>(context, "ice_wizard description", 1, 1, "ice_wizard", Quality.Normal, "ice_wizard", 100, 100, 1);
         AddCard<TroopCard>(context, "inferno_dragon description", 1, 1, "inferno_dragon", Quality.Normal, "inferno_dragon", 100, 100, 1);
-        AddCard<TroopCard>(context, "knight description", 1, 1, "knight", Quality.Normal, "knight", 100, 100, 1);
+        AddCard<TroopCard>(context, "A tough melee fighter. The Barbarian's handsome, cultured cousin. Rumor has it that he was knighted based on the sheer awesomeness of his mustache alone.", 1, 1, "knight", Quality.Normal, "knight", 79, 690, 1);
         AddCard<TroopCard>(context, "lava_hound description", 1, 1, "lava_hound", Quality.Normal, "lava_hound", 100, 100, 1);
         AddCard<TroopCard>(context, "lightning description", 1, 1, "lightning", Quality.Normal, "lightning", 100, 100, 1);
         AddCard<TroopCard>(context, "little_prince description", 1, 1, "little_prince", Quality.Normal, "little_prince", 100, 100, 1);
@@ -159,7 +159,7 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "order_volley description", 1, 1, "order_volley", Quality.Normal, "order_volley", 100, 100, 1);
         AddCard<TroopCard>(context, "party_hut description", 1, 1, "party_hut", Quality.Normal, "party_hut", 100, 100, 1);
         AddCard<TroopCard>(context, "party_rocket description", 1, 1, "party_rocket", Quality.Normal, "party_rocket", 100, 100, 1);
-        AddCard<TroopCard>(context, "pekka description", 1, 1, "pekka", Quality.Normal, "pekka", 100, 100, 1);
+        AddCard<TroopCard>(context, "A heavily armored, slow melee fighter. Swings from the hip, but packs a huge punch.", 7, 1, "pekka", Quality.Uncommon, "pekka", 510,2350, 1);
         AddCard<TroopCard>(context, "phoenix description", 1, 1, "phoenix", Quality.Normal, "phoenix", 100, 100, 1);
         AddCard<TroopCard>(context, "poison description", 1, 1, "poison", Quality.Normal, "poison", 100, 100, 1);
         AddCard<TroopCard>(context, "prince description", 1, 1, "prince", Quality.Normal, "prince", 100, 100, 1);
