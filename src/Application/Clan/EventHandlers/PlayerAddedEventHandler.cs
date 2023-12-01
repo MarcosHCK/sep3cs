@@ -14,22 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Domain.Entities;
 using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace DataClash.Application.Clans.EventHandlers
 {
-  public class PlayerAddedEventHandler : INotificationHandler<PlayerAddedEvent>
+  public class PlayerAddedEventHandler : INotificationHandler<PlayerAddedEvent<PlayerClan>>
     {
-      private readonly ILogger<PlayerAddedEvent> _logger;
+      private readonly ILogger<PlayerAddedEvent<PlayerClan>> _logger;
 
-      public PlayerAddedEventHandler (ILogger<PlayerAddedEvent> logger)
+      public PlayerAddedEventHandler (ILogger<PlayerAddedEvent<PlayerClan>> logger)
         {
           _logger = logger;
         }
 
-      public Task Handle (PlayerAddedEvent notification, CancellationToken cancellationToken)
+      public Task Handle (PlayerAddedEvent<PlayerClan> notification, CancellationToken cancellationToken)
         {
           _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
           return Task.CompletedTask;

@@ -15,15 +15,14 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 using DataClash.Domain.Common;
-using DataClash.Domain.Entities;
 
 namespace DataClash.Domain.Events
 {
-  public class PlayerAddedEvent : BaseEvent
+  public class PlayerAddedEvent<T> : BaseEvent
     {
-      public PlayerClan Item { get; }
+      public T Item { get; }
 
-      public PlayerAddedEvent (PlayerClan item)
+      public PlayerAddedEvent (T item)
         {
           Item = item;
         }

@@ -72,7 +72,7 @@ namespace DataClash.Application.Clans.Commands.CreateClanWithChief
               Role = ClanRole.Chief,
             };
 
-          clanEntity.AddDomainEvent (new PlayerAddedEvent (playerClanEntity));
+          clanEntity.AddDomainEvent (new PlayerAddedEvent<PlayerClan> (playerClanEntity));
           _context.PlayerClans.Add (playerClanEntity);
 
           await _context.SaveChangesAsync (cancellationToken);

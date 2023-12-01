@@ -62,7 +62,7 @@ namespace DataClash.Application.Clans.Commands.AddPlayer
             {
               var entity = new PlayerClan { ClanId = request.ClanId, PlayerId = request.PlayerId, Role = request.Role, };
 
-              clan.AddDomainEvent (new PlayerAddedEvent (entity));
+              clan.AddDomainEvent (new PlayerAddedEvent<PlayerClan> (entity));
               _context.PlayerClans.Add (entity);
 
               await _context.SaveChangesAsync (cancellationToken);
