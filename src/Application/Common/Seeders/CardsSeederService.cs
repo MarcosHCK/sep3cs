@@ -80,7 +80,7 @@ namespace DataClash.Application.Common.Seeders
     public void SeedAsync(IApplicationDbContext context)
       {
         AddCard<TroopCard>(context, "angry_barbarian description", 1, 1, "angry_barbarian", Quality.Normal, "angry_barbarian", 100, 100, 1);
-        AddCard<TroopCard>(context, "A pair of lightly armored ranged attackers. They'll help you take down ground and air units, but you're on your own with hair coloring advice.", 3, 1, "archer", Quality.Normal, "archer.png", 42, 119, 2);
+        AddCard<TroopCard>(context, "A pair of lightly armored ranged attackers. They'll help you take down ground and air units, but you're on your own with hair coloring advice.", 3, 1, "archer", Quality.Normal, "archer", 42, 119, 2);
         AddCard<TroopCard>(context, "archerqueen description", 1, 1, "archerqueen", Quality.Normal, "archerqueen", 100, 100, 1);
         AddCard<TroopCard>(context, "baby_dragon description", 1, 1, "baby_dragon", Quality.Normal, "baby_dragon", 100, 100, 1);
         AddCard<TroopCard>(context, "bandit description", 1, 1, "bandit", Quality.Normal, "bandit", 100, 100, 1);
@@ -121,7 +121,7 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "flying_machine description", 1, 1, "flying_machine", Quality.Normal, "flying_machine", 100, 100, 1);
         AddCard<TroopCard>(context, "freeze description", 1, 1, "freeze", Quality.Normal, "freeze", 100, 100, 1);
         AddCard<TroopCard>(context, "ghost description", 1, 1, "ghost", Quality.Normal, "ghost", 100, 100, 1);
-        AddCard<TroopCard>(context, "Slow but durable, only attacks buildings. A real one-man wrecking crew!", 5, 1, "giant", Quality.Rare, "giant.png", 120, 1930, 1);
+        AddCard<TroopCard>(context, "Slow but durable, only attacks buildings. A real one-man wrecking crew!", 5, 1, "giant", Quality.Rare, "giant", 120, 1930, 1);
         AddCard<TroopCard>(context, "giant_skeleton description", 1, 1, "giant_skeleton", Quality.Normal, "giant_skeleton", 100, 100, 1);
         AddCard<TroopCard>(context, "goblindrill description", 1, 1, "goblindrill", Quality.Normal, "goblindrill", 100, 100, 1);
         AddCard<TroopCard>(context, " Four fast, unarmored melee attackers. Small, fast, green and mean!", 2, 1, "goblins", Quality.Normal, "goblins", 47, 79, 4);
