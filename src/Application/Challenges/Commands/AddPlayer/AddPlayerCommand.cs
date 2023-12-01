@@ -59,7 +59,7 @@ namespace DataClash.Application.Challenges.Commands.AddPlayer
           
           var entity = new PlayerChallenge { ChallengeId = request.ChallengeId, PlayerId = request.PlayerId, WonThrophies=request.WonThrophies, };
 
-          challenge.AddDomainEvent (new PlayerAddedEvent (entity));
+          challenge.AddDomainEvent (new PlayerAddedEvent<PlayerChallenge> (entity));
           _context.PlayerChallenges.Add (entity);
 
           await _context.SaveChangesAsync (cancellationToken);

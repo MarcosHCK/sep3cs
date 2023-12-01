@@ -59,7 +59,7 @@ namespace DataClash.Application.Challenges.Commands.RemovePlayer
                               ?? throw new NotFoundException (nameof (PlayerChallenge), new object[] { request.ChallengeId, request.PlayerId });
 
               _context.PlayerChallenges.Remove (entity);
-              challenge.AddDomainEvent (new PlayerRemovedEvent (entity));
+              challenge.AddDomainEvent (new PlayerRemovedEvent<PlayerChallenge> (entity));
 
               await _context.SaveChangesAsync (cancellationToken);
             
