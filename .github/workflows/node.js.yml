@@ -26,9 +26,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-      working-directory: ./src/WebAPI/ClientApp/
-    - run: npm run build --if-present
-      working-directory: ./src/WebAPI/ClientApp/
-    - run: npm test
-      working-directory: ./src/WebAPI/ClientApp/
+    - run: |
+        cd src/WebAPI/ClientApp/
+        npm ci
+    - run: |
+        cd cd src/WebAPI/ClientApp/
+        npm run build --if-present
+    - run: |
+        cd src/WebAPI/ClientApp/
+        npm test
