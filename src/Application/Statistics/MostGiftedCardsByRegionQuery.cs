@@ -15,21 +15,30 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 using DataClash.Application.Common.Interfaces;
-using DataClash.Domain.Entities;
-using DataClash.Domain.ValueObjects;
+using MediatR;
+using FluentValidation;
 
 namespace DataClash.Application.Statistics.MostGiftedCardsByRegion
 {
-    public class MostGiftedCards
-    {
-        public async Task<IEnumerable<Tuple<Card, Region, long>>> GetMostDonatedCardsByRegion(IApplicationDbContext context)
-        {
-            var lastMonth = DateTime.Now.AddMonths(-1);
+    public record GetMostGiftedCardsQuery : IRequest<List<string[]>>;
 
-            var cardGifts =  context.CardGifts
-                .Where(g => g.Date >= lastMonth)
+    public class GetMostGiftedCardsQueryHandler : IRequestHandler<GetMostGiftedCardsQuery, List<string[]>>
+    {
+        private readonly IApplicationDbContext _context;
+
+        public GetMostGiftedCardsQueryHandler(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<string[]>> Handle(GetMostGiftedCardsQuery request, CancellationToken cancellationToken)
+        {
+
+            //var lastMonth = DateTime.Now.AddMonths(-1);
+
+            var cardGifts = _context.CardGifts
+                //   .Where(g => g.Date >= lastMonth)
                 .ToList();
 
             var mostDonatedCards = cardGifts
@@ -43,17 +52,26 @@ namespace DataClash.Application.Statistics.MostGiftedCardsByRegion
                 .OrderByDescending(g => g.Count)
                 .ToList();
 
-            var result = new List<Tuple<Card, Region, long>>();
+            var result = new List<string[]>();
             foreach (var cardGift in mostDonatedCards)
             {
-                var card = await context.Cards.FindAsync(cardGift.CardId);
-                result.Add(Tuple.Create(card, cardGift.Region, (long)cardGift.Count));
+                var card = await _context.Cards.FindAsync(cardGift.CardId);
+                result.Add(new string[]
+                {
+           card.Name,
+           cardGift.Region.ToString(),
+           cardGift.Count.ToString()
+                });
             }
 
             return result;
         }
 
-
-
     }
+
 }
+
+
+
+
+

@@ -40,6 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
           services.AddApplicationDbContextSeeder (cfg =>
             {
               cfg.AddProvider<CardsSeederProvider> ();
+              cfg.AddProvider<DataSeederProvider>();
             });
           return services;
         }

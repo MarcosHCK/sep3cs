@@ -26,7 +26,6 @@ namespace DataClash.Domain.Entities
       public long TotalCardsFound { get; set; }
       public long TotalThrophies { get; set; }
       public long TotalWins { get; set; }
-
       public virtual Card? FavoriteCard { get; set; }
     }
 }

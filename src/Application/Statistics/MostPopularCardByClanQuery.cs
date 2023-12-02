@@ -18,7 +18,6 @@
 
 using DataClash.Application.Common.Interfaces;
 using DataClash.Domain.Entities;
-using DataClash.Domain.Enums;
 
 namespace DataClash.Application.Statistics.MostPopularCards
 {
@@ -50,19 +49,46 @@ namespace DataClash.Application.Statistics.MostPopularCards
             favoriteCards.Sort((a, b) => b.Count.CompareTo(a.Count));
 
             // Obtén la tarjeta más popular para cada tipo de tarjeta
+            // Obtén la tarjeta más popular para cada tipo de tarjeta
             var mostPopularCards = new List<Tuple<Card, string, Clan>>();
-            foreach (var cardType in Enum.GetValues(typeof(CardType)))
-            {
-                var mostPopularCard = favoriteCards
-                    .Where(f => context.Cards.Find(f.CardId).GetType().Name == cardType.ToString())
-                    .OrderByDescending(f => f.Count)
-                    .FirstOrDefault();
 
-                if (mostPopularCard != null)
-                {
-                    var card = context.Cards.Find(mostPopularCard.CardId);
-                    mostPopularCards.Add(Tuple.Create(card, cardType.ToString(), clan));
-                }
+            // Para tarjetas mágicas
+            var magicCards = favoriteCards
+                .Where(f => context.Cards.OfType<MagicCard>().Any(c => c.Id == f.CardId))
+                .OrderByDescending(f => f.Count)
+                .FirstOrDefault();
+
+            if (magicCards != null)
+            {
+                var card = context.Cards.OfType<MagicCard>().First(c => c.Id == magicCards.CardId);
+                var cardTuple = Tuple.Create((Card)card, "MagicCard", clan);
+                mostPopularCards.Add(cardTuple);
+            }
+
+            // Para tarjetas estructurales
+            var structCards = favoriteCards
+                .Where(f => context.Cards.OfType<StructCard>().Any(c => c.Id == f.CardId))
+                .OrderByDescending(f => f.Count)
+                .FirstOrDefault();
+
+            if (structCards != null)
+            {
+                var card = context.Cards.OfType<StructCard>().First(c => c.Id == structCards.CardId);
+                var cardTuple = Tuple.Create((Card)card, "StructCard", clan);
+                mostPopularCards.Add(cardTuple);
+            }
+
+            // Para tarjetas de tropas
+            var troopCards = favoriteCards
+                .Where(f => context.Cards.OfType<TroopCard>().Any(c => c.Id == f.CardId))
+                .OrderByDescending(f => f.Count)
+                .FirstOrDefault();
+
+            if (troopCards != null)
+            {
+                var card = context.Cards.OfType<TroopCard>().First(c => c.Id == troopCards.CardId);
+                var cardTuple = Tuple.Create((Card)card, "TroopCard", clan);
+                mostPopularCards.Add(cardTuple);
             }
 
             return mostPopularCards;

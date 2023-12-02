@@ -18,27 +18,28 @@ import React from 'react';
 import './HomeTable.css';
 
 const Table = ({ data, columns }) => {
- return (
- <table>
- <caption>Top Players in Wars</caption>
- <thead>
- <tr>
-   {columns.map((column, index) => (
-     <th key={index}>{column}</th>
-   ))}
- </tr>
- </thead>
- <tbody>
- {data.map((row, index) => (
-   <tr key={index}>
-     {columns.map((column, index) => (
-       <td key={index}>{row[column]}</td>
-     ))}
-   </tr>
- ))}
- </tbody>
- </table>
- );
-};
+  return (
+  <table>
+  <caption>Top Players in Wars</caption>
+  <thead>
+  <tr>
+    {columns.map((column, index) => (
+      <th key={index}>{column}</th>
+    ))}
+  </tr>
+  </thead>
+  <tbody>
+  {data.map((row, index) => (
+    <tr key={index}>
+      {columns.map((column, index) => (
+        <td key={index}>{row[column]}</td>
+      ))}
+    </tr>
+  ))}
+  </tbody>
+  </table>
+  );
+ };
 
+ 
 export default Table;

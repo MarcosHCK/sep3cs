@@ -16,22 +16,44 @@
  */
 
 using DataClash.Application.Common.Interfaces;
-using DataClash.Domain.Entities;
-using DataClash.Domain.ValueObjects;
+using MediatR;
+using FluentValidation;
 
 namespace DataClash.Application.Statistics.CompletedChallenges
 {
-    public class CompletedChallenges
-    {
-        public IEnumerable<Tuple<Player?, Challenge?>> GetCompletedChallenge(IApplicationDbContext context)
-        {
-            var completedChallenges = context.PlayerChallenges
-                .GroupBy(pc => pc.ChallengeId)
-                .Where(g => g.Sum(pc => pc.WonThrophies) == g.First().Challenge.Bounty)
-                .SelectMany(g => g.Select(pc => new { Player = pc.Player, Challenge = pc.Challenge }))
-                .ToList();
+    public record GetCompletedChallengesQuery : IRequest<List<string[]>>;
 
-            return completedChallenges.Select(x => Tuple.Create(x.Player, x.Challenge));
+    public class GetCompletedChallengesQueryHandler : IRequestHandler<GetCompletedChallengesQuery, List<string[]>>
+    {
+        private readonly IApplicationDbContext _context;
+
+        public GetCompletedChallengesQueryHandler(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<string[]>> Handle(GetCompletedChallengesQuery request, CancellationToken cancellationToken)
+        {
+            var result = _context.PlayerChallenges
+      .Where(pc => pc.WonThrophies == pc.Challenge.Bounty)
+      .Select(pc => new string[] {
+           pc.Player.Nickname,
+           pc.Challenge.Name
+      })
+      .ToList();
+
+            return result;
         }
     }
+
+    public class GetCompletedChallengesQueryValidator : AbstractValidator<GetCompletedChallengesQuery>
+    {
+        public GetCompletedChallengesQueryValidator()
+        {
+            // Add validation rules here
+        }
+    }
+
+
 }
+

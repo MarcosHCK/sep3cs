@@ -17,6 +17,7 @@
 using DataClash.Application.Common.Interfaces;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
+using DataClash.Domain.ValueObjects;
 
 namespace DataClash.Application.Common.Seeders
 {
@@ -79,6 +80,7 @@ namespace DataClash.Application.Common.Seeders
 
     public void SeedAsync(IApplicationDbContext context)
       {
+
         AddCard<TroopCard>(context, "angry_barbarian description", 1, 1, "angry_barbarian", Quality.Normal, "angry_barbarian", 100, 100, 1);
         AddCard<TroopCard>(context, "archer description", 1, 1, "archer", Quality.Normal, "archer", 100, 100, 1);
         AddCard<TroopCard>(context, "archerqueen description", 1, 1, "archerqueen", Quality.Normal, "archerqueen", 100, 100, 1);

@@ -15,26 +15,42 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 using DataClash.Application.Common.Interfaces;
-using DataClash.Domain.Entities;
-using DataClash.Domain.ValueObjects;
+using MediatR;
+using FluentValidation;
 
 namespace DataClash.Application.Statistics.TopClansByRegion
 {
-    public class BestClans
+    public record GetTopClansQuery : IRequest<List<string[]>>;
+
+    public class GetTopClansQueryHandler : IRequestHandler<GetTopClansQuery, List<string[]>>
     {
-        public async Task<IEnumerable<Tuple<Clan, Region, long>>> GetTopClansByRegion(IApplicationDbContext context)
+        private readonly IApplicationDbContext _context;
+
+        public GetTopClansQueryHandler(IApplicationDbContext context)
         {
-            var topClans = context.Clans
+            _context = context;
+        }
+
+        public async Task<List<string[]>> Handle(GetTopClansQuery request, CancellationToken cancellationToken)
+        {
+            var topClans = _context.Clans
                 .GroupBy(c => c.Region.Code)
+                .AsEnumerable()
                 .Select(g => g.OrderByDescending(c => c.TotalTrophiesWonOnWar).First())
-                .Select(c => Tuple.Create(c, c.Region, c.TotalTrophiesWonOnWar))
+                .Select(c => new string[] { c.Name, c.Region.ToString(), c.TotalTrophiesWonOnWar.ToString() })
                 .ToList();
 
             return topClans;
         }
-
-
     }
+
+    public class GetTopClansQueryValidator : AbstractValidator<GetTopClansQuery>
+    {
+        public GetTopClansQueryValidator()
+        {
+            // Add validation rules here
+        }
+    }
+
 }

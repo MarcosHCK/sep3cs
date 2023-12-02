@@ -22,7 +22,6 @@ namespace DataClash.Domain.Entities
         public long ChallengeId { get; set; }
         public long PlayerId { get; set; }
         public long WonThrophies { get; set; }
-
         public virtual Challenge? Challenge { get; set; }
         public virtual Player? Player { get; set; }
     }
