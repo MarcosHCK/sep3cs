@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import './ProfileClan.css'
 import { Alert, Button, Form, FormGroup, Input, Label } from 'reactstrap'
-import { ClanClient, ClanRole, ClanType } from '../../webApiClient.ts'
+import { ClanClient, ClanRole, ClanType, DeleteClanCommand } from '../../webApiClient.ts'
 import { CreateClanWithChiefCommand } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
 import { UpdateClanCommand } from '../../webApiClient.ts'
@@ -89,7 +90,11 @@ export function ProfileClan (props)
     {
       if (hasClan) try
         {
-          await clanClient.delete (clanId)
+          const command = new DeleteClanCommand ()
+
+          command.id = clanId
+
+          await clanClient.delete (command)
           await refreshClan ()
         }
       catch (error) { errorReporter (error) }

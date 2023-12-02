@@ -58,6 +58,8 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
           if (await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false
             && await CurrentPlayerIsChief (request.ClanId, cancellationToken) == false)
             throw new ForbiddenAccessException ();
+          else if (_currentPlayer.PlayerId == request.PlayerId)
+            throw new ApplicationConstraintException ("Clan chief can not be kick out of clan");
           else
             {
               var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken)

@@ -54,7 +54,7 @@ export function Profile ()
       { title: 'Challenges', component: <ProfileChallenge {...downProps}/> },
       { title: 'Clan', component: <ProfileClan {...downProps} />, children :
         [
-          { title: 'Players', component: <ProfileClanPlayers /> },
+          { title: 'Players', component: <ProfileClanPlayers {...downProps} /> },
           { title: 'Wars', component: <ProfileClanWars {...downProps} /> },
         ]},
       { title: 'Deck', component: <ProfileDeck {...downProps} /> },

@@ -16,13 +16,14 @@
  */
 import { Pager } from './Pager'
 import { PlayerClient } from '../webApiClient.ts'
-import { Table } from 'reactstrap'
+import { Button, Table } from 'reactstrap'
 import { useErrorReporter } from './ErrorReporter'
 import { useParams } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 
-export function Players ()
+export function Players (props)
 {
+  const { onPick, picker } = props
   const { initialPage } = useParams ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
@@ -102,13 +103,11 @@ export function Players ()
               <th>{'#'}</th>
               <th>{'Nick'}</th>
               <th>{'Level'}</th>
+            { !picker ? <></> : <th /> }
             </tr>
           </thead>
           <tbody>
-    {
-      (items ?? []).map ((item, index) =>
-        {
-          return (
+        { (items ?? []).map ((item, index) => (
             <tr key={`body${index}`}>
               <th scope="row">
                 <p>{ item.id }</p>
@@ -119,9 +118,12 @@ export function Players ()
               <td>
                 <p>{ item.level }</p>
               </td>
-            </tr>)
-        })
-    }
+          { !picker
+            ? <></>
+            : <td>
+                <Button color='primary' onClick={_ => onPick (item.id)}>+</Button>
+              </td>}
+            </tr>))}
           </tbody>
         </Table>
       </>
