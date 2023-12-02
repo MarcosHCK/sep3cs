@@ -21,19 +21,17 @@ using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace DataClash.Application.Clans.Commands.AddPlayer
+namespace DataClash.Application.Clans.Commands.LeaveWar
 {
   [Authorize]
-  public record AddPlayerCommand : IRequest
+  public record LeaveWarCommand : IRequest
     {
       public long ClanId { get; init; }
-      public long PlayerId { get; init; }
-      public ClanRole Role { get; init; }
+      public long WarId { get; init; }
     }
 
-  public class AddPlayerCommandHandler : IRequestHandler<AddPlayerCommand>
+  public class LeaveWarCommandHandler : IRequestHandler<LeaveWarCommand>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
@@ -47,7 +45,7 @@ namespace DataClash.Application.Clans.Commands.AddPlayer
         return playerClan != null && playerClan.Role == ClanRole.Chief;
         }
 
-      public AddPlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
+      public LeaveWarCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
           _context = context;
           _currentPlayer = currentPlayer;
@@ -55,27 +53,22 @@ namespace DataClash.Application.Clans.Commands.AddPlayer
           _identityService = identityService;
         }
 
-      public async Task Handle (AddPlayerCommand request, CancellationToken cancellationToken)
+      public async Task Handle (LeaveWarCommand command, CancellationToken cancellationToken)
         {
           if (await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false
-           && await CurrentPlayerIsChief (request.ClanId, cancellationToken) == false)
+            && await CurrentPlayerIsChief (command.ClanId, cancellationToken) == false)
             throw new ForbiddenAccessException ();
           else
             {
-              var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken)
-                          ?? throw new NotFoundException (nameof (Clan), request.ClanId);
+              var clan = await _context.Clans.FindAsync (new object[] { command.ClanId }, cancellationToken)
+                        ?? throw new NotFoundException (nameof (Clan), command.ClanId);
+              var warClan = await _context.WarClans.FindAsync (new object[] { clan.Id, command.WarId }, cancellationToken)
+                        ?? throw new NotFoundException (nameof (WarClan), new object[] { clan.Id, command.WarId });
 
-              if (request.Role == ClanRole.Chief
-               && await _context.PlayerClans.Where (e => e.ClanId == clan.Id && e.Role == ClanRole.Chief).AnyAsync (cancellationToken))
-                throw new ApplicationConstraintException ("Clans has only one chief");
-              else
-                {
-                  var playerClan = new PlayerClan { ClanId = request.ClanId, PlayerId = request.PlayerId, Role = request.Role, };
+              _context.WarClans.Remove (warClan);
+              clan.AddDomainEvent (new LeftWarEvent (warClan));
 
-                  clan.AddDomainEvent (new PlayerAddedEvent<PlayerClan> (playerClan));
-                  _context.PlayerClans.Add (playerClan);
-                  await _context.SaveChangesAsync (cancellationToken);
-                }
+              await _context.SaveChangesAsync (cancellationToken);
             }
         }
     }

@@ -14,13 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Clans.Queries.GetClansWithPagination;
+using DataClash.Application.Common.Mappings;
+using DataClash.Domain.Entities;
+using DataClash.Domain.Enums;
 
-namespace DataClash.Domain.Enums
+namespace DataClash.Application.Clans.Queries.GetClanForCurrentPlayer
 {
-  public enum ClanRole
+  public class CurrentPlayerClanVm : IMapFrom<PlayerClan>
     {
-      Chief,
-      Commoner,
-      Veteran,
+      public ClanBriefDto? Clan { get; init; }
+      public ClanRole Role { get; init; }
     }
 }

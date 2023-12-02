@@ -14,13 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using FluentValidation;
 
-namespace DataClash.Domain.Enums
+namespace DataClash.Application.Clans.Commands.UpdateWar
 {
-  public enum ClanRole
+  public class UpdateWarCommandValidator : AbstractValidator<UpdateWarCommand>
     {
-      Chief,
-      Commoner,
-      Veteran,
+      public UpdateWarCommandValidator ()
+        {
+          RuleFor (x => x.ClanId).NotEmpty ();
+          RuleFor (x => x.WarId).NotEmpty ();
+          RuleFor (x => x.WonThrophies).GreaterThanOrEqualTo (0);
+        }
     }
 }
