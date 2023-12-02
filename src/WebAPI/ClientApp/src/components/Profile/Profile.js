@@ -109,6 +109,7 @@ export function Profile ()
             <Accordion
                 className='nav-section'
                 flush
+                key={`accordionKey${index}`}
                 open={sectionOpen[index]}
                 toggle={i => toggle (i)} >
               <AccordionItem>

@@ -28,8 +28,9 @@ import { WaitSpinner } from './WaitSpinner'
 import { WarClient } from '../webApiClient.ts'
 import React, { useEffect, useState } from 'react'
 
-export function Wars ()
+export function Wars (props)
 {
+  const { onPick, picker } = props
   const { initialPage } = useParams ()
   const { isAuthorized, inRole }= useAuthorize ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
@@ -134,6 +135,8 @@ export function Wars ()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage])
 
+  const readOnly = !inRole[UserRoles.Administrator] || picker
+
   return (
     isLoading || !isAuthorized
     ? (<WaitSpinner />)
@@ -166,28 +169,27 @@ export function Wars ()
                   <DateTime
                     defaultValue={item.beginDay}
                     onChanged={(date) => { item.beginDay = date; updateWar (item) }}
-                    readOnly={!inRole[UserRoles.Administrator]} />
+                    readOnly={readOnly} />
                 </td>
                 <td>
                   <TimeSpan
                     defaultValue={item.duration}
                     onChanged={(span) => { item.duration = span; updateWar (item) }}
-                    readOnly={!inRole[UserRoles.Administrator]} />
+                    readOnly={readOnly} />
                 </td>
-        {
-          (!inRole[UserRoles.Administrator])
-          ? (<td />)
-          : (
-                <td>
-                  <Button color='primary' onClick={() => removeWar (item)} close />
-                </td>)
-        }
-              </tr>))
-        }
+            { readOnly && !picker
+              ? <td />
+              : (!picker
+                ? <td>
+                    <Button color='primary' onClick={() => removeWar (item)} close />
+                  </td>
+                : <td>
+                    <Button color='primary' onClick={() => onPick (item.id)}>+</Button>
+                  </td>)}
+              </tr>))}
             </tbody>
             <tfoot>
-        {
-          (!inRole[UserRoles.Administrator])
+        { readOnly
           ? (<tr />)
           : (
               <tr key='footer0'>
@@ -195,8 +197,7 @@ export function Wars ()
                   <Button color='primary' onClick={() => addWar ()}>+</Button>
                 </td>
                 <td /><td /><td />
-              </tr>)
-        }
+              </tr>) }
             </tfoot>
           </Table>
         </div>
