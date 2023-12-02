@@ -22,31 +22,33 @@ using DataClash.Application.Common.Models;
 using DataClash.Application.Common.Security;
 using MediatR;
 
-namespace DataClash.Application.Clans.Queries.GetClansWithPagination
+namespace DataClash.Application.Clans.Queries.GetPlayerClansWithPagination
 {
   [Authorize]
-  public record GetClansWithPaginationQuery : IRequest<PaginatedList<ClanBriefDto>>
+  public record GetPlayerClansWithPaginationQuery : IRequest<PaginatedList<PlayerClanBriefDto>>
     {
+      public long ClanId { get; init; }
       public int PageNumber { get; init; } = 1;
       public int PageSize { get; init; } = 10;
     }
 
-  public class GetClansWithPaginationQueryHandler : IRequestHandler<GetClansWithPaginationQuery, PaginatedList<ClanBriefDto>>
+  public class GetPlayerClansWithPaginationQueryHandler : IRequestHandler<GetPlayerClansWithPaginationQuery, PaginatedList<PlayerClanBriefDto>>
     {
       private readonly IApplicationDbContext _context;
       private readonly IMapper _mapper;
 
-      public GetClansWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
+      public GetPlayerClansWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
         {
           _context = context;
           _mapper = mapper;
         }
 
-      public async Task<PaginatedList<ClanBriefDto>> Handle (GetClansWithPaginationQuery query, CancellationToken cancellationToken)
+      public async Task<PaginatedList<PlayerClanBriefDto>> Handle (GetPlayerClansWithPaginationQuery query, CancellationToken cancellationToken)
         {
-          return await _context.Clans
-            .ProjectTo<ClanBriefDto> (_mapper.ConfigurationProvider)
-            .PaginatedListAsync (query.PageNumber, query.PageSize);
+          return await _context.PlayerClans
+                  .Where (e => e.ClanId == query.ClanId)
+                  .ProjectTo<PlayerClanBriefDto> (_mapper.ConfigurationProvider)
+                  .PaginatedListAsync (query.PageNumber, query.PageSize);
         }
     }
 }

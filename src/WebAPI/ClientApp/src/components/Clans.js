@@ -14,23 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ClanClient, ClanType } from '../webApiClient.ts'
 import { Pager } from './Pager'
-import { PlayerClient } from '../webApiClient.ts'
-import { Button, Table } from 'reactstrap'
+import { Input, Table } from 'reactstrap'
 import { useErrorReporter } from './ErrorReporter'
 import { useParams } from 'react-router-dom'
+import { WaitSpinner } from './WaitSpinner'
 import React, { useEffect, useState } from 'react'
 
-export function Players (props)
+export function Clans ()
 {
-  const { onPick, picker } = props
   const { initialPage } = useParams ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
   const [ hasNextPage, setHasNextPage ] = useState (false)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
-  const [ playerClient ] = useState (new PlayerClient ())
+  const [ clanClient ] = useState (new ClanClient ())
   const [ totalPages, setTotalPages ] = useState (0)
   const errorReporter = useErrorReporter ()
 
@@ -42,7 +42,7 @@ export function Players (props)
       const lastPage = async () =>
         {
           try {
-            const paginatedList = await playerClient.getWithPagination (1, pageSize)
+            const paginatedList = await clanClient.getWithPagination (1, pageSize)
             return paginatedList.totalPages
           } catch (error)
             {
@@ -53,7 +53,7 @@ export function Players (props)
       const refreshPage = async () =>
         {
           try {
-            const paginatedList = await playerClient.getWithPagination (activePage + 1, pageSize)
+            const paginatedList = await clanClient.getWithPagination (activePage + 1, pageSize)
 
             setHasNextPage (paginatedList.hasNextPage)
             setHasPreviousPage (paginatedList.hasPreviousPage)
@@ -85,48 +85,53 @@ export function Players (props)
 
   return (
     (isLoading)
-    ? (<div></div>)
-    : (
-      <>
-        <div className='d-flex justify-content-center'>
-          <Pager
-            activePage={activePage}
-            hasNextPage={hasNextPage}
-            hasPreviousPage={hasPreviousPage}
-            onPageChanged={(index) => setActivePage (index)}
-            totalPages={totalPages}
-            visibleIndices={visibleIndices} />
-        </div>
-        <Table>
-          <thead>
-            <tr>
-              <th>{'#'}</th>
-              <th>{'Nick'}</th>
-              <th>{'Level'}</th>
-            { !picker ? <></> : <th /> }
-            </tr>
-          </thead>
-          <tbody>
-        { (items ?? []).map ((item, index) => (
-            <tr key={`body${index}`}>
-              <th scope="row">
-                <p>{ item.id }</p>
-              </th>
-              <td>
-                <p>{ item.nickname ?? "<no nickname>" }</p>
-              </td>
-              <td>
-                <p>{ item.level }</p>
-              </td>
-          { !picker
-            ? <></>
-            : <td>
-                <Button color='primary' onClick={_ => onPick (item.id)}>+</Button>
-              </td>}
-            </tr>))}
-          </tbody>
-        </Table>
-      </>
-    )
-  )
+    ? (<WaitSpinner />)
+    : (<>
+      <div className='d-flex justify-content-center'>
+        <Pager
+          activePage={activePage}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onPageChanged={(index) => setActivePage (index)}
+          totalPages={totalPages}
+          visibleIndices={visibleIndices} />
+      </div>
+      <Table>
+        <thead>
+          <tr>
+            <th>{'#'}</th>
+            <th>{'Description'}</th>
+            <th>{'Name'}</th>
+            <th>{'Region'}</th>
+            <th>{'Trophies to enter'}</th>
+            <th>{'Trophies won on war'}</th>
+            <th>{'Type'}</th>
+          </tr>
+        </thead>
+        <tbody>
+    { (items ?? []).map ((item, index) => (
+          <tr key={`body${index}`}>
+            <th scope="row">{ item.id }</th>
+            <td>
+              <Input disabled type='text' value={item.description} />
+            </td>
+            <td>
+              <Input disabled type='text' value={item.name} />
+            </td>
+            <td>
+              <Input disabled type='text' value={item.region} />
+            </td>
+            <td>
+              <Input disabled type='text' value={item.totalTrophiesToEnter} />
+            </td>
+            <td>
+              <Input disabled type='text' value={item.totalTrophiesWonOnWar} />
+            </td>
+            <td>
+              <Input disabled type='text' value={ClanType[item.type]} />
+            </td>
+          </tr>))}
+        </tbody>
+      </Table>
+    </>))
 }

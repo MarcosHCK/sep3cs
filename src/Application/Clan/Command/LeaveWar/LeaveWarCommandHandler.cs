@@ -22,16 +22,16 @@ using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
 using MediatR;
 
-namespace DataClash.Application.Clans.Commands.RemovePlayer
+namespace DataClash.Application.Clans.Commands.LeaveWar
 {
   [Authorize]
-  public record RemovePlayerCommand : IRequest
+  public record LeaveWarCommand : IRequest
     {
       public long ClanId { get; init; }
-      public long PlayerId { get; init; }
+      public long WarId { get; init; }
     }
 
-  public class RemovePlayerCommandHandler : IRequestHandler<RemovePlayerCommand>
+  public class LeaveWarCommandHandler : IRequestHandler<LeaveWarCommand>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
@@ -45,7 +45,7 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
         return playerClan != null && playerClan.Role == ClanRole.Chief;
         }
 
-      public RemovePlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
+      public LeaveWarCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
           _context = context;
           _currentPlayer = currentPlayer;
@@ -53,28 +53,22 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
           _identityService = identityService;
         }
 
-      public async Task Handle (RemovePlayerCommand request, CancellationToken cancellationToken)
+      public async Task Handle (LeaveWarCommand command, CancellationToken cancellationToken)
         {
           if (await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false
-            && await CurrentPlayerIsChief (request.ClanId, cancellationToken) == false)
+            && await CurrentPlayerIsChief (command.ClanId, cancellationToken) == false)
             throw new ForbiddenAccessException ();
-          else if (_currentPlayer.PlayerId == request.PlayerId)
-            throw new ApplicationConstraintException ("Clan chief can not be kick out of clan");
           else
             {
-              var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken)
-                          ?? throw new NotFoundException (nameof (Clan), request.ClanId);
-              var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, request.PlayerId }, cancellationToken)
-                              ?? throw new NotFoundException (nameof (PlayerClan), new object[] { request.ClanId, request.PlayerId });
+              var clan = await _context.Clans.FindAsync (new object[] { command.ClanId }, cancellationToken)
+                        ?? throw new NotFoundException (nameof (Clan), command.ClanId);
+              var warClan = await _context.WarClans.FindAsync (new object[] { clan.Id, command.WarId }, cancellationToken)
+                        ?? throw new NotFoundException (nameof (WarClan), new object[] { clan.Id, command.WarId });
 
-              if (playerClan.Role == ClanRole.Chief)
-                throw new ApplicationConstraintException ("Clan chiefs can not be removed");
-              else
-                {
-                  _context.PlayerClans.Remove (playerClan);
-                  clan.AddDomainEvent (new PlayerRemovedEvent<PlayerClan> (playerClan));
-                  await _context.SaveChangesAsync (cancellationToken);
-                }
+              _context.WarClans.Remove (warClan);
+              clan.AddDomainEvent (new LeftWarEvent (warClan));
+
+              await _context.SaveChangesAsync (cancellationToken);
             }
         }
     }

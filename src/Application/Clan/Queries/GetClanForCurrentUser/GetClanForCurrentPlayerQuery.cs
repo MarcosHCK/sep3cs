@@ -26,9 +26,9 @@ using System.Data;
 namespace DataClash.Application.Clans.Queries.GetClanForCurrentPlayer
 {
   [Authorize]
-  public record GetClanForCurrentPlayerQuery () : IRequest<PlayerClanBriefDto?>;
+  public record GetClanForCurrentPlayerQuery () : IRequest<CurrentPlayerClanVm?>;
 
-  public class GetClanForCurrentPlayerQueryHandler : IRequestHandler<GetClanForCurrentPlayerQuery, PlayerClanBriefDto?>
+  public class GetClanForCurrentPlayerQueryHandler : IRequestHandler<GetClanForCurrentPlayerQuery, CurrentPlayerClanVm?>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
@@ -41,11 +41,11 @@ namespace DataClash.Application.Clans.Queries.GetClanForCurrentPlayer
           _mapper = mapper;
         }
 
-      public async Task<PlayerClanBriefDto?> Handle (GetClanForCurrentPlayerQuery query, CancellationToken cancellationToken)
+      public async Task<CurrentPlayerClanVm?> Handle (GetClanForCurrentPlayerQuery query, CancellationToken cancellationToken)
         {
           var playerId = _currentPlayer.PlayerId ?? throw new ApplicationConstraintException ("User is not a player");
           var playerClan = await _context.PlayerClans.Include (e => e.Clan).Where (e => e.PlayerId == playerId).FirstOrDefaultAsync (cancellationToken);
-        return playerClan == null ? null : _mapper.Map<PlayerClanBriefDto> (playerClan);
+        return playerClan == null ? null : _mapper.Map<CurrentPlayerClanVm> (playerClan);
         }
     }
 }

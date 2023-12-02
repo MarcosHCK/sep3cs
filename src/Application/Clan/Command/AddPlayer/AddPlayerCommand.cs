@@ -21,6 +21,7 @@ using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Clans.Commands.AddPlayer
 {
@@ -39,6 +40,13 @@ namespace DataClash.Application.Clans.Commands.AddPlayer
       private readonly ICurrentUserService _currentUser;
       private readonly IIdentityService _identityService;
 
+      private async Task<bool> CurrentPlayerIsChief (long ClanId, CancellationToken cancellationToken)
+        {
+          var key = new object[] { ClanId, _currentPlayer.PlayerId! };
+          var playerClan = await _context.PlayerClans.FindAsync (key, cancellationToken);
+        return playerClan != null && playerClan.Role == ClanRole.Chief;
+        }
+
       public AddPlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
         {
           _context = context;
@@ -49,23 +57,25 @@ namespace DataClash.Application.Clans.Commands.AddPlayer
 
       public async Task Handle (AddPlayerCommand request, CancellationToken cancellationToken)
         {
-          var userId = _currentUser.UserId!;
-          var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken) ?? throw new NotFoundException (nameof (Clan), request.ClanId);
-          var playerId = _currentPlayer.PlayerId!;
-          var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, playerId }, cancellationToken);
-
-          if (playerClan?.Role != ClanRole.Chief && await _identityService.IsInRoleAsync (userId, Roles.Administrator) == false)
+          if (await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false
+           && await CurrentPlayerIsChief (request.ClanId, cancellationToken) == false)
             throw new ForbiddenAccessException ();
-          else if (_context.PlayerClans.Where (e => e.ClanId == clan.Id && e.Role == ClanRole.Chief).Any ())
-            throw new ApplicationConstraintException ("Application constraint violation");
           else
             {
-              var entity = new PlayerClan { ClanId = request.ClanId, PlayerId = request.PlayerId, Role = request.Role, };
+              var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken)
+                          ?? throw new NotFoundException (nameof (Clan), request.ClanId);
 
-              clan.AddDomainEvent (new PlayerAddedEvent<PlayerClan> (entity));
-              _context.PlayerClans.Add (entity);
+              if (request.Role == ClanRole.Chief
+               && await _context.PlayerClans.Where (e => e.ClanId == clan.Id && e.Role == ClanRole.Chief).AnyAsync (cancellationToken))
+                throw new ApplicationConstraintException ("Clans has only one chief");
+              else
+                {
+                  var playerClan = new PlayerClan { ClanId = request.ClanId, PlayerId = request.PlayerId, Role = request.Role, };
 
-              await _context.SaveChangesAsync (cancellationToken);
+                  clan.AddDomainEvent (new PlayerAddedEvent<PlayerClan> (playerClan));
+                  _context.PlayerClans.Add (playerClan);
+                  await _context.SaveChangesAsync (cancellationToken);
+                }
             }
         }
     }

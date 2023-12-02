@@ -15,12 +15,14 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace DataClash.Domain.Enums
+div.playerclan-picker
+div.popover
 {
-  public enum ClanRole
-    {
-      Chief,
-      Commoner,
-      Veteran,
-    }
+  max-width: 70%;
+}
+
+div.warclan-picker
+div.popover
+{
+  max-width: 70%;
 }

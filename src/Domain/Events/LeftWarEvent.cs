@@ -14,13 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Domain.Common;
+using DataClash.Domain.Entities;
 
-namespace DataClash.Domain.Enums
+namespace DataClash.Domain.Events
 {
-  public enum ClanRole
+  public class LeftWarEvent : BaseEvent
     {
-      Chief,
-      Commoner,
-      Veteran,
+      public WarClan Item { get; }
+
+      public LeftWarEvent (WarClan item)
+        {
+          Item = item;
+        }
     }
 }

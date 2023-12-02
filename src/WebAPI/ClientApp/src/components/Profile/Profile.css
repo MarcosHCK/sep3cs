@@ -15,12 +15,21 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace DataClash.Domain.Enums
+div.nav-section
+div.accordion-item
+div.accordion-header
+button.accordion-button
 {
-  public enum ClanRole
-    {
-      Chief,
-      Commoner,
-      Veteran,
-    }
+  background-color: unset;
+  box-shadow: unset;
+  padding: 0px;
+}
+
+div.nav-section
+div.accordion-item
+div.accordion-body
+{
+  padding-bottom: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
 }

@@ -14,24 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Clans.Commands.AddPlayer;
 using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
-using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
-using DataClash.Domain.Events;
 using MediatR;
 
-namespace DataClash.Application.Clans.Commands.RemovePlayer
+namespace DataClash.Application.Clans.Commands.UpdatePlayer
 {
-  [Authorize]
-  public record RemovePlayerCommand : IRequest
-    {
-      public long ClanId { get; init; }
-      public long PlayerId { get; init; }
-    }
+  public record UpdatePlayerCommand : AddPlayerCommand;
 
-  public class RemovePlayerCommandHandler : IRequestHandler<RemovePlayerCommand>
+  public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand>
     {
       private readonly IApplicationDbContext _context;
       private readonly ICurrentPlayerService _currentPlayer;
@@ -45,7 +39,11 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
         return playerClan != null && playerClan.Role == ClanRole.Chief;
         }
 
-      public RemovePlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identityService)
+      public UpdatePlayerCommandHandler (
+          IApplicationDbContext context,
+          ICurrentPlayerService currentPlayer,
+          ICurrentUserService currentUser,
+          IIdentityService identityService)
         {
           _context = context;
           _currentPlayer = currentPlayer;
@@ -53,28 +51,22 @@ namespace DataClash.Application.Clans.Commands.RemovePlayer
           _identityService = identityService;
         }
 
-      public async Task Handle (RemovePlayerCommand request, CancellationToken cancellationToken)
+      public async Task Handle (UpdatePlayerCommand command, CancellationToken cancellationToken)
         {
           if (await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false
-            && await CurrentPlayerIsChief (request.ClanId, cancellationToken) == false)
+            && await CurrentPlayerIsChief (command.ClanId, cancellationToken) == false)
             throw new ForbiddenAccessException ();
-          else if (_currentPlayer.PlayerId == request.PlayerId)
-            throw new ApplicationConstraintException ("Clan chief can not be kick out of clan");
+          else if (_currentPlayer.PlayerId == command.PlayerId)
+            throw new ApplicationConstraintException ("Clan chief can not be changed");
           else
             {
-              var clan = await _context.Clans.FindAsync (new object[] { request.ClanId }, cancellationToken)
-                          ?? throw new NotFoundException (nameof (Clan), request.ClanId);
-              var playerClan = await _context.PlayerClans.FindAsync (new object[] { request.ClanId, request.PlayerId }, cancellationToken)
-                              ?? throw new NotFoundException (nameof (PlayerClan), new object[] { request.ClanId, request.PlayerId });
+              var clan = await _context.Clans.FindAsync (new object[] { command.ClanId }, cancellationToken)
+                        ?? throw new NotFoundException (nameof (Clan), command.ClanId);
+              var playerClan = await _context.PlayerClans.FindAsync (new object[] { clan.Id, command.PlayerId }, cancellationToken)
+                          ?? throw new NotFoundException (nameof (WarClan), new object[] { clan.Id, command.PlayerId });
 
-              if (playerClan.Role == ClanRole.Chief)
-                throw new ApplicationConstraintException ("Clan chiefs can not be removed");
-              else
-                {
-                  _context.PlayerClans.Remove (playerClan);
-                  clan.AddDomainEvent (new PlayerRemovedEvent<PlayerClan> (playerClan));
-                  await _context.SaveChangesAsync (cancellationToken);
-                }
+              playerClan.Role = command.Role;
+              await _context.SaveChangesAsync (cancellationToken);
             }
         }
     }
