@@ -25,6 +25,8 @@ import { Nav, NavItem, NavLink } from 'reactstrap'
 import { PlayerClient } from '../../webApiClient.ts'
 import { ProfileChallenge } from './ProfileChallenge'
 import { ProfileClan } from './ProfileClan'
+import { ProfileClanPlayers } from './ProfileClanPlayers'
+import { ProfileClanWars } from './ProfileClanWars'
 import { ProfileDeck } from './ProfileDeck'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
@@ -52,8 +54,8 @@ export function Profile ()
       { title: 'Challenges', component: <ProfileChallenge {...downProps}/> },
       { title: 'Clan', component: <ProfileClan {...downProps} />, children :
         [
-          { title: 'Players', component: <p>PlayerClan.s</p> },
-          { title: 'Wars', component: <p>WarClan.s</p> },
+          { title: 'Players', component: <ProfileClanPlayers /> },
+          { title: 'Wars', component: <ProfileClanWars /> },
         ]},
       { title: 'Deck', component: <ProfileDeck {...downProps} /> },
     ]
