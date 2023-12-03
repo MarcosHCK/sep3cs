@@ -30,7 +30,6 @@ namespace DataClash.Application.Challenges.Commands.AddPlayer
       public long ChallengeId { get; init; }
       public long PlayerId { get; init; }
       public long WonThrophies { get; init; }
-
     }
 
   public class AddPlayerCommandHandler : IRequestHandler<AddPlayerCommand>
@@ -50,20 +49,26 @@ namespace DataClash.Application.Challenges.Commands.AddPlayer
 
       public async Task Handle (AddPlayerCommand request, CancellationToken cancellationToken)
         {
-          var userId = _currentUser.UserId!;
-          var challenge = await _context.Challenges.FindAsync (new object[] { request.ChallengeId }, cancellationToken) ?? throw new NotFoundException (nameof (Challenge), request.ChallengeId);
-          var playerId = _currentPlayer.PlayerId!;
-          var playerChallenge = await _context.PlayerChallenges.FindAsync (new object[] { request.ChallengeId, playerId }, cancellationToken);
+          if (_currentPlayer.PlayerId != request.PlayerId
+            && await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator))
+            throw new ForbiddenAccessException ();
+          else
+            {
+              var challenge = await _context.Challenges.FindAsync (new object[] { request.ChallengeId }, cancellationToken)
+                              ?? throw new NotFoundException (nameof (Challenge), request.ChallengeId);
 
-          
-          
-          var entity = new PlayerChallenge { ChallengeId = request.ChallengeId, PlayerId = request.PlayerId, WonThrophies=request.WonThrophies, };
+              var playerChallenge = new PlayerChallenge
+                {
+                  ChallengeId = request.ChallengeId,
+                  PlayerId = request.PlayerId,
+                  WonThrophies = request.WonThrophies,
+                };
 
-          challenge.AddDomainEvent (new PlayerAddedEvent<PlayerChallenge> (entity));
-          _context.PlayerChallenges.Add (entity);
+              challenge.AddDomainEvent (new PlayerAddedEvent<PlayerChallenge> (playerChallenge));
 
-          await _context.SaveChangesAsync (cancellationToken);
-            
+              await _context.PlayerChallenges.AddAsync (playerChallenge, cancellationToken);
+              await _context.SaveChangesAsync (cancellationToken);
+            }
         }
     }
 }

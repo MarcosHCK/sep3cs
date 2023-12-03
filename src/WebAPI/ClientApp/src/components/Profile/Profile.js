@@ -14,15 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Avatar } from '../Avatar'
+import './Profile.css'
+import { Accordion } from 'reactstrap'
+import { AccordionBody } from 'reactstrap'
+import { AccordionHeader } from 'reactstrap'
+import { AccordionItem } from 'reactstrap'
 import { Alert, Col, Container, Row } from 'reactstrap'
+import { Avatar } from '../Avatar'
 import { Nav, NavItem, NavLink } from 'reactstrap'
 import { PlayerClient } from '../../webApiClient.ts'
+import { ProfileChallenge } from './ProfileChallenge'
 import { ProfileClan } from './ProfileClan'
+import { ProfileClanPlayers } from './ProfileClanPlayers'
+import { ProfileClanWars } from './ProfileClanWars'
 import { ProfileDeck } from './ProfileDeck'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
-import { ProfileChallenge } from './ProfileChallenge'
 import { useAuthorize } from '../../services/AuthorizeProvider'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
@@ -31,9 +38,10 @@ import React, { useEffect, useState } from 'react'
 export function Profile ()
 {
   const { isAuthorized, userProfile } = useAuthorize ()
-  const [ activeIndex, setActiveIndex ] = useState (0)
-  const [ playerProfile, setPlayerProfile ] = useState (-1)
+  const [ activeIndex, setActiveIndex ] = useState (String (0))
+  const [ playerProfile, setPlayerProfile ] = useState ()
   const [ playerClient ] = useState (new PlayerClient ())
+  const [ sectionOpen, setSectionOpen ] = useState ([])
   const errorReporter = useErrorReporter ()
 
   const downProps = { playerProfile, userProfile }
@@ -44,7 +52,11 @@ export function Profile ()
       { title: 'Player', component: <ProfilePlayer {...downProps} /> },
       { separator : true },
       { title: 'Challenges', component: <ProfileChallenge {...downProps}/> },
-      { title: 'Clan', component: <ProfileClan {...downProps} /> },
+      { title: 'Clan', component: <ProfileClan {...downProps} />, children :
+        [
+          { title: 'Players', component: <ProfileClanPlayers {...downProps} /> },
+          { title: 'Wars', component: <ProfileClanWars {...downProps} /> },
+        ]},
       { title: 'Deck', component: <ProfileDeck {...downProps} /> },
     ]
 
@@ -54,7 +66,7 @@ export function Profile ()
         {
           if (isAuthorized) try
             {
-              return await playerClient.get (-1)
+              return await playerClient.getCurrent ()
             }
           catch (error)
             {
@@ -66,6 +78,53 @@ export function Profile ()
       refreshPlayer ().then ((player) => setPlayerProfile (player))
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthorized])
+
+  const createSection = (page, index) =>
+    {
+      const createSectionNav = _ =>
+        <NavItem active={activeIndex === index} key={`nav${index}`}>
+          <NavLink href='#' onClick={() => { setActiveIndex (index) }}>
+            { page.title }
+          </NavLink>
+        </NavItem>
+
+      if (page.separator)
+        return <hr key={index} />
+      else if (!page.children)
+        return createSectionNav ()
+      else
+        {
+          const children = page.children
+          const target = `accordion${index}`
+
+          const toggle = i =>
+            {
+              const newOpen = [ ...sectionOpen ]
+              const oldOpen = sectionOpen[index]
+                newOpen[index] = i !== oldOpen ? i : undefined
+              setSectionOpen (newOpen)
+            }
+
+          return (
+            <Accordion
+                className='nav-section'
+                flush
+                key={`accordionKey${index}`}
+                open={sectionOpen[index]}
+                toggle={i => toggle (i)} >
+              <AccordionItem>
+                <AccordionHeader targetId={target} tag='div'>
+                  { createSectionNav () }
+                </AccordionHeader>
+                <AccordionBody accordionId={target}>
+                  <Nav card vertical='sm'>
+                    { children.map ((page, subIndex) => createSection (page, `${index}.${subIndex}`)) }
+                  </Nav>
+                </AccordionBody>
+              </AccordionItem>
+            </Accordion>)
+        }
+    }
 
   if (!isAuthorized)
     return <WaitSpinner />
@@ -88,19 +147,12 @@ export function Profile ()
             <span className='p-3' />
           <Row>
             <Col xs='2'>
-              <Nav card pills vertical='sm'>
-            { pages.map ((page, index) => (
-              page.separator
-              ? <hr key={`nav${index}`} />
-              : <NavItem key={`nav${index}`}>
-                  <NavLink active={activeIndex === index} href='#' onClick={() => { setActiveIndex (index) }}>
-                    { page.title }
-                  </NavLink>
-                </NavItem>))}
+              <Nav vertical='sm'>
+                { pages.map ((page, index) => createSection (page, `${index}`)) }
               </Nav>
             </Col>
             <Col xs='10'>
-              { pages[activeIndex].component }
+              { activeIndex.split ('.').reduce ((acc, index) => (!acc ? pages : acc.children)[Number (index)], undefined).component }
             </Col>
           </Row>
         </Container>)

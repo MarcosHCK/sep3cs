@@ -14,12 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Clans.Commands.AddPlayer;
 using DataClash.Application.Clans.Commands.CreateClan;
 using DataClash.Application.Clans.Commands.CreateClanWithChief;
 using DataClash.Application.Clans.Commands.DeleteClan;
+using DataClash.Application.Clans.Commands.EnterWar;
+using DataClash.Application.Clans.Commands.LeaveWar;
+using DataClash.Application.Clans.Commands.RemovePlayer;
 using DataClash.Application.Clans.Commands.UpdateClan;
+using DataClash.Application.Clans.Commands.UpdatePlayer;
+using DataClash.Application.Clans.Commands.UpdateWar;
 using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
 using DataClash.Application.Clans.Queries.GetClansWithPagination;
+using DataClash.Application.Clans.Queries.GetPlayerClansWithPagination;
+using DataClash.Application.Clans.Queries.GetWarClansWithPagination;
 using DataClash.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,17 +37,53 @@ namespace DataClash.WebUI.Controllers
   [Authorize]
   public class ClanController : ApiControllerBase
     {
+      [HttpGet ("Current")]
+      public async Task<ActionResult<CurrentPlayerClanVm?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
+        {
+          return await Mediator.Send (query);
+        }
+
+      [HttpGet ("Player")]
+      public async Task<ActionResult<PaginatedList<PlayerClanBriefDto>>> GetPlayerClansWithPagination ([FromQuery] GetPlayerClansWithPaginationQuery query)
+        {
+          return await Mediator.Send (query);
+        }
+
+      [HttpGet ("War")]
+      public async Task<ActionResult<PaginatedList<WarClanBriefDto>>> GetWarClansWithPagination ([FromQuery] GetWarClansWithPaginationQuery query)
+        {
+          return await Mediator.Send (query);
+        }
+
       [HttpGet]
       public async Task<ActionResult<PaginatedList<ClanBriefDto>>> GetWithPagination ([FromQuery] GetClansWithPaginationQuery query)
         {
           return await Mediator.Send (query);
         }
 
-      [HttpGet]
-      [Route ("current")]
-      public async Task<ActionResult<PlayerClanBriefDto?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
+      [HttpPost]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      [Route ("Player")]
+      public async Task<IActionResult> AddPlayer (AddPlayerCommand command)
         {
-          return await Mediator.Send (query);
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPost ("War")]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> EnterWar (EnterWarCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPost ("WithChief")]
+      public async Task<ActionResult<long>> CreateWithChief (CreateClanWithChiefCommand command)
+        {
+          return await Mediator.Send (command);
         }
 
       [HttpPost]
@@ -48,30 +92,56 @@ namespace DataClash.WebUI.Controllers
           return await Mediator.Send (command);
         }
 
-      [HttpPost ("withchief")]
-      public async Task<ActionResult<long>> CreateWithChief (CreateClanWithChiefCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
-      [HttpDelete ("{id}")]
+      [HttpDelete ("Player")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
-      public async Task<IActionResult> Delete (long id)
+      public async Task<IActionResult> RemovePlayer (RemovePlayerCommand command)
         {
-          await Mediator.Send (new DeleteClanCommand (id));
+          await Mediator.Send (command);
           return NoContent ();
         }
 
-      [HttpPut ("{id}")]
+      [HttpDelete ("War")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
-      [ProducesResponseType (StatusCodes.Status400BadRequest)]
       [ProducesDefaultResponseType]
-      public async Task<IActionResult> Update (long id, UpdateClanCommand command)
+      public async Task<IActionResult> LeaveWar (LeaveWarCommand command)
         {
-          if (id != command.Id)
-            return BadRequest ();
+          await Mediator.Send (command);
+          return NoContent ();
+        }
 
+      [HttpDelete]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> Delete (DeleteClanCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPut ("Player")]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> UpdatePlayer(UpdatePlayerCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPut ("War")]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> UpdateWar (UpdateWarCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPut]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> Update (UpdateClanCommand command)
+        {
           await Mediator.Send (command);
           return NoContent ();
         }
