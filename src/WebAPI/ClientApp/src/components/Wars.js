@@ -16,6 +16,7 @@
  */
 import { Button, Table } from 'reactstrap'
 import { CreateWarCommand } from '../webApiClient.ts'
+import { DeleteWarCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
@@ -64,7 +65,8 @@ export function Wars (props)
   const removeWar = async (item) =>
     {
       try {
-        await warClient.delete (item.id)
+        const command = new DeleteWarCommand (item)
+        await warClient.delete (command)
         setActivePage (-1)
       } catch (error)
         {
@@ -74,14 +76,9 @@ export function Wars (props)
 
   const updateWar = async (item) =>
     {
-      const data = new UpdateWarCommand2 ()
-
-      data.id = item.id
-      data.beginDay = item.beginDay
-      data.duration = item.duration
-
       try {
-        await warClient.update (item.id, data)
+        const command = new UpdateWarCommand2 (item)
+        await warClient.update (command)
       } catch (error)
         {
           errorReporter (error)
