@@ -16,7 +16,7 @@
  */
 import { Alert, Button } from 'reactstrap'
 import { Form, FormGroup, Input, Label } from 'reactstrap'
-import { PlayerClient, UpdatePlayerCommand2 } from '../../webApiClient.ts'
+import { PlayerClient, UpdatePlayerCommand3 } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
@@ -38,7 +38,7 @@ export function ProfilePlayer (props)
     {
       e.preventDefault ()
 
-      const command = new UpdatePlayerCommand2 ()
+      const command = new UpdatePlayerCommand3 ()
 
       command.id = playerProfile.id
       command.level = playerLevel
