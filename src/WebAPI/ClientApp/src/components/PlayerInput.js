@@ -17,7 +17,8 @@
 import './PlayerInput.css'
 import { Button, Input, InputGroup } from 'reactstrap'
 import { Players } from './Players'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
+import { PopoverBody, PopoverHeader } from 'reactstrap'
+import { UncontrolledPopover } from 'reactstrap'
 import { v4 as uuid } from 'uuid'
 import Avatar from './AvatarEmpty.svg'
 import React, { useEffect, useState } from 'react'
@@ -26,7 +27,6 @@ export function PlayerInput (props)
 {
   const { defaultValue, onChanged, value, ...rest } = props
   const [ pickedPlayer, setPickerPlayer ] = useState (defaultValue)
-  const [ pickerOpen, setPickerOpen ] = useState (false)
   const [ tagId ] = useState (`unique-${uuid() }`)
 
   useEffect (_ =>
@@ -38,16 +38,16 @@ export function PlayerInput (props)
   return (
     <InputGroup>
       <Input disabled type='text' value={pickedPlayer} {...rest} />
-      <Button color='primary' id={tagId} onClick={_ => setPickerOpen (!pickerOpen)}>
+      <Button color='primary' id={tagId}>
         <img alt='' src={Avatar} width='16'/>
       </Button>
-      <Popover className='player-input-picker' isOpen={pickerOpen} placement='bottom' target={tagId} toggle={_ => setPickerOpen (!pickerOpen)}>
+      <UncontrolledPopover className='player-input-picker' placement='bottom' target={tagId} trigger='focus'>
         <PopoverHeader>
           Players
         </PopoverHeader>
         <PopoverBody>
           <Players picker onPick={id => setPickerPlayer (id)} />
         </PopoverBody>
-      </Popover>
+      </UncontrolledPopover>
     </InputGroup>)
 }

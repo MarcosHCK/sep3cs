@@ -39,12 +39,12 @@ export function Matches ()
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
-  const [ matchClient ] = useState (new MatchClient ())
-  const [ totalPages, setTotalPages ] = useState (0)
-  const [ matchWinner, setMatchWinner ] = useState (0)
-  const [ matchLoser, setMatchLoser ] = useState (0)
   const [ matchBeginDate, setMatchBeginDate ] = useState (new Date ())
+  const [ matchClient ] = useState (new MatchClient ())
   const [ matchDuration, setMatchDuration ] = useState ('00:00:01')
+  const [ matchLoser, setMatchLoser ] = useState (0)
+  const [ matchWinner, setMatchWinner ] = useState (0)
+  const [ totalPages, setTotalPages ] = useState (0)
   const errorReporter = useErrorReporter ()
 
   const pageSize = 10
@@ -54,10 +54,10 @@ export function Matches ()
     {
       const data = new CreateMatchCommand ()
   
-      data.winnerPlayerId = matchWinner
-      data.looserPlayerId = matchLoser
       data.beginDate = matchBeginDate
       data.duration = matchDuration
+      data.looserPlayerId = matchLoser
+      data.winnerPlayerId = matchWinner
 
       try {
         await matchClient.create (data)
