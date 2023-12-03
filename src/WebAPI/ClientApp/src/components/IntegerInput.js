@@ -15,13 +15,14 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Input } from 'reactstrap'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export function IntegerInput (props)
 {
   const { defaultValue, natural, nonZero, onChange, onChanged, value, type, ...rest } = props
   const [ inValue, setInValue ] = useState (defaultValue)
   const [ isInvalid, setIsInvalid ] = useState (false)
+  const firstRender = useRef (true)
 
   const inOnChange = e =>
     {
@@ -32,7 +33,9 @@ export function IntegerInput (props)
 
   useEffect (_ =>
     {
-      if (!isInvalid)
+      if (firstRender.current)
+        firstRender.current = false
+      else if (!isInvalid)
         {
           onChanged (inValue)
         }
