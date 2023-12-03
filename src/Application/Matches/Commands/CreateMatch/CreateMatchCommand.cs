@@ -15,58 +15,50 @@ using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Enums;
 using DataClash.Domain.Events;
 using MediatR;
 
 namespace DataClash.Application.Matches.Commands.CreateMatch
 {
-    [Authorize (Roles = "Administrator")]
-    public record CreateMatchCommand : IRequest<(long, long, DateTime)>
+  [Authorize (Roles = Roles.Administrator)]
+  public record CreateMatchCommand : IRequest
     {
-        public long WinnerPlayerId { get; init; }
-        public long LooserPlayerId { get; init; }
-        public DateTime BeginDate { get; init; }
-        public TimeSpan Duration { get; init; }
-        //public Player? LooserPlayer { get; init; }
-        //public Player? WinnerPlayer { get; init; }
-
+      public long WinnerPlayerId { get; init; }
+      public long LooserPlayerId { get; init; }
+      public DateTime BeginDate { get; init; }
+      public TimeSpan Duration { get; init; }
     }
-    public class CreateMatchCommandHandler : IRequestHandler<CreateMatchCommand, (long, long, DateTime)>
+
+  public class CreateMatchCommandHandler : IRequestHandler<CreateMatchCommand>
     {
-        private readonly IApplicationDbContext _context;
+      private readonly IApplicationDbContext _context;
 
-        public CreateMatchCommandHandler (IApplicationDbContext context)
+      public CreateMatchCommandHandler (IApplicationDbContext context)
         {
-            _context = context;
+          _context = context;
         }
 
-        private async Task<Player> GetPlayerById(long PlayerId,  CancellationToken cancellationToken)
+      public async Task Handle (CreateMatchCommand request, CancellationToken cancellationToken)
         {
-            var key = new object [] { PlayerId};
-            var entity = await _context.Players.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Player), key);
-            return entity;
-        }
-
-        public async Task<(long,long,DateTime)> Handle (CreateMatchCommand request, CancellationToken cancellationToken)
-        {
-          DateTime ConvertedDate = request.BeginDate.AddHours(-5);
-          var entity = new Match
+          var match = new Match
             {
-                WinnerPlayerId = request.WinnerPlayerId,
-                LooserPlayerId = request.LooserPlayerId,
-                BeginDate = ConvertedDate,
-                Duration = request.Duration,
-                WinnerPlayer = GetPlayerById(request.WinnerPlayerId,cancellationToken).GetAwaiter().GetResult(),
-                LooserPlayer = GetPlayerById(request.LooserPlayerId,cancellationToken).GetAwaiter().GetResult()
+              WinnerPlayerId = request.WinnerPlayerId,
+              LooserPlayerId = request.LooserPlayerId,
+              BeginDate = request.BeginDate,
+              Duration = request.Duration,
             };
-          
-          entity.WinnerPlayer.AddDomainEvent(new MatchCreatedEvent(entity));
-          entity.LooserPlayer.AddDomainEvent(new MatchCreatedEvent(entity));
-          _context.Matches.Add (entity);
+
+          var winnerPlayer = await _context.Players.FindAsync (new object[] { request.WinnerPlayerId }, cancellationToken)
+                              ?? throw new NotFoundException (nameof (Player), new object[] { request.WinnerPlayerId });
+          var looserPlayer = await _context.Players.FindAsync (new object[] { request.LooserPlayerId }, cancellationToken)
+                              ?? throw new NotFoundException (nameof (Player), new object[] { request.LooserPlayerId });
+
+          winnerPlayer.AddDomainEvent (new MatchCreatedEvent (match));
+          looserPlayer.AddDomainEvent (new MatchCreatedEvent (match));
+          _context.Matches.Add (match);
 
           await _context.SaveChangesAsync (cancellationToken);
-          return (entity.WinnerPlayerId,entity.LooserPlayerId,entity.BeginDate);
         }
     }
-
 }

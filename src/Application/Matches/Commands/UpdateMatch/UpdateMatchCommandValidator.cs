@@ -18,16 +18,14 @@ using FluentValidation;
 
 namespace DataClash.Application.Matches.Commands.UpdateMatch
 {
-    public class UpdateMatchCommandValidator : AbstractValidator<UpdateMatchCommand>
+  public class UpdateMatchCommandValidator : AbstractValidator<UpdateMatchCommand>
     {
-        public UpdateMatchCommandValidator ()
+      public UpdateMatchCommandValidator ()
         {
-            RuleFor(v => v.WinnerPlayerId).NotEmpty();
-            RuleFor(v => v.LooserPlayerId).NotEmpty();
-            RuleFor (v => v.BeginDate).NotEmpty ();
-            RuleFor (v => v.Duration).NotEmpty ();
-            RuleFor (v => v.WinnerPlayer).NotNull();
-            RuleFor (v => v.LooserPlayer).NotNull();
+          RuleFor (v => v.WinnerPlayerId).NotEmpty ();
+          RuleFor (v => v.LooserPlayerId).NotEmpty ();
+          RuleFor (v => v.BeginDate).NotEmpty ();
+          RuleFor (v => v.Duration).NotEmpty ();
         }
     }
 }
