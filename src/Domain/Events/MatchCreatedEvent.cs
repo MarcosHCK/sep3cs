@@ -15,16 +15,17 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 using DataClash.Domain.Common;
+using DataClash.Domain.Entities;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Domain.Events
 {
-  public class Match// : BaseEntity
+  public class MatchCreatedEvent : BaseEvent
     {
-      public long WinnerPlayerId { get; set; }
-      public long LooserPlayerId { get; set; }
-      public DateTime BeginDate { get; set; }
-      public TimeSpan Duration { get; set; }
-      public virtual Player? LooserPlayer { get; set; }
-      public virtual Player? WinnerPlayer { get; set; }
+      public Match Item { get; }
+
+      public MatchCreatedEvent (Match item)
+        {
+          Item = item;
+        }
     }
 }

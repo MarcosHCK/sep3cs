@@ -14,17 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
+using FluentValidation;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Matches.Commands.CreateMatch
 {
-  public class Match// : BaseEntity
+  public class CreateMatchCommandValidator : AbstractValidator<CreateMatchCommand>
     {
-      public long WinnerPlayerId { get; set; }
-      public long LooserPlayerId { get; set; }
-      public DateTime BeginDate { get; set; }
-      public TimeSpan Duration { get; set; }
-      public virtual Player? LooserPlayer { get; set; }
-      public virtual Player? WinnerPlayer { get; set; }
+      public CreateMatchCommandValidator ()
+        {
+            RuleFor(v => v.WinnerPlayerId).NotEmpty();
+            RuleFor(v => v.LooserPlayerId).NotEmpty();
+            RuleFor (v => v.BeginDate).NotEmpty ();
+            RuleFor (v => v.Duration).NotEmpty ();
+            RuleFor (v => v.WinnerPlayerId).NotEqual(v => v.LooserPlayerId);
+        }
     }
 }

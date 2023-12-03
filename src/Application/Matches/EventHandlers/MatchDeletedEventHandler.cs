@@ -14,17 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
+using DataClash.Domain.Events;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Matches.EventHandlers
 {
-  public class Match// : BaseEntity
+    public class MatchDeletedEventHandler : INotificationHandler<MatchDeletedEvent>
     {
-      public long WinnerPlayerId { get; set; }
-      public long LooserPlayerId { get; set; }
-      public DateTime BeginDate { get; set; }
-      public TimeSpan Duration { get; set; }
-      public virtual Player? LooserPlayer { get; set; }
-      public virtual Player? WinnerPlayer { get; set; }
+        private readonly ILogger<MatchDeletedEventHandler> _logger;
+
+        public MatchDeletedEventHandler (ILogger<MatchDeletedEventHandler> logger)
+        {
+            _logger = logger;
+        }
+
+        public Task Handle (MatchDeletedEvent notification, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
+            return Task.CompletedTask;
+        }
     }
 }

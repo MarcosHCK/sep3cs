@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Domain.Common;
+using DataClash.Application.Common.Mappings;
+using DataClash.Domain.Entities;
 
-namespace DataClash.Domain.Entities
+namespace DataClash.Application.Matches.Queries.GetMatch
 {
-  public class Match// : BaseEntity
+    public class MatchBriefDto : IMapFrom<Match>
     {
-      public long WinnerPlayerId { get; set; }
-      public long LooserPlayerId { get; set; }
-      public DateTime BeginDate { get; set; }
-      public TimeSpan Duration { get; set; }
-      public virtual Player? LooserPlayer { get; set; }
-      public virtual Player? WinnerPlayer { get; set; }
+        public long WinnerPlayerId { get; init; }
+        public long LooserPlayerId { get; init; }
+        public DateTime BeginDate { get; init; }
+        public TimeSpan Duration { get; init; }
     }
 }
