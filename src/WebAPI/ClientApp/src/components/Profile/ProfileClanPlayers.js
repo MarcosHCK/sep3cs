@@ -207,7 +207,7 @@ export function ProfileClanPlayers (props)
                   </Input>
                 </td>
                 { (clanRole !== ClanRole.Chief || item.role === ClanRole.Chief)
-                  ? <></>
+                  ? <td />
                   : <td>
                       <Button close onClick={_ => {
                           setIsLoading (true)
