@@ -54,7 +54,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
             {
               Description = "Test clan",
               Name = "Test clan",
-              Region = Region.Somewhere,
+              Region = Region.Anywhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
               Type = Domain.Enums.ClanType.Normal,
@@ -85,7 +85,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
             {
               Description = "Test clan",
               Name = "Test clan",
-              Region = Region.Somewhere,
+              Region = Region.Anywhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
               Type = Domain.Enums.ClanType.Normal,
@@ -112,7 +112,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
             {
               Description = "Test clan",
               Name = "Test clan",
-              Region = Region.Somewhere,
+              Region = Region.Anywhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
               Type = Domain.Enums.ClanType.Normal,

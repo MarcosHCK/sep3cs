@@ -14,40 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using DataClash.Application.Common.Interfaces;
-using DataClash.Application.Common.Mappings;
-using DataClash.Application.Common.Models;
-using DataClash.Application.Common.Security;
 using DataClash.Application.Players.Queries.GetPlayer;
 using MediatR;
 
-namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
+namespace DataClash.Application.Players.Queries.GetCurrentPlayer
 {
-  [Authorize]
-  public record GetPlayersWithPaginationQuery : IRequest<PaginatedList<PlayerBriefDto>>
-    {
-      public int PageNumber { get; init; } = 1;
-      public int PageSize { get; init; } = 10;
-    }
+  public record GetCurrentPlayerCommand () : IRequest<PlayerBriefDto>;
 
-  public class GetPlayersWithPaginationQueryHandler : IRequestHandler<GetPlayersWithPaginationQuery, PaginatedList<PlayerBriefDto>>
+  public class GetCurrentPlayerCommandHandler : IRequestHandler<GetCurrentPlayerCommand, PlayerBriefDto>
     {
       private readonly IApplicationDbContext _context;
+      private readonly ICurrentPlayerService _currentPlayer;
       private readonly IMapper _mapper;
 
-      public GetPlayersWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
+      public GetCurrentPlayerCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, IMapper mapper)
         {
           _context = context;
+          _currentPlayer = currentPlayer;
           _mapper = mapper;
         }
 
-      public async Task<PaginatedList<PlayerBriefDto>> Handle (GetPlayersWithPaginationQuery query, CancellationToken cancellationToken)
+      public async Task<PlayerBriefDto> Handle (GetCurrentPlayerCommand command, CancellationToken cancellationToken)
         {
-          return await _context.Players
-            .ProjectTo<PlayerBriefDto> (_mapper.ConfigurationProvider)
-            .PaginatedListAsync (query.PageNumber, query.PageSize);
+          var player = await _context.Players.FindAsync (new object[] { _currentPlayer.PlayerId! }, cancellationToken);
+          return _mapper.Map<PlayerBriefDto> (player);
         }
     }
 }

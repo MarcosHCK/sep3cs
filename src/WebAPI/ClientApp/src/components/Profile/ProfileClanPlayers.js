@@ -159,7 +159,7 @@ export function ProfileClanPlayers (props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage, clanId])
 
-  const clanRoles = Object.keys (ClanRole).filter (k => !isNaN (Number (ClanRole[k])))
+  const clanRoles = Object.keys (ClanRole).filter (k => !isNaN (Number (ClanRole[k])) && Number (ClanRole[k]) !== ClanRole.Chief)
 
   if (!playerProfile)
     return <Alert color='warning'>User has not player status</Alert>
@@ -206,7 +206,7 @@ export function ProfileClanPlayers (props)
                   { clanRoles.map ((type) => !isNaN (Number (type)) ? <></> : <option>{type}</option>) }
                   </Input>
                 </td>
-                { item.role === ClanRole.Chief
+                { (clanRole !== ClanRole.Chief || item.role === ClanRole.Chief)
                   ? <></>
                   : <td>
                       <Button close onClick={_ => {

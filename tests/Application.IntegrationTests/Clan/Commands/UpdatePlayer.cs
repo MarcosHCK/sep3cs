@@ -42,7 +42,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
           var playerId = user!.PlayerId!.Value;
 
           await RunAsDefaultUserAsync ();
-          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Somewhere, Type = ClanType.Normal });
+          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Anywhere, Type = ClanType.Normal });
           var addCommand = new AddPlayerCommand { ClanId = clanId, PlayerId = playerId, Role = ClanRole.Commoner };
           var updateCommand = new UpdatePlayerCommand { ClanId = clanId, PlayerId = playerId, Role = ClanRole.Veteran };
 
@@ -65,7 +65,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
           var playerId = user!.PlayerId!.Value;
 
           await RunAsDefaultUserAsync ();
-          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Somewhere, Type = ClanType.Normal });
+          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Anywhere, Type = ClanType.Normal });
           var addCommand = new AddPlayerCommand { ClanId = clanId, PlayerId = playerId, Role = ClanRole.Commoner };
           var updateCommand = new UpdatePlayerCommand { ClanId = clanId, PlayerId = playerId, Role = ClanRole.Veteran };
 

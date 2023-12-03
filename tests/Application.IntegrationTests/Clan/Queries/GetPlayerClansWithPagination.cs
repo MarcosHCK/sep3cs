@@ -45,7 +45,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries
             {
               Description = "Test clan",
               Name = "Test clan",
-              Region = Region.Somewhere,
+              Region = Region.Anywhere,
               Type = Domain.Enums.ClanType.Normal,
             });
 

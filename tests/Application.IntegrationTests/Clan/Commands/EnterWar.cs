@@ -37,7 +37,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
           var warId = await SendAsync (new CreateWarCommand { BeginDay = DateTime.Now, Duration = new TimeSpan (1) });
 
           await RunAsDefaultUserAsync ();
-          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Somewhere, Type = ClanType.Normal });
+          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Anywhere, Type = ClanType.Normal });
           var command = new EnterWarCommand { ClanId = clanId, WarId = warId };
 
           await SendAsync (command);
@@ -57,7 +57,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Commands
           var warId = await SendAsync (new CreateWarCommand { BeginDay = DateTime.Now, Duration = new TimeSpan (1) });
 
           await RunAsDefaultUserAsync ();
-          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Somewhere, Type = ClanType.Normal });
+          var clanId = await SendAsync (new CreateClanWithChiefCommand { Description = "Test clan", Name = "Test clan", Region = Region.Anywhere, Type = ClanType.Normal });
           var command = new EnterWarCommand { ClanId = clanId, WarId = warId };
 
           await RunAsUserAsync ("other@local", "Otheruser1!", Array.Empty<string> ());
