@@ -19,7 +19,7 @@ import { CreateWarCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
-import { UpdateWarCommand } from '../webApiClient.ts'
+import { UpdateWarCommand2 } from '../webApiClient.ts'
 import { useAuthorize } from '../services/AuthorizeProvider'
 import { useErrorReporter } from './ErrorReporter'
 import { useParams } from 'react-router-dom'
@@ -74,7 +74,7 @@ export function Wars (props)
 
   const updateWar = async (item) =>
     {
-      const data = new UpdateWarCommand ()
+      const data = new UpdateWarCommand2 ()
 
       data.id = item.id
       data.beginDay = item.beginDay
