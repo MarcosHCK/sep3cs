@@ -66,7 +66,7 @@ export function Profile ()
         {
           if (isAuthorized) try
             {
-              return await playerClient.get (-1)
+              return await playerClient.getCurrent ()
             }
           catch (error)
             {
