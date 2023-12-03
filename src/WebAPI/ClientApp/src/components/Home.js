@@ -137,12 +137,15 @@ export function Home() {
         { caption: 'User signing up for DataClash', src: '/comic/registration.jpeg', },
       ]} />
 
-        <h1>Top Clans by Regions</h1>
-        <Table columns={['Clan', 'Region', 'Trofeos']} data={topClans} />
+      <h1 className="table-title">Top Clans by Regions</h1>
+      <Table columns={['Clan', 'Region', 'Trofeos']} data={topClans} />
 
-        <div className="tableContainer">
+      <div className="tableContainer">
         <div className="headerContainer">
-          <h1>Top Players by Wars</h1>
+          <h1 className="table-title">
+            <img className="table-image" src="top_players.webp" />
+                    Top Players by Wars
+          </h1>
           <Dropdown isOpen={dropdownOpenWar} toggle={toggleWar}>
             <DropdownToggle caret>
               Select a war
@@ -158,29 +161,29 @@ export function Home() {
         </div>
         <Table columns={['Player', 'Clan', 'Trophies']} data={bestPlayers} />
 
-        <h1>Completed Challenges</h1>
+        <h1 className="table-title">Completed Challenges</h1>
         <Table columns={['Player', 'Challenge']} data={completedChallenges} />
 
         <div className="headerContainer">
-           <h1>Most Popular Cards by Clans</h1>
-           <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
-             <DropdownToggle caret>
-               Select a clan
-             </DropdownToggle>
-             <DropdownMenu>
-               {clanName.map((name, index) => (
-                 <DropdownItem key={index} onClick={() => setSelectedClanName(name)}>
-                   {name}
-                 </DropdownItem>
-               ))}
-             </DropdownMenu>
-           </Dropdown>
-         </div>
-         <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
+          <h1 className="table-title">Most Popular Cards by Clans</h1>
+          <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
+            <DropdownToggle caret>
+              Select a clan
+            </DropdownToggle>
+            <DropdownMenu>
+              {clanName.map((name, index) => (
+                <DropdownItem key={index} onClick={() => setSelectedClanName(name)}>
+                  {name}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
 
-        <h1>Most Gifted Cards by Region</h1>
+        <h1 className="table-title">Most Gifted Cards by Region</h1>
         <Table columns={['Card', 'Region', 'Donations']} data={giftedCards} />
-         
+
       </div>
     </div>
   )
