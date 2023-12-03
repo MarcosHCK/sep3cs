@@ -33,3 +33,21 @@ div.accordion-body
   padding-right: 0px;
   padding-top: 0px;
 }
+
+div.playerchallenge-picker
+div.popover
+{
+  max-width: 70%;
+}
+
+div.playerclan-picker
+div.popover
+{
+  max-width: 70%;
+}
+
+div.warclan-picker
+div.popover
+{
+  max-width: 70%;
+}

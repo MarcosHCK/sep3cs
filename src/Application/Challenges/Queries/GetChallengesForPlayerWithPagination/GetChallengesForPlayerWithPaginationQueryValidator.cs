@@ -16,14 +16,15 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Challenges.Commands.RemovePlayer
+namespace DataClash.Application.Challenges.Queries.GetChallengesForPlayerWithPagination
 {
-  public class RemovePlayerCommandValidator : AbstractValidator<RemovePlayerCommand>
+  public class GetChallengesForPlayerWithPaginationQueryValidator : AbstractValidator<GetChallengesForPlayerWithPaginationQuery>
     {
-      public RemovePlayerCommandValidator ()
+      public GetChallengesForPlayerWithPaginationQueryValidator ()
         {
-          RuleFor (v => v.ChallengeId).NotEmpty ();
-          RuleFor (v => v.PlayerId).NotEmpty ();
+          RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+          RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
+          RuleFor (x => x.PlayerId).NotEmpty ();
         }
     }
 }

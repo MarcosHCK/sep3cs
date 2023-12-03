@@ -14,15 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using FluentValidation;
 
-div.playerclan-picker
-div.popover
+namespace DataClash.Application.Challenges.Commands.UpdatePlayer
 {
-  max-width: 70%;
-}
-
-div.warclan-picker
-div.popover
-{
-  max-width: 70%;
+  public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerCommand>
+    {
+      public UpdatePlayerCommandValidator ()
+        {
+          RuleFor (v => v.ChallengeId).NotEmpty ();
+          RuleFor (v => v.PlayerId).NotEmpty ();
+          RuleFor (v => v.WonThrophies).GreaterThanOrEqualTo (0);
+        }
+    }
 }

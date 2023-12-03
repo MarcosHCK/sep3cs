@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import './ProfileClan.css'
+import './Profile.css'
 import { Alert, Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { ClanClient, ClanRole, ClanType, DeleteClanCommand } from '../../webApiClient.ts'
 import { CreateClanWithChiefCommand } from '../../webApiClient.ts'

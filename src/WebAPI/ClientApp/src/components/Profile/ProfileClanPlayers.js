@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import './ProfileClan.css'
+import './Profile.css'
 import { Alert, Button, Input, Table } from 'reactstrap'
 import { ClanClient, ClanRole } from '../../webApiClient.ts'
-import { AddPlayerCommand } from '../../webApiClient.ts'
-import { RemovePlayerCommand } from '../../webApiClient.ts'
-import { UpdatePlayerCommand } from '../../webApiClient.ts'
+import { AddPlayerCommand2 } from '../../webApiClient.ts'
+import { RemovePlayerCommand2 } from '../../webApiClient.ts'
+import { UpdatePlayerCommand2 } from '../../webApiClient.ts'
 import { Pager } from '../Pager'
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 import { ProfilePage } from './ProfilePage'
@@ -49,7 +49,7 @@ export function ProfileClanPlayers (props)
 
   const addPlayer = async (playerId) =>
     {
-      const command = new AddPlayerCommand ()
+      const command = new AddPlayerCommand2 ()
 
       command.clanId = clanId
       command.playerId = playerId
@@ -66,7 +66,7 @@ export function ProfileClanPlayers (props)
   const removePlayer = async (item) =>
     {
       try {
-        const command = new RemovePlayerCommand (item)
+        const command = new RemovePlayerCommand2 (item)
         await clanClient.removePlayer (command)
       } catch (error)
         {
@@ -77,7 +77,7 @@ export function ProfileClanPlayers (props)
   const updatePlayer = async (item) =>
     {
       try {
-        const command = new UpdatePlayerCommand (item)
+        const command = new UpdatePlayerCommand2 (item)
         await clanClient.updatePlayer (command)
       } catch (error)
         {
