@@ -14,19 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Mappings;
-using DataClash.Domain.Entities;
+using FluentValidation;
 
-namespace DataClash.Application.Players.Queries.GetPlayer
+namespace DataClash.Application.TroopCards.Queries.GetTroopCardWithPagination
 {
-  public class PlayerBriefDto : IMapFrom<Player>
-    {
-      public long Id { get; init; }
-      public long Level { get; init; }
-      public string? Nickname { get; init; }
-      public long? FavoriteCardId{get;init;}
-      public long TotalCardsFound { get; init; }
-      public long TotalThrophies { get; init; }
-      public long TotalWins { get; init; }
-    }
+ public class GetTroopCardsWithPaginationQueryValidator : AbstractValidator<GetTroopCardWithPaginationQuery>
+  {
+    public GetTroopCardsWithPaginationQueryValidator ()
+      {
+        RuleFor (x => x.PageNumber).GreaterThanOrEqualTo (1).WithMessage ("PageNumber at least greater than or equal to 1.");
+        RuleFor (x => x.PageSize).GreaterThanOrEqualTo (1).WithMessage ("PageSize at least greater than or equal to 1.");
+      }
+  }
 }

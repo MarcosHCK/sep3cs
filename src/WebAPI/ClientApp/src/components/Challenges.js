@@ -83,6 +83,7 @@ export function Challenges (props)
     {
       try {
         const command = new UpdateChallengeCommand (item)
+        console.log(command)
         await challengeClient.update (command)
       } catch (error)
         {
@@ -153,7 +154,7 @@ export function Challenges (props)
             totalPages={totalPages}
             visibleIndices={visibleIndices} />
         </div>
-        <Table>
+        <Table striped responsive bordered>
           <thead>
             <tr>
               <th>{'#'}</th>
@@ -182,14 +183,14 @@ export function Challenges (props)
                 <Input
                   type='number'
                   defaultValue={item.bounty}
-                  onChanged={(e) => { item.bounty = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.bounty = e.target.value; updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
               <td>
                 <Input
                   type='number'
                   defaultValue={item.cost}
-                  onChanged={(e) => { item.cost = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.cost = e.target.value; updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
               <td>
@@ -209,21 +210,21 @@ export function Challenges (props)
                 <Input
                   type='number'
                   defaultValue={item.maxLooses}
-                  onChanged={(e) => { item.maxLooses = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.maxLooses = e.target.value; updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
               <td>
                 <Input
                   type='number'
                   defaultValue={item.minLevel}
-                  onChanged={(e) => { item.minLevel = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.minLevel = e.target.value; updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
               <td>
                 <Input
                   type='text'
                   defaultValue={item.name}
-                  onChanged={(e) => { item.name = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.name = e.target.value; updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
           { readOnly && !picker

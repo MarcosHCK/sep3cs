@@ -14,19 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Mappings;
-using DataClash.Domain.Entities;
+using FluentValidation;
 
-namespace DataClash.Application.Players.Queries.GetPlayer
+namespace DataClash.Application.PlayerCards.Commands.CreateCardGift
 {
-  public class PlayerBriefDto : IMapFrom<Player>
-    {
-      public long Id { get; init; }
-      public long Level { get; init; }
-      public string? Nickname { get; init; }
-      public long? FavoriteCardId{get;init;}
-      public long TotalCardsFound { get; init; }
-      public long TotalThrophies { get; init; }
-      public long TotalWins { get; init; }
-    }
+ public class CreateCardGiftCommandValidator : AbstractValidator<CreateCardGiftCommand>
+ {
+   public CreateCardGiftCommandValidator()
+   {
+     RuleFor(v => v.CardId).NotEmpty();
+     RuleFor(v => v.ClanId).NotEmpty();
+     RuleFor(v => v.PlayerId).NotEmpty();
+   }
+ }
 }

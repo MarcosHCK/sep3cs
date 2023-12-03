@@ -15,6 +15,7 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths } from './services/AuthorizeConstants'
+import { Cards } from './components/Cards'
 import { Challenges } from './components/Challenges'
 import { Clans } from './components/Clans'
 import { Home } from './components/Home'
@@ -36,7 +37,7 @@ const AppRoutes = () => (
     <Routes>
       <Route path={'/'} element={<Home />} index={true} />
 
-      <Route path={'/cards'} element={<RequireAuth><p>Cards component placeholdes</p></RequireAuth>}/>
+      <Route path={'/cards'} element={<RequireAuth><Cards /></RequireAuth>}/> 
       <Route path={'/challenges'} element={<RequireAuth><Challenges /></RequireAuth>}/>
       <Route path={'/clans'} element={<RequireAuth><Clans /></RequireAuth>}/>
       <Route path={'/matches'} element={<RequireAuth><Matches /></RequireAuth>}/>

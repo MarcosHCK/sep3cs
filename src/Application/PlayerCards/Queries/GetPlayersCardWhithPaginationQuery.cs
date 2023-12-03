@@ -26,6 +26,7 @@ namespace DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination
 {
   public record GetPlayerCardsWithPaginationQuery : IRequest<PaginatedList<PlayerCardBriefDto>>
     {
+      public long PlayerId { get; init; }
       public int PageNumber { get; init; } = 1;
       public int PageSize { get; init; } = 10;
     }
@@ -44,6 +45,7 @@ namespace DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination
       public async Task<PaginatedList<PlayerCardBriefDto>> Handle (GetPlayerCardsWithPaginationQuery query, CancellationToken cancellationToken)
         {
           return await _context.PlayerCards
+            .Where (e => e.PlayerId == query.PlayerId)
             .ProjectTo<PlayerCardBriefDto> (_mapper.ConfigurationProvider)
             .PaginatedListAsync (query.PageNumber, query.PageSize);
         }

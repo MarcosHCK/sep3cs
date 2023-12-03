@@ -19,6 +19,7 @@ using DataClash.Application.PlayerCards.Commands.CreatePlayerCard;
 using DataClash.Application.PlayerCards.Commands.DeletePlayerCard;
 using DataClash.Application.PlayerCards.Commands.UpdatePlayerCard;
 using DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination;
+using DataClash.Application.PlayerCards.Commands.CreateCardGift;
 using DataClash.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,13 +33,23 @@ namespace DataClash.WebUI.Controllers{
         public async Task<ActionResult<(long,long)>> Create (CreatePlayerCardCommand command){
             return await Mediator.Send (command);
         }
-        [HttpDelete ("{id1}/{is2}")]
+        [HttpDelete ]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Delete ((long,long)id){
-            await Mediator.Send (new DeletePlayerCardCommand (id));
+        public async Task<IActionResult> Delete (DeletePlayerCardCommand command){
+            Console.WriteLine(command);
+
+            await Mediator.Send (command);
             return NoContent ();
         }
+        [HttpPost]
+        [Route("CreateCardGift")]
+        public async Task<ActionResult> CreateCardGift(CreateCardGiftCommand command)
+        {
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
         [HttpPut("{id1}/{id2}")]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesResponseType (StatusCodes.Status400BadRequest)]

@@ -14,19 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Events;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
-namespace DataClash.Application.Players.Queries.GetPlayer
+namespace DataClash.Application.Challenges.EventHandlers
 {
-  public class PlayerBriefDto : IMapFrom<Player>
+  public class PlayerRemovedEventHandler : INotificationHandler<PlayerRemovedEvent<PlayerChallenge>>
     {
-      public long Id { get; init; }
-      public long Level { get; init; }
-      public string? Nickname { get; init; }
-      public long? FavoriteCardId{get;init;}
-      public long TotalCardsFound { get; init; }
-      public long TotalThrophies { get; init; }
-      public long TotalWins { get; init; }
+      private readonly ILogger<PlayerRemovedEvent<PlayerChallenge>> _logger;
+
+      public PlayerRemovedEventHandler (ILogger<PlayerRemovedEvent<PlayerChallenge>> logger)
+        {
+          _logger = logger;
+        }
+
+      public Task Handle (PlayerRemovedEvent<PlayerChallenge> notification, CancellationToken cancellationToken)
+        {
+          _logger.LogInformation ("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
+          return Task.CompletedTask;
+        }
     }
 }
