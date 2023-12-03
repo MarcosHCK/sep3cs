@@ -35,6 +35,7 @@ namespace DataClash.Domain.Entities
       public double AreaDamage { get; set; }
       public double TowerDamage { get; set; }
       public TimeSpan Duration { get; set; }
+
     }
 
   public class StructCard : Card

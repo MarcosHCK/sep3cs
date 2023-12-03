@@ -15,14 +15,29 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace DataClash.Domain.Entities
-{
-  public class PlayerChallenge
-    {
-      public long ChallengeId { get; set; }
-      public long PlayerId { get; set; }
-      public long WonThrophies { get; set; }
-      public Challenge Challenge { get; set; } = null!;
-      public Player Player { get; set; } = null!;
-    }
-}
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   }
+   .home {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+   }
+   
+   .carousel {
+    grid-column: 1;
+    margin-bottom: 50px;
+   }
+   
+   .mural {
+    grid-column: 2;
+    align-self: start;
+   
+   }
+
+   .mural p {
+    font-size: 30px;}
+   
+   
