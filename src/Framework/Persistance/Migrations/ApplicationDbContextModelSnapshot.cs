@@ -223,12 +223,13 @@ namespace Framework.Migrations
                     b.Property<long>("PlayerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Role")
+                    b.Property<int>("Role")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ClanId", "PlayerId");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("PlayerId")
+                        .IsUnique();
 
                     b.ToTable("PlayerClans");
                 });
@@ -777,8 +778,8 @@ namespace Framework.Migrations
                         .IsRequired();
 
                     b.HasOne("DataClash.Domain.Entities.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
+                        .WithOne()
+                        .HasForeignKey("DataClash.Domain.Entities.PlayerClan", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

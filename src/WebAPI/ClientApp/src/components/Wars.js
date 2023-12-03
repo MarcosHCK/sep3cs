@@ -16,10 +16,11 @@
  */
 import { Button, Table } from 'reactstrap'
 import { CreateWarCommand } from '../webApiClient.ts'
+import { DeleteWarCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
-import { UpdateWarCommand } from '../webApiClient.ts'
+import { UpdateWarCommand2 } from '../webApiClient.ts'
 import { useAuthorize } from '../services/AuthorizeProvider'
 import { useErrorReporter } from './ErrorReporter'
 import { useParams } from 'react-router-dom'
@@ -28,8 +29,9 @@ import { WaitSpinner } from './WaitSpinner'
 import { WarClient } from '../webApiClient.ts'
 import React, { useEffect, useState } from 'react'
 
-export function Wars ()
+export function Wars (props)
 {
+  const { onPick, picker } = props
   const { initialPage } = useParams ()
   const { isAuthorized, inRole }= useAuthorize ()
   const [ activePage, setActivePage ] = useState (initialPage ? initialPage : 0)
@@ -41,8 +43,8 @@ export function Wars ()
   const [ warClient ] = useState (new WarClient ())
   const errorReporter = useErrorReporter ()
 
-  const pageSize = 10
-  const visibleIndices = 5
+  const pageSize = !picker ? 10 : 3
+  const visibleIndices = !picker ? 5 : 2
 
   const addWar = async () =>
     {
@@ -63,7 +65,8 @@ export function Wars ()
   const removeWar = async (item) =>
     {
       try {
-        await warClient.delete (item.id)
+        const command = new DeleteWarCommand (item)
+        await warClient.delete (command)
         setActivePage (-1)
       } catch (error)
         {
@@ -73,14 +76,9 @@ export function Wars ()
 
   const updateWar = async (item) =>
     {
-      const data = new UpdateWarCommand ()
-
-      data.id = item.id
-      data.beginDay = item.beginDay
-      data.duration = item.duration
-
       try {
-        await warClient.update (item.id, data)
+        const command = new UpdateWarCommand2 (item)
+        await warClient.update (command)
       } catch (error)
         {
           errorReporter (error)
@@ -134,6 +132,8 @@ export function Wars ()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage])
 
+  const readOnly = !inRole[UserRoles.Administrator] || picker
+
   return (
     isLoading || !isAuthorized
     ? (<WaitSpinner />)
@@ -166,28 +166,27 @@ export function Wars ()
                   <DateTime
                     defaultValue={item.beginDay}
                     onChanged={(date) => { item.beginDay = date; updateWar (item) }}
-                    readOnly={!inRole[UserRoles.Administrator]} />
+                    readOnly={readOnly} />
                 </td>
                 <td>
                   <TimeSpan
                     defaultValue={item.duration}
                     onChanged={(span) => { item.duration = span; updateWar (item) }}
-                    readOnly={!inRole[UserRoles.Administrator]} />
+                    readOnly={readOnly} />
                 </td>
-        {
-          (!inRole[UserRoles.Administrator])
-          ? (<td />)
-          : (
-                <td>
-                  <Button color='primary' onClick={() => removeWar (item)} close />
-                </td>)
-        }
-              </tr>))
-        }
+            { readOnly && !picker
+              ? <td />
+              : (!picker
+                ? <td>
+                    <Button color='primary' onClick={() => removeWar (item)} close />
+                  </td>
+                : <td>
+                    <Button color='primary' onClick={() => onPick (item.id)}>+</Button>
+                  </td>)}
+              </tr>))}
             </tbody>
             <tfoot>
-        {
-          (!inRole[UserRoles.Administrator])
+        { readOnly
           ? (<tr />)
           : (
               <tr key='footer0'>
@@ -195,8 +194,7 @@ export function Wars ()
                   <Button color='primary' onClick={() => addWar ()}>+</Button>
                 </td>
                 <td /><td /><td />
-              </tr>)
-        }
+              </tr>) }
             </tfoot>
           </Table>
         </div>

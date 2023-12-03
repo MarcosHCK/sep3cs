@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Interfaces;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using IdentityModel;
@@ -24,13 +25,16 @@ namespace DataClash.Framework.Identity
 {
   public class ProfileService : IProfileService
     {
+      private readonly IApplicationDbContext _context;
       private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
       private readonly UserManager<ApplicationUser> _userManager;
 
       public ProfileService (
-          UserManager<ApplicationUser> userManager,
-          IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory)
+          IApplicationDbContext context,
+          IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
+          UserManager<ApplicationUser> userManager)
         {
+          _context = context;
           _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
           _userManager = userManager;
         }
@@ -45,6 +49,20 @@ namespace DataClash.Framework.Identity
           foreach (string role in roles)
             {
               roleClaims.Add (new Claim (JwtClaimTypes.Role, role));
+            }
+
+          if (user!.PlayerId.HasValue)
+            {
+              var player = await _context.Players.FindAsync (user!.PlayerId);
+              var nickname = player?.Nickname;
+
+              if (nickname != null)
+                {
+                  var type = JwtClaimTypes.NickName;
+                  var claim = new Claim (type, nickname);
+
+                  context.IssuedClaims.Add (claim);
+                }
             }
 
           context.IssuedClaims.AddRange (roleClaims);

@@ -26,11 +26,11 @@ namespace DataClash.Application.IntegrationTests.Players.Commands
   public class GetPlayersWithPagination : BaseTestFixture
     {
       [Test]
-      public async Task ShouldRequireAdministrator ()
+      public async Task ShouldNotRequireAdministrator ()
         {
           await RunAsDefaultUserAsync ();
           var command = new GetPlayersWithPaginationQuery { PageNumber = 1, PageSize = 10, };
-          await FluentActions.Invoking (() => SendAsync (command)).Should ().ThrowAsync<ForbiddenAccessException> ();
+          await FluentActions.Invoking (() => SendAsync (command)).Should ().NotThrowAsync<ForbiddenAccessException> ();
         }
     }
 }
