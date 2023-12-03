@@ -43,9 +43,9 @@ export function ProfileDeck (props)
   const loadCards = async () =>
     {
       try {
-        const magicCardsList = await cardClient.getWithPagination ('MagicCard', 1, 10)
-        const troopCardsList = await cardClient.getWithPagination2 ('TroopCard', 1, 10)
-        const structCardsList = await cardClient.getWithPagination3 ('StructCard', 1, 10)
+        const magicCardsList = await cardClient.getMagicCardsWithPagination (1, 10)
+        const troopCardsList = await cardClient.getTroopCardsWithPagination (1, 10)
+        const structCardsList = await cardClient.getStructCardsWithPagination (1, 10)
         const playerCardsList = await playerCardClient.getWithPagination (playerProfile.id, 1, 10)
         const allCardsList = [ ...magicCardsList.items, ...troopCardsList.items, ...structCardsList.items ]
         const CardMap = {}
