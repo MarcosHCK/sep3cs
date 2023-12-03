@@ -31,7 +31,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<PlayerBriefDto>> GetCurrent ()
         => await Mediator.Send (new GetCurrentPlayerCommand ());
       [HttpGet ("{Id}")]
-      public async Task<ActionResult<PlayerBriefDto>> Get (long Id)
+      public async Task<ActionResult<PlayerBriefVm>> Get (long Id)
         => await Mediator.Send (new GetPlayerQuery (Id));
       [HttpGet]
       [ProducesResponseType (StatusCodes.Status200OK)]

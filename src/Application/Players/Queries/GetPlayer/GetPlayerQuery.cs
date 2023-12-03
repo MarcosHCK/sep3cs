@@ -17,14 +17,15 @@
 using AutoMapper;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
+using DataClash.Domain.Enums;
 using MediatR;
 
 namespace DataClash.Application.Players.Queries.GetPlayer
 {
-  [Authorize]
-  public record GetPlayerQuery (long PlayerId) : IRequest<PlayerBriefDto>;
+  [Authorize (Roles = Roles.Administrator)]
+  public record GetPlayerQuery (long PlayerId) : IRequest<PlayerBriefVm>;
 
-  public class GetPlayerQueryHandler : IRequestHandler<GetPlayerQuery, PlayerBriefDto>
+  public class GetPlayerQueryHandler : IRequestHandler<GetPlayerQuery, PlayerBriefVm>
     {
       private readonly IApplicationDbContext _context;
       private readonly IMapper _mapper;
@@ -35,9 +36,9 @@ namespace DataClash.Application.Players.Queries.GetPlayer
           _mapper = mapper;
         }
 
-      public async Task<PlayerBriefDto> Handle (GetPlayerQuery query, CancellationToken cancellationToken)
+      public async Task<PlayerBriefVm> Handle (GetPlayerQuery query, CancellationToken cancellationToken)
         {
-          return _mapper.Map<PlayerBriefDto> (await _context.Players.FindAsync (new object?[] { query.PlayerId }, cancellationToken : cancellationToken));
+          return _mapper.Map<PlayerBriefVm> (await _context.Players.FindAsync (new object?[] { query.PlayerId }, cancellationToken : cancellationToken));
         }
     }
 }

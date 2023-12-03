@@ -17,7 +17,7 @@
 using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Players.Queries.GetPlayer
+namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
 {
   public class PlayerBriefDto : IMapFrom<Player>
     {
