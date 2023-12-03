@@ -14,36 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-
 using DataClash.Application.Common.Interfaces;
 using MediatR;
-using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Statistics.AllClanNames
 {
-   public record GetAllClanNamesQuery : IRequest<List<string>>;
+  public record GetAllClanNamesQuery : IRequest<List<string>>;
 
-   public class GetAllClanNamesQueryHandler : IRequestHandler<GetAllClanNamesQuery, List<string>>
-   {
-       private readonly IApplicationDbContext _context;
+  public class GetAllClanNamesQueryHandler : IRequestHandler<GetAllClanNamesQuery, List<string>>
+  	{
+      private readonly IApplicationDbContext _context;
 
-       public GetAllClanNamesQueryHandler(IApplicationDbContext context)
-       {
-           _context = context;
-       }
+      public GetAllClanNamesQueryHandler (IApplicationDbContext context)
+      	{
+          _context = context;
+       	}
 
-       public async Task<List<string>> Handle(GetAllClanNamesQuery request, CancellationToken cancellationToken)
-       {
-            var allClanNames = _context.Clans.Select(c => c.Name).ToList();
-            return allClanNames;
-       }
-   }
-
-   public class GetAllClanNamesQueryValidator : AbstractValidator<GetAllClanNamesQuery>
-   {
-       public GetAllClanNamesQueryValidator()
-       {
-           // Add validation rules here
-       }
-   }
+      public async Task<List<string>> Handle (GetAllClanNamesQuery request, CancellationToken cancellationToken)
+       	{
+          return await _context.Clans.Select (c => c.Name).ToListAsync (cancellationToken);
+       	}
+   	}
 }
