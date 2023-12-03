@@ -27,5 +27,12 @@ namespace DataClash.WebUI.Controllers
     {
       private ISender? _mediator;
       protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender> ();
+
+      protected delegate Task MediateAction ();
+      protected async Task<IActionResult> NoContentAction (MediateAction action)
+        {
+          await action ();
+          return NoContent ();
+        }
     }
 }

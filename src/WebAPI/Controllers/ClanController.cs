@@ -39,111 +39,62 @@ namespace DataClash.WebUI.Controllers
     {
       [HttpGet ("Current")]
       public async Task<ActionResult<CurrentPlayerClanVm?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpGet ("Player")]
       public async Task<ActionResult<PaginatedList<PlayerClanBriefDto>>> GetPlayerClansWithPagination ([FromQuery] GetPlayerClansWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpGet ("War")]
       public async Task<ActionResult<PaginatedList<WarClanBriefDto>>> GetWarClansWithPagination ([FromQuery] GetWarClansWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpGet]
       public async Task<ActionResult<PaginatedList<ClanBriefDto>>> GetWithPagination ([FromQuery] GetClansWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpPost]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       [Route ("Player")]
       public async Task<IActionResult> AddPlayer (AddPlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPost ("War")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> EnterWar (EnterWarCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPost ("WithChief")]
       public async Task<ActionResult<long>> CreateWithChief (CreateClanWithChiefCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
+        => await Mediator.Send (command);
       [HttpPost]
       public async Task<ActionResult<long>> Create (CreateClanCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
+        => await Mediator.Send (command);
       [HttpDelete ("Player")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> RemovePlayer (RemovePlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpDelete ("War")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> LeaveWar (LeaveWarCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpDelete]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Delete (DeleteClanCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut ("Player")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> UpdatePlayer(UpdatePlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut ("War")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> UpdateWar (UpdateWarCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdateClanCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }

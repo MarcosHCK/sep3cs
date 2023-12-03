@@ -26,17 +26,11 @@ namespace DataClash.WebUI.Controllers
     {
       [HttpPost]
       public async Task<ActionResult<long>> Create (CreateErrorReportCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
+        => await Mediator.Send (command);
       [HttpDelete]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Delete (DeleteErrorReportCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }

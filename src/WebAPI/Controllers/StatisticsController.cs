@@ -14,86 +14,64 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Statistics.TopClansByRegion;
-using DataClash.Application.Statistics.CompletedChallenges;
-using DataClash.Application.Statistics.MostGiftedCardsByRegion;
+using DataClash.Application.Statistics.AllClanNames;
 using DataClash.Application.Statistics.AllWarIds;
 using DataClash.Application.Statistics.BestPlayer;
-using DataClash.Application.Statistics.AllClanNames;
+using DataClash.Application.Statistics.CompletedChallenges;
+using DataClash.Application.Statistics.MostGiftedCardsByRegion;
 using DataClash.Application.Statistics.PopularCards;
-
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
+using DataClash.Application.Statistics.TopClansByRegion;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace DataClash.WebUI.Controllers
 {
-    public class TopClansController : ApiControllerBase
+  public class TopClansController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<string[]>>> GetTopClans()
-        {
-            return await Mediator.Send(new GetTopClansQuery());
-        }
+      [HttpGet]
+      public async Task<ActionResult<List<string[]>>> GetTopClans ()
+        => await Mediator.Send (new GetTopClansQuery ());
     }
 
-
-    public class CompletedChallengesController : ApiControllerBase
+  public class CompletedChallengesController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<string[]>>> GetCompletedChallenges()
-        {
-            return await Mediator.Send(new GetCompletedChallengesQuery());
-        }
+      [HttpGet]
+      public async Task<ActionResult<List<string[]>>> GetCompletedChallenges ()
+        => await Mediator.Send(new GetCompletedChallengesQuery ());
     }
 
-    public class MostGiftedCardsController : ApiControllerBase
+  public class MostGiftedCardsController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<string[]>>> GetMostGiftedCards()
-        {
-            return await Mediator.Send(new GetMostGiftedCardsQuery());
-        }
+      [HttpGet]
+      public async Task<ActionResult<List<string[]>>> GetMostGiftedCards ()
+        => await Mediator.Send(new GetMostGiftedCardsQuery ());
     }
 
-    public class AllWarIdsController : ApiControllerBase
+  public class AllWarIdsController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<long>>> GetAllWarIds()
-        {
-            return await Mediator.Send(new GetAllWarIdsQuery());
-        }
+      [HttpGet]
+      public async Task<ActionResult<List<long>>> GetAllWarIds ()
+        => await Mediator.Send(new GetAllWarIdsQuery ());
     }
 
-    public class BestPlayerController : ApiControllerBase
+  public class BestPlayerController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<string[]>>> GetBestPlayer(int warId)
-        {       
-            return await Mediator.Send(new GetBestPlayerQuery(warId));
-        }
-
+      [HttpGet]
+      public async Task<ActionResult<List<string[]>>> GetBestPlayer (int warId)
+        => await Mediator.Send(new GetBestPlayerQuery (warId));
     }
 
-    public class AllClanNamesController : ApiControllerBase
+  public class AllClanNamesController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<string>>> GetAllClanNames()
-        {
-            return await Mediator.Send(new GetAllClanNamesQuery());
-        }
+      [HttpGet]
+      public async Task<ActionResult<List<string>>> GetAllClanNames ()
+        => await Mediator.Send(new GetAllClanNamesQuery ());
     }
 
-    public class PopularCardsController : ApiControllerBase
+  public class PopularCardsController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<string[]>>> GetPopularCards(string clanName)
-        {       
-            return await Mediator.Send(new GetPopularCardsQuery(clanName));
-        }
-
+      [HttpGet]
+      public async Task<ActionResult<List<string[]>>> GetPopularCards (string clanName)
+        => await Mediator.Send(new GetPopularCardsQuery (clanName));
     }
-
 }
 

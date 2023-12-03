@@ -27,33 +27,21 @@ namespace DataClash.WebUI.Controllers
   [Authorize]
   public class PlayerController : ApiControllerBase
     {
-      [HttpGet ("{id}")]
-      public async Task<ActionResult<PlayerBriefDto>> Get (long id)
-        {
-          return await Mediator.Send (new GetPlayerQuery (id));
-        }
-
       [HttpGet ("Current")]
       public async Task<ActionResult<PlayerBriefDto>> GetCurrent ()
-        {
-          return await Mediator.Send (new GetCurrentPlayerCommand ());
-        }
-
+        => await Mediator.Send (new GetCurrentPlayerCommand ());
+      [HttpGet ("{Id}")]
+      public async Task<ActionResult<PlayerBriefDto>> Get (long Id)
+        => await Mediator.Send (new GetPlayerQuery (Id));
       [HttpGet]
       [ProducesResponseType (StatusCodes.Status200OK)]
       [ProducesDefaultResponseType]
       public async Task<ActionResult<PaginatedList<PlayerBriefDto>>> GetWithPagination ([FromQuery] GetPlayersWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdatePlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }
