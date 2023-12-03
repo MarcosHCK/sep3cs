@@ -25,7 +25,7 @@ using MediatR;
 
 namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
 {
-  [Authorize (Roles = "Administrator")]
+  [Authorize]
   public record GetPlayersWithPaginationQuery : IRequest<PaginatedList<PlayerBriefDto>>
     {
       public int PageNumber { get; init; } = 1;
