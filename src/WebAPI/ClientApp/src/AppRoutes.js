@@ -41,7 +41,7 @@ const AppRoutes = () => (
       <Route path={'/challenges'} element={<RequireAuth><Challenges /></RequireAuth>}/>
       <Route path={'/clans'} element={<RequireAuth><Clans /></RequireAuth>}/>
       <Route path={'/matches'} element={<RequireAuth><Matches /></RequireAuth>}/>
-      <Route path={'/players'} element={<RequireAuth role='Administrator'><Players /></RequireAuth>}/>
+      <Route path={'/players'} element={<RequireAuth><Players /></RequireAuth>}/>
       <Route path={'/profile'} element={<RequireAuth><Profile /></RequireAuth>}/>
       <Route path={'/wars'} element={<RequireAuth><Wars /></RequireAuth>}/>
 
