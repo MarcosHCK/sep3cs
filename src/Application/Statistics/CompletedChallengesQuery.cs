@@ -35,10 +35,10 @@ namespace DataClash.Application.Statistics.CompletedChallenges
         public async Task<List<string[]>> Handle(GetCompletedChallengesQuery request, CancellationToken cancellationToken)
         {
             var result = _context.PlayerChallenges
-      .Where(pc => pc.WonThrophies == pc.Challenge.Bounty)
-      .Select(pc => new string[] {
-           pc.Player.Nickname,
-           pc.Challenge.Name
+            .Where(pc => pc.WonThrophies == pc.Challenge.Bounty)
+            .Select(pc => new string[] {
+            pc.Player.Nickname,
+            pc.Challenge.Name
       })
       .ToList();
 

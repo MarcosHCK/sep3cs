@@ -18,6 +18,7 @@
 using DataClash.Application.Common.Interfaces;
 using MediatR;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Statistics.MostGiftedCardsByRegion
 {
@@ -34,38 +35,29 @@ namespace DataClash.Application.Statistics.MostGiftedCardsByRegion
 
         public async Task<List<string[]>> Handle(GetMostGiftedCardsQuery request, CancellationToken cancellationToken)
         {
-
-            //var lastMonth = DateTime.Now.AddMonths(-1);
-
-            var cardGifts = _context.CardGifts
-                //   .Where(g => g.Date >= lastMonth)
+            var joinedEntities = _context.CardGifts
+                .Include(cg => cg.Clan)
                 .ToList();
 
-            var mostDonatedCards = cardGifts
-                .GroupBy(g => new { g.Clan.Region.Code, g.CardId })
-                .Select(g => new
+            var groupedEntities = joinedEntities
+                .GroupBy(e => new { e.CardId, e.Clan.Region }) // Agrupa por CardId y Region
+                .Select(g => new string[]
                 {
-                    CardId = g.First().CardId,
-                    Region = g.First().Clan.Region,
-                    Count = g.Count()
+           _context.Cards.Find(g.Key.CardId).Name,
+           g.Key.Region.ToString(),
+           g.Count().ToString(),
                 })
-                .OrderByDescending(g => g.Count)
                 .ToList();
 
-            var result = new List<string[]>();
-            foreach (var cardGift in mostDonatedCards)
-            {
-                var card = await _context.Cards.FindAsync(cardGift.CardId);
-                result.Add(new string[]
-                {
-           card.Name,
-           cardGift.Region.ToString(),
-           cardGift.Count.ToString()
-                });
-            }
+            // Ordena los grupos por el recuento de tarjetas en orden descendente y toma los primeros 3 de cada grupo
+            var limitedEntities = groupedEntities
+                .GroupBy(g => g[1]) // Agrupa por Region
+                .SelectMany(g => g.OrderByDescending(x => int.Parse(x[2])).Take(3)) // Ordena por el recuento de tarjetas y toma los primeros 3
+                .ToList();
 
-            return result;
+            return limitedEntities;
         }
+
 
     }
 

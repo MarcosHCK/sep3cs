@@ -17,6 +17,11 @@
 using DataClash.Application.Statistics.TopClansByRegion;
 using DataClash.Application.Statistics.CompletedChallenges;
 using DataClash.Application.Statistics.MostGiftedCardsByRegion;
+using DataClash.Application.Statistics.AllWarIds;
+using DataClash.Application.Statistics.BestPlayer;
+using DataClash.Application.Statistics.AllClanNames;
+using DataClash.Application.Statistics.PopularCards;
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,202 +30,70 @@ using System.Threading.Tasks;
 namespace DataClash.WebUI.Controllers
 {
     public class TopClansController : ApiControllerBase
-   {
-       [HttpGet]
-       public async Task<ActionResult<List<string[]>>> GetTopClans()
-       {
-           return await Mediator.Send(new GetTopClansQuery());
-       }
-   }
-
-
-   public class CompletedChallengesController : ApiControllerBase
-   {
-       [HttpGet]
-       public async Task<ActionResult<List<string[]>>> GetCompletedChallenges()
-       {
-           return await Mediator.Send(new GetCompletedChallengesQuery());
-       }
-   }
-
-   public class MostGiftedCardsController : ApiControllerBase
-   {
-       [HttpGet]
-       public async Task<ActionResult<List<string[]>>> GetMostGiftedCards()
-       {
-           return await Mediator.Send(new GetMostGiftedCardsQuery());
-       }
-   }
-}
-
-
-        /*private readonly IApplicationDbContext _context;
-        private readonly BestClans _bestClans;
-        private readonly ILogger _logger;
-
-        public BestClansController(IApplicationDbContext context, ILogger<BestClansController> logger)
-        {
-            _context = context;
-            _bestClans = new BestClans();
-            _logger = logger;
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<string[]>> GetTopClansByRegion()
-        {
-            _logger.LogInformation("Realizando consulta para obtener los mejores clanes por region...");
-            var result = await _bestClans.GetTopClansByRegion(_context);
-            _logger.LogInformation("Resultado de la consulta: {result}", result.First());
-            return result;
-        }*/
-    /*
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CompletedChallengesController : ControllerBase
     {
-        private readonly IApplicationDbContext _context;
-        private readonly CompletedChallenges _completedChallenges;
-        private readonly ILogger _logger;
-
-        public CompletedChallengesController(IApplicationDbContext context, ILogger<CompletedChallengesController> logger)
-        {
-            _context = context;
-            _completedChallenges = new CompletedChallenges();
-            _logger = logger;
-        }
-
         [HttpGet]
-        public async Task<IEnumerable<string[]>> GetCompletedChallenges()
+        public async Task<ActionResult<List<string[]>>> GetTopClans()
         {
-            _logger.LogInformation("Realizando consulta para obtener los desafios completados...");
-            var result = await _completedChallenges.GetCompletedChallenge(_context);
-            _logger.LogInformation("Resultado de la consulta: {result}", result.First());
-            return result;
-        }
-    }
-}
-
-
-/*
-public class MostGiftedCardsController : ControllerBase
-    {
-        private readonly IApplicationDbContext _context;
-        private readonly MostGiftedCards _mostGiftedCards;
-        private readonly ILogger _logger;
-
-       public MostGiftedCardsController(IApplicationDbContext context,  ILogger<MostGiftedCardsController> logger)
-       {
-           _context = context;
-           _mostGiftedCards = new MostGiftedCards();
-           _logger = logger;
-       }
-
-       [HttpGet]
-       public async Task<IEnumerable<object>> GetMostDonatedCardsByRegion()
-       {
-           _logger.LogInformation("Realizando consulta para obtener los mejores clanes por region...");
-           var result = await _mostGiftedCards.GetMostDonatedCardsByRegion(_context);
-           _logger.LogInformation("Resultado de la consulta: {result}", result);
-           return result;
-       }
-   }
-
-}
-
-    
-public class BestPlayersController : ControllerBase
-{
-   private readonly IApplicationDbContext _context;
-   private readonly BestPlayers _bestPlayers;
-   private readonly ILogger _logger;
-
-   public BestPlayersController(IApplicationDbContext context, ILogger<BestPlayersController> logger)
-   {
-       _context = context;
-       _bestPlayers = new BestPlayers();
-       _logger = logger;
-   }
-
-   [HttpGet("{warId}")]
-   public IEnumerable<dynamic> GetBestPlayers(int warId)
-   {
-       _logger.LogInformation("Realizando consulta para obtener los mejores jugadores...");
-       var result = _bestPlayers.GetBestPlayer(_context, warId);
-       _logger.LogInformation("Resultado de la consulta: {result}", result);
-       return result;
-   }
-
-   [HttpGet("warIds")]
-   public IEnumerable<long> GetAllWarIds()
-   {
-       _logger.LogInformation("Realizando consulta para obtener todos los IDs de guerra...");
-       var result =_bestPlayers.GetAllWarIds(_context);
-       _logger.LogInformation("Resultado de la consulta: {result}", result);
-       return result;
-   }
-}
-
-    public class CompletedChallengesController : ControllerBase
-    {
-        private readonly IApplicationDbContext _context;
-        private readonly CompletedChallenges _completedChallenges;
-
-        public CompletedChallengesController(IApplicationDbContext context)
-        {
-            _context = context;
-            _completedChallenges = new CompletedChallenges();
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<Tuple<Player?, Challenge?>>> GetCompletedChallenges()
-        {
-            return _completedChallenges.GetCompletedChallenge(_context);
+            return await Mediator.Send(new GetTopClansQuery());
         }
     }
 
-    public class MostPopularCardsController : ControllerBase
-   {
-       private readonly IApplicationDbContext _context;
-       private readonly MostPopularCards _mostPopularCards;
 
-       public MostPopularCardsController(IApplicationDbContext context)
-       {
-            _context = context;
-            _mostPopularCards = new MostPopularCards();
-        }
-
-        [HttpGet("{clanName}")]
-        public async Task<IEnumerable<Tuple<Card, string, Clan>>> GetMostPopularCards(string clanName)
+    public class CompletedChallengesController : ApiControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult<List<string[]>>> GetCompletedChallenges()
         {
-            return _mostPopularCards.GetMostPopularCards(_context, clanName);
+            return await Mediator.Send(new GetCompletedChallengesQuery());
         }
+    }
 
-
-        [HttpGet("clanNames")]
-        public IEnumerable<string> GetAllClansNames()
+    public class MostGiftedCardsController : ApiControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult<List<string[]>>> GetMostGiftedCards()
         {
-            return _mostPopularCards.GetAllClansNames(_context);
+            return await Mediator.Send(new GetMostGiftedCardsQuery());
+        }
+    }
+
+    public class AllWarIdsController : ApiControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult<List<long>>> GetAllWarIds()
+        {
+            return await Mediator.Send(new GetAllWarIdsQuery());
+        }
+    }
+
+    public class BestPlayerController : ApiControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult<List<string[]>>> GetBestPlayer(int warId)
+        {       
+            return await Mediator.Send(new GetBestPlayerQuery(warId));
         }
 
     }
 
-    public class MostGiftedCardsController : ControllerBase
+    public class AllClanNamesController : ApiControllerBase
     {
-        private readonly IApplicationDbContext _context;
-        private readonly MostGiftedCards _mostGiftedCards;
+        [HttpGet]
+        public async Task<ActionResult<List<string>>> GetAllClanNames()
+        {
+            return await Mediator.Send(new GetAllClanNamesQuery());
+        }
+    }
 
-       public MostGiftedCardsController(IApplicationDbContext context)
-       {
-           _context = context;
-           _mostGiftedCards = new MostGiftedCards();
-       }
+    public class PopularCardsController : ApiControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult<List<string[]>>> GetPopularCards(string clanName)
+        {       
+            return await Mediator.Send(new GetPopularCardsQuery(clanName));
+        }
 
-       [HttpGet]
-       public async Task<IEnumerable<(Card, Region, long)>> GetMostDonatedCardsByRegion()
-       {
-           return await _mostGiftedCards.GetMostDonatedCardsByRegion(_context);
-       }
-   }
+    }
 
 }
-*/
+
