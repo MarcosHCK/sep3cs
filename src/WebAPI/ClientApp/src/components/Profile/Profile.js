@@ -19,8 +19,8 @@ import { Accordion } from 'reactstrap'
 import { AccordionBody } from 'reactstrap'
 import { AccordionHeader } from 'reactstrap'
 import { AccordionItem } from 'reactstrap'
-import { Alert, Col, Container, Row } from 'reactstrap'
 import { Avatar } from '../Avatar'
+import { Col, Container, Row } from 'reactstrap'
 import { Nav, NavItem, NavLink } from 'reactstrap'
 import { ProfileChallenge } from './ProfileChallenge'
 import { ProfileClan } from './ProfileClan'
@@ -29,7 +29,6 @@ import { ProfileClanWars } from './ProfileClanWars'
 import { ProfileDeck } from './ProfileDeck'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
-import { WaitSpinner } from '../WaitSpinner'
 import React, { useState } from 'react'
 
 export function Profile (props)
@@ -101,32 +100,27 @@ export function Profile (props)
         }
     }
 
-  if (!userProfile)
-    return <WaitSpinner />
-  else if (!playerProfile)
-    return <Alert color='danger'>User is not a player</Alert>
-  else
-    return (
-      <Container fluid>
-        <Row>
-          <div className='d-flex align-items-center'>
-            <Avatar userName={ userProfile.name } userEmail={ userProfile.email } />
-            <div className='p-2'>
-              <h2>{ userProfile.name } { !userProfile.family_name ? null : `(${userProfile.family_name})` }</h2>
-              <span>Personal profile</span>
-            </div>
+  return (
+    <Container fluid>
+      <Row>
+        <div className='d-flex align-items-center'>
+          <Avatar userName={ userProfile.name } userEmail={ userProfile.email } />
+          <div className='p-2'>
+            <h2>{ playerProfile.nickname ?? userProfile.family_name ?? userProfile.name }</h2>
+            <span>Personal profile</span>
           </div>
-        </Row>
-          <span className='p-3' />
-        <Row>
-          <Col xs='2'>
-            <Nav vertical='sm'>
-              { pages.map ((page, index) => createSection (page, `${index}`)) }
-            </Nav>
-          </Col>
-          <Col xs='10'>
-            { activeIndex.split ('.').reduce ((acc, index) => (!acc ? pages : acc.children)[Number (index)], undefined).component }
-          </Col>
-        </Row>
-      </Container>)
+        </div>
+      </Row>
+        <span className='p-3' />
+      <Row>
+        <Col xs='2'>
+          <Nav vertical='sm'>
+            { pages.map ((page, index) => createSection (page, `${index}`)) }
+          </Nav>
+        </Col>
+        <Col xs='10'>
+          { activeIndex.split ('.').reduce ((acc, index) => (!acc ? pages : acc.children)[Number (index)], undefined).component }
+        </Col>
+      </Row>
+    </Container>)
 }

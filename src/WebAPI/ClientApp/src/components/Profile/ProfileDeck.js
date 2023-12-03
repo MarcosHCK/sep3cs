@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Alert, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
-import { Card, CardImg, Row, Col, UncontrolledPopover, PopoverHeader, PopoverBody, CardBody, CardTitle } from 'reactstrap'
+import { Button, Card, CardImg, CardBody, CardTitle, Col, Row } from 'reactstrap'
 import { CardClient, CreatePlayerCardCommand, DeletePlayerCardCommand } from '../../webApiClient.ts'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { faTrash, faStar, faGift } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PlayerCardClient, PlayerClient, UpdatePlayerCommand3, CreateCardGiftCommand, ClanClient } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
+import { UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
 import React, { useState, useEffect } from 'react'
@@ -141,56 +142,54 @@ export function ProfileDeck (props)
       await playerCardClient.createCardGift (command)
     }
  
-  if (!playerProfile)
-    return <Alert color='warning'>User has not player status</Alert>
-  else
-    return ( isLoading
-      ? <WaitSpinner />
-      : <ProfilePage title='Deck'>
-          <Row>
-        { (deck ?? []).map((item, index) => (
-            <Col sm="2" key={`card${index}`}>
-              <Card id={`card${index}`}>
-                <CardImg alt={item.name} src={`/cards/${item.picture}.png`} top width="100%" />
-                <UncontrolledPopover trigger="hover" placement="top" target={`card${index}`}>
-                  <PopoverHeader>{item.name}</PopoverHeader>
-                  <PopoverBody>{item.description}</PopoverBody>
-                </UncontrolledPopover>
-                <CardTitle className='d-flex justify-content-center'>
-                  { item.name }
-                </CardTitle>
-                <CardBody className='d-flex justify-content-center gap-1'>
-                  <Button onClick={() => { setIsLoading (true); handleCardRemove (item).then (_ => setIsLoading (false)) }} >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                  <Button onClick={() => { setIsLoading (true); handleFavoriteCard (item).then (_ => setIsLoading (false)) }} >
-                    <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId === item.id ? 'gold' : 'gray' }} />
-                  </Button>
-              { !hasClan
-                ? <></>
-                : <Button onClick={() => { setIsLoading (true); handleGiftCardClick (item).then (_ => setIsLoading (false)) }} >
-                    <FontAwesomeIcon icon={faGift} />
-                  </Button> }
-                </CardBody>
-              </Card>
-            </Col>))}
-          </Row>
+  return (
+    isLoading
+    ? <WaitSpinner />
+    : <ProfilePage title='Deck'>
+        <Row>
+      { (deck ?? []).map((item, index) => (
+          <Col sm="2" key={`card${index}`}>
+            <Card id={`card${index}`}>
+              <CardImg alt={item.name} src={`/cards/${item.picture}.png`} top width="100%" />
+              <UncontrolledPopover trigger="hover" placement="top" target={`card${index}`}>
+                <PopoverHeader>{item.name}</PopoverHeader>
+                <PopoverBody>{item.description}</PopoverBody>
+              </UncontrolledPopover>
+              <CardTitle className='d-flex justify-content-center'>
+                { item.name }
+              </CardTitle>
+              <CardBody className='d-flex justify-content-center gap-1'>
+                <Button onClick={() => { setIsLoading (true); handleCardRemove (item).then (_ => setIsLoading (false)) }} >
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
+                <Button onClick={() => { setIsLoading (true); handleFavoriteCard (item).then (_ => setIsLoading (false)) }} >
+                  <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId === item.id ? 'gold' : 'gray' }} />
+                </Button>
+            { !hasClan
+              ? <></>
+              : <Button onClick={() => { setIsLoading (true); handleGiftCardClick (item).then (_ => setIsLoading (false)) }} >
+                  <FontAwesomeIcon icon={faGift} />
+                </Button> }
+              </CardBody>
+            </Card>
+          </Col>))}
+        </Row>
 
-          <br />
+        <br />
 
-          <Dropdown isOpen={dropdownOpen} toggle={_ => setDropdownOpen (!dropdownOpen)}>
-            <DropdownToggle caret>
-              +
-            </DropdownToggle>
-            <DropdownMenu>
-            { availableCards.map((card, index) => (
-              <DropdownItem key={index} onClick={() => { setIsLoading (true); handleCardClick (card).then (_ => setIsLoading (false)) }} >
-                <div className='d-flex justify-content-start gap-2'>
-                  <img alt={ card.name } src={`/cards/${card.picture}.png`} width='16' />
-                  { card.name }
-                </div>
-              </DropdownItem> ))}
-            </DropdownMenu>
-          </Dropdown>
-        </ProfilePage>)
+        <Dropdown isOpen={dropdownOpen} toggle={_ => setDropdownOpen (!dropdownOpen)}>
+          <DropdownToggle caret>
+            +
+          </DropdownToggle>
+          <DropdownMenu>
+          { availableCards.map((card, index) => (
+            <DropdownItem key={index} onClick={() => { setIsLoading (true); handleCardClick (card).then (_ => setIsLoading (false)) }} >
+              <div className='d-flex justify-content-start gap-2'>
+                <img alt={ card.name } src={`/cards/${card.picture}.png`} width='16' />
+                { card.name }
+              </div>
+            </DropdownItem> ))}
+          </DropdownMenu>
+        </Dropdown>
+      </ProfilePage>)
 }

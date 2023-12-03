@@ -161,9 +161,7 @@ export function ProfileClanPlayers (props)
 
   const clanRoles = Object.keys (ClanRole).filter (k => !isNaN (Number (ClanRole[k])))
 
-  if (!playerProfile)
-    return <Alert color='warning'>User has not player status</Alert>
-  else if (!hasClan)
+  if (!hasClan)
     return <Alert color='danger'>You do not belong to any clan</Alert>
   else
     return (

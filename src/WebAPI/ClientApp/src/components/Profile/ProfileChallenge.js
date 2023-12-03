@@ -16,7 +16,7 @@
  */
 import './Profile.css'
 import { AddPlayerCommand } from '../../webApiClient.ts'
-import { Alert, Button, Table } from 'reactstrap'
+import { Button, Table } from 'reactstrap'
 import { ChallengeClient } from '../../webApiClient.ts'
 import { Challenges } from '../Challenges'
 import { IntegerInput } from '../IntegerInput'
@@ -130,10 +130,8 @@ export function ProfileChallenge (props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage])
 
-  if (!playerProfile)
-    return <Alert color='warning'>User has not player status</Alert>
-  else
-    return (isLoading
+  return (
+    isLoading
     ? <WaitSpinner />
     : <ProfilePage title='Challeges taken'>
         <div className='d-flex justify-content-center'>
