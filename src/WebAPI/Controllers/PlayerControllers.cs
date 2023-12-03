@@ -25,7 +25,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DataClash.WebUI.Controllers
 {
   [Authorize]
-  public class PlayerController : UserControllerBase
+  public class PlayerController : ApiControllerBase
     {
       [HttpGet ("{id}")]
       public async Task<ActionResult<PlayerBriefDto>> Get (long id)
