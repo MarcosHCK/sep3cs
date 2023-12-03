@@ -19,6 +19,7 @@ using DataClash.Application.PlayerCards.Commands.CreatePlayerCard;
 using DataClash.Application.PlayerCards.Commands.DeletePlayerCard;
 using DataClash.Application.PlayerCards.Commands.UpdatePlayerCard;
 using DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination;
+using DataClash.Application.PlayerCards.Commands.CreateCardGift;
 using DataClash.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,14 @@ namespace DataClash.WebUI.Controllers{
             await Mediator.Send (command);
             return NoContent ();
         }
+        [HttpPost]
+        [Route("CreateCardGift")]
+        public async Task<ActionResult> CreateCardGift(CreateCardGiftCommand command)
+        {
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
         [HttpPut("{id1}/{id2}")]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesResponseType (StatusCodes.Status400BadRequest)]

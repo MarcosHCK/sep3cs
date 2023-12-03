@@ -19,10 +19,12 @@ import { WaitSpinner } from '../WaitSpinner'
 import { ProfilePage } from './ProfilePage'
 import React, { useState, useEffect } from 'react';
 import { Card, CardImg, Row, Col, UncontrolledPopover, PopoverHeader, PopoverBody, CardBody, CardTitle, CardText } from 'reactstrap';
-import { CardClient, PlayerCardClient, CreatePlayerCardCommand, ValueTupleOfLongAndLong, DeletePlayerCardCommand, PlayerClient, UpdatePlayerCommand } from '../../webApiClient.ts'
+import { CardClient, PlayerCardClient, CreatePlayerCardCommand, ValueTupleOfLongAndLong, DeletePlayerCardCommand, PlayerClient, UpdatePlayerCommand, UpdatePlayerCommand2, UpdatePlayerCommand3,CreateCardGiftCommand,ClanClient } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faGift } from '@fortawesome/free-solid-svg-icons';
+
 
 
 export function ProfileDeck(props) {
@@ -30,6 +32,9 @@ export function ProfileDeck(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [deck, setDeck] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
+  const [ clanClient ] = useState (new ClanClient ())
+  const [ hasClan, setHasClan ] = useState (false)
+  const [ clanId, setClanId ] = useState ();
   const [availableCards, setAvailableCards] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const cardClient = new CardClient();
@@ -40,7 +45,7 @@ export function ProfileDeck(props) {
       const magicCardsList = await cardClient.getWithPagination('MagicCard', 1, 10);
       const troopCardsList = await cardClient.getWithPagination2('TroopCard', 1, 10);
       const structCardsList = await cardClient.getWithPagination3('StructCard', 1, 10);
-      const playerCardsList = await playerCardClient.getWithPagination(1, 10);
+      const playerCardsList = await playerCardClient.getWithPagination (playerProfile.id, 1, 10);
       let CardMap = {};
       const allCardsList = [...magicCardsList.items, ...troopCardsList.items, ...structCardsList.items];
       allCardsList.forEach(card => {
@@ -66,7 +71,26 @@ export function ProfileDeck(props) {
     }
   };
   useEffect(() => {
+    const refreshClan = async () =>
+        {
+          if (!!playerProfile) try
+            {
+              const currentClan = await clanClient.getForCurrentPlayer ()
 
+              if (currentClan === null)
+                setHasClan (false)
+              else
+                {
+                  setHasClan (true)
+                  setClanId (currentClan.clan.id)
+                  
+                }
+            }
+          catch (error) { errorReporter (error) }
+        }
+
+      setIsLoading (true)
+      refreshClan ().then (() => setIsLoading (false))
 
     loadCards();
   }, [playerProfile]);
@@ -77,11 +101,11 @@ export function ProfileDeck(props) {
     newCard.cardId = card.id;
     newCard.playerId = playerProfile.id;
     newCard.level = 1; // Ajusta este valor según sea necesario
-    playerCardClient.create(newCard, playerCardClient.id);
+    playerCardClient.create(newCard, playerProfile.id);
     loadCards();
   };
   const handleCardRemove = async (card) => {
-    const playerCardsList = await playerCardClient.getWithPagination(1, 10);
+    const playerCardsList = await playerCardClient.getWithPagination(playerProfile.id,1, 10);
     console.log(playerCardsList.items)
     console.log(card)
     const cardToRemove = playerCardsList.items.find(playerCard => playerCard.cardId === card.id);
@@ -99,15 +123,32 @@ export function ProfileDeck(props) {
   };
   const handleFavoriteCard =async (card) =>{
     const playerClient=new PlayerClient();
-    const command=new UpdatePlayerCommand(playerProfile);
+    const command=new UpdatePlayerCommand3(playerProfile);
     command.favoriteCardId=card.id;
     console.log(card.id);
     console.log("cardid")
     console.log(playerProfile.favoriteCardId);
-    await playerClient.update(playerProfile.id,command);
+    await playerClient.update(command);
 
   } 
-
+  const handleGiftCardClick = (card) => {
+    
+    const command = new CreateCardGiftCommand();
+    command.cardId = card.id;
+    command.clanId = clanId;
+    command.playerId = playerProfile.id;
+    
+    
+    playerCardClient.createCardGift(command).then(response => {
+        
+        console.log(response);
+    }).catch(error => {
+        
+        console.error(error);
+    });
+ };
+ 
+   
 console.log (playerProfile)
 
 
@@ -137,6 +178,11 @@ console.log (playerProfile)
                     <Button onClick={() => handleFavoriteCard(item)}>
                       <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId == item.id ? 'gold' : 'gray' }} />
                     </Button>
+                    { !hasClan
+                      ? <></>
+                      : <Button onClick={() => handleGiftCardClick(item)}>
+                          <FontAwesomeIcon icon={faGift} />
+                        </Button> }
                   </CardBody>
                 </Card>
               </Col>
