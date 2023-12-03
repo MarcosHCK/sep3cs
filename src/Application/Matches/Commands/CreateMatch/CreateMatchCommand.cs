@@ -11,6 +11,7 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
@@ -39,19 +40,28 @@ namespace DataClash.Application.Matches.Commands.CreateMatch
             _context = context;
         }
 
+        private async Task<Player> GetPlayerById(long PlayerId,  CancellationToken cancellationToken)
+        {
+            var key = new object [] { PlayerId};
+            var entity = await _context.Players.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Player), key);
+            return entity;
+        }
+
         public async Task<(long,long,DateTime)> Handle (CreateMatchCommand request, CancellationToken cancellationToken)
         {
+          DateTime ConvertedDate = request.BeginDate.AddHours(-5);
           var entity = new Match
             {
                 WinnerPlayerId = request.WinnerPlayerId,
                 LooserPlayerId = request.LooserPlayerId,
-                BeginDate = request.BeginDate,
+                BeginDate = ConvertedDate,
                 Duration = request.Duration,
-                //WinnerPlayer = request.WinnerPlayer,
-                //LooserPlayer = request.LooserPlayer
+                WinnerPlayer = GetPlayerById(request.WinnerPlayerId,cancellationToken).GetAwaiter().GetResult(),
+                LooserPlayer = GetPlayerById(request.LooserPlayerId,cancellationToken).GetAwaiter().GetResult()
             };
-
-          //entity.AddDomainEvent (new MatchCreatedEvent (entity));
+          
+          entity.WinnerPlayer.AddDomainEvent(new MatchCreatedEvent(entity));
+          entity.LooserPlayer.AddDomainEvent(new MatchCreatedEvent(entity));
           _context.Matches.Add (entity);
 
           await _context.SaveChangesAsync (cancellationToken);

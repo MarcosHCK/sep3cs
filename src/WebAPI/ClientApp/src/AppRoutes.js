@@ -27,7 +27,6 @@ import { Players } from './components/Players'
 import { Profile } from './components/Profile'
 import { Wars } from './components/Wars'
 import { Matches } from './components/Matches'
-import { Challenges } from './components/Challenges'
 
 
 const loginAction = (name) => (<Login action={name}></Login>)
@@ -39,7 +38,6 @@ const AppRoutes = () => (
 
       <Route path={'/cards'} element={<RequireAuth><p>Cards component placeholdes</p></RequireAuth>}/>
       <Route path={'/challenges'} element={<RequireAuth><Challenges/></RequireAuth>}/>
-      <Route path={'/challenges'} element={<RequireAuth><Challenges /></RequireAuth>}/>
       <Route path={'/clans'} element={<RequireAuth><p>Clans component placeholdes</p></RequireAuth>}/>
       <Route path={'/matches'} element={<RequireAuth><Matches /></RequireAuth>}/>
       <Route path={'/players'} element={<RequireAuth role='Administrator'><Players /></RequireAuth>}/>

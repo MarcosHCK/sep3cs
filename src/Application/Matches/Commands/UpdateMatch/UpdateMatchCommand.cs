@@ -19,6 +19,7 @@ using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Events;
+using DataClash.Application.Matches.Commands.CreateMatch;
 using MediatR;
 
 namespace DataClash.Application.Matches.Commands.UpdateMatch
@@ -30,8 +31,8 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
         public long LooserPlayerId { get; init; }
         public DateTime BeginDate { get; init; }
         public TimeSpan Duration { get; init; }
-        //public Player? LooserPlayer { get; init; }
-        //public Player? WinnerPlayer { get; init; }
+        public Player? LooserPlayer { get; init; }
+        public Player? WinnerPlayer { get; init; }
     }
 
     public class UpdateMatchCommandHandler : IRequestHandler<UpdateMatchCommand>
@@ -42,30 +43,29 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
         {
             _context = context;
         }
-
+        private async Task<Player> GetPlayerById(long PlayerId,  CancellationToken cancellationToken)
+        {
+            var key = new object [] { PlayerId};
+            var entity = await _context.Players.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Player), key);
+            return entity;
+        }
         public async Task Handle (UpdateMatchCommand request, CancellationToken cancellationToken)
         {
             DateTime ConvertedDate = request.BeginDate.AddHours(-5);
             var key = new object [] { request.LooserPlayerId, request.WinnerPlayerId, ConvertedDate };
-            System.Console.WriteLine("------------------------------------------------------");
-            System.Console.WriteLine(request.LooserPlayerId + " " + request.WinnerPlayerId + " " + request.BeginDate);
-            System.Console.WriteLine("------------------------------------------------------");
-            foreach (var item in _context.Matches)
-            {
-                System.Console.WriteLine("------------------------------------------------------");
-                System.Console.WriteLine(item.LooserPlayerId + " " + item.WinnerPlayerId + " " + item.BeginDate);
-                System.Console.WriteLine("------------------------------------------------------");   
-            }
+            
             var entity = await _context.Matches.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Match), key);
             
             entity.WinnerPlayerId = request.WinnerPlayerId;
             entity.LooserPlayerId = request.LooserPlayerId;
             entity.BeginDate = ConvertedDate;
             entity.Duration = request.Duration;
-            //entity.WinnerPlayer = request.WinnerPlayer;
-            //entity.LooserPlayer = request.LooserPlayer;
-
-            //entity.AddDomainEvent (new MatchUpdatedEvent (entity));
+            entity.WinnerPlayer = GetPlayerById(request.WinnerPlayerId,cancellationToken).GetAwaiter().GetResult();
+            entity.LooserPlayer = GetPlayerById(request.LooserPlayerId,cancellationToken).GetAwaiter().GetResult();
+            
+            entity.WinnerPlayer.AddDomainEvent (new MatchUpdatedEvent (entity));
+            entity.LooserPlayer.AddDomainEvent (new MatchUpdatedEvent (entity));
+            
             await _context.SaveChangesAsync (cancellationToken);
         }
     }

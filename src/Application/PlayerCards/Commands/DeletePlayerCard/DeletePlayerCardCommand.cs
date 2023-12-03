@@ -33,6 +33,7 @@ namespace DataClash.Application.PlayerCards.Commands.DeletePlayerCard
         }
         public async Task Handle (DeletePlayerCardCommand request, CancellationToken cancellationToken)
         {
+            
             var entity = await _context.PlayerCards
                 .Where (l => l.CardId == request.Key.CardId && l.PlayerId == request.Key.PlayerId)
                 .SingleOrDefaultAsync (cancellationToken)

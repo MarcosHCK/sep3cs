@@ -39,22 +39,26 @@ namespace DataClash.WebUI.Controllers
             return await Mediator.Send (command);
         }
 
-        [HttpDelete ("{(winnerPlayerId,looserPlayerId,beginDate)}")]
+        [HttpDelete ("{winnerPlayerId}/{looserPlayerId}/{beginDate}")]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Delete ((long,long,DateTime) id)
+        public async Task<IActionResult> Delete ([FromRoute]long looserPlayerId,[FromRoute]long winnerPlayerId,[FromRoute]DateTime beginDate)
         {
-            await Mediator.Send (new DeleteMatchCommand (id));
+            await Mediator.Send (new DeleteMatchCommand {
+                LooserPlayerId = looserPlayerId,
+                WinnerPlayerId = winnerPlayerId,
+                BeginDate = beginDate
+                });
             return NoContent ();
         }
 
-        [HttpPut ("{(winnerPlayerId,looserPlayerId,beginDate)}")]
+        [HttpPut ("{winnerPlayerId}/{looserPlayerId}/{beginDate}")]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesResponseType (StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Update ((long,long,DateTime) id, UpdateMatchCommand command)
+        public async Task<IActionResult> Update ([FromRoute]long looserPlayerId,[FromRoute]long winnerPlayerId,[FromRoute]DateTime beginDate, UpdateMatchCommand command)
         {
-            if (id.Item1 != command.WinnerPlayerId || id.Item2 != command.LooserPlayerId || id.Item3 != command.BeginDate)
+            if (winnerPlayerId != command.WinnerPlayerId || looserPlayerId != command.LooserPlayerId || beginDate != command.BeginDate)
                 return BadRequest ();
 
             await Mediator.Send (command);

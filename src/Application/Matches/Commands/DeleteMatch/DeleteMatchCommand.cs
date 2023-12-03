@@ -48,8 +48,12 @@ namespace DataClash.Application.Matches.Commands.DeleteMatch
             var entity = await _context.Matches.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Match), key);
 
             _context.Matches.Remove (entity);
-            //entity.AddDomainEvent (new MatchDeletedEvent (entity));
-
+            try
+            {
+                entity.WinnerPlayer.AddDomainEvent (new MatchDeletedEvent (entity));
+                entity.LooserPlayer.AddDomainEvent (new MatchDeletedEvent (entity));
+            }
+            catch{}
             await _context.SaveChangesAsync (cancellationToken);
         }
     }

@@ -14,18 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Button, Table } from 'reactstrap'
+import { Button, Table,Input, Label } from 'reactstrap'
 import { CreateMatchCommand } from '../webApiClient.ts'
-import { DateTime } from './DateTime.js'
-import { Pager } from './Pager.js'
-import { TimeSpan } from './TimeSpan.js'
+import { DateTime } from './DateTime'
+import { Pager } from './Pager'
+import { TimeSpan } from './TimeSpan'
 import { UpdateMatchCommand } from '../webApiClient.ts'
+import { useAuthorize } from '../services/AuthorizeProvider'
+import { useErrorReporter } from './ErrorReporter'
 import { useParams } from 'react-router-dom'
-import { UserRoles } from '../services/AuthorizeConstants.js'
+import { UserRoles } from '../services/AuthorizeConstants'
+import { WaitSpinner } from './WaitSpinner'
 import { MatchClient } from '../webApiClient.ts'
-import authService from '../services/AuthorizeService.ts'
 import React, { useEffect, useState } from 'react'
-import { WaitSpinner } from './WaitSpinner.js'
+
 
 export function Matches ()
 {
@@ -44,14 +46,33 @@ export function Matches ()
 
   const pageSize = 10
   const visibleIndices = 5
-
+  var mydate = new Date()
+  var winner = 1
+  var looser = 2
+  var dur = "00:00:01"
+  function SetWinner(val)
+  {
+    winner = val
+  }
+  function SetLooser(val)
+  {
+    looser = val
+  }
+  function SetDate(val) 
+  { 
+    mydate = val  
+  }
+  function SetDuration(val) 
+  { 
+    dur = val  
+  }
   const addMatch = async () =>
     {
       const data = new CreateMatchCommand ()
-      data.winnerPlayerId = 1
-      data.looserPlayerId = 2
-      data.beginDate = new Date ()
-      data.duration = "00:00:01"
+      data.winnerPlayerId = winner
+      data.looserPlayerId = looser
+      data.beginDate = mydate
+      data.duration = dur
       try
       {
         await matchClient.create (data)
@@ -68,7 +89,7 @@ export function Matches ()
     {
       try
       {
-        await matchClient.delete (item.id)
+        await matchClient.delete (item.looserPlayerId,item.winnerPlayerId, item.beginDate )
         setActivePage (-1)
       }
       catch(error)
@@ -80,34 +101,20 @@ export function Matches ()
   const updateMatch = async (item) =>
     {
       const data = new UpdateMatchCommand ()
-      //data.id = item.id
       data.winnerPlayerId = item.winnerPlayerId
       data.looserPlayerId = item.looserPlayerId
       data.beginDate = item.beginDate
       data.duration = item.duration
       try
       {
-        await matchClient.update (item.id, data)
+        await matchClient.update (item.looserPlayerId,item.winnerPlayerId, item.beginDate, data)
       }
       catch(error)
       {
         errorReporter(error)
       }
     }
-/*
-  useEffect (() =>
-    {
-      const checkRole = async () =>
-        {
-          const hasRole = await authService.hasRole (UserRoles.Administrator)
 
-          setIsAdministrator (hasRole)
-        }
-
-      setIsLoading (true)
-      checkRole ().then (() => setIsLoading (false))
-    }, [])
-*/
   useEffect (() =>
     {
       const lastPage = async () =>
@@ -165,6 +172,7 @@ export function Matches ()
       ? (<WaitSpinner/>)
     : (
       <>
+        
         <div className='d-flex justify-content-center'>
           <Pager
             activePage={activePage}
@@ -174,8 +182,10 @@ export function Matches ()
             totalPages={totalPages}
             visibleIndices={visibleIndices} />
         </div>
+        
         <div>
-          <Table>
+        <h1>Matches</h1>
+          <Table border='1'>
             <thead>
               <tr>
                 <th>{'Winner player'}</th>
@@ -197,8 +207,7 @@ export function Matches ()
                 <td>
                   <DateTime
                     defaultValue={item.beginDate}
-                    onChanged={(date) => { item.beginDate = date; updateMatch (item) }}
-                    readOnly={!inRole[UserRoles.Administrator]} />
+                    readOnly={true} />
                 </td>
                 <td>
                   <TimeSpan
@@ -222,14 +231,41 @@ export function Matches ()
           (!inRole[UserRoles.Administrator])
           ? (<tr />)
           : (
-              <tr key='footer0'>
+              <tr key='footer0' striped bordered dark color = 'blue'>
+                
+                
+                <td>
+                  <Input
+                    type='number'
+                    onChange={(e) => SetWinner (e.target.value)}/>
+                </td>
+                <td>
+                  <Input
+                    type='number'
+                    onChange={(e) => SetLooser (e.target.value)}/>
+                </td>
+                
+                <td>
+                <DateTime
+                    defaultValue={new Date()}
+                    onChanged={(date) => { SetDate(date) }}
+                    readOnly={!inRole[UserRoles.Administrator]} />
+                </td>
+
+                <TimeSpan
+                    defaultValue='00:00:01'
+                    onChanged={(span) => { SetDuration (span) }}
+                    readOnly={!inRole[UserRoles.Administrator]} />
                 <td>
                   <Button color='primary' onClick={() => addMatch ()}>+</Button>
                 </td>
-                <td /><td /><td />
-              </tr>)
+                
+              </tr>
+              )
         }
-            </tfoot>
+         </tfoot>
+            
+           
           </Table>
         </div>
       </>))

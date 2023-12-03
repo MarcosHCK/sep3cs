@@ -26,6 +26,8 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
             RuleFor(v => v.LooserPlayerId).NotEmpty();
             RuleFor (v => v.BeginDate).NotEmpty ();
             RuleFor (v => v.Duration).NotEmpty ();
+            RuleFor (v => v.WinnerPlayer).NotNull();
+            RuleFor (v => v.LooserPlayer).NotNull();
         }
     }
 }
