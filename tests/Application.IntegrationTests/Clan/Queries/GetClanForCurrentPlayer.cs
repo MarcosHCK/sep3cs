@@ -37,7 +37,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
             {
               Description = "Test clan",
               Name = "Test clan",
-              Region = Region.Somewhere,
+              Region = Region.Anywhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
               Type = ClanType.Normal,
@@ -58,7 +58,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
             {
               Description = "Test clan",
               Name = "Test clan",
-              Region = Region.Somewhere,
+              Region = Region.Anywhere,
               TotalTrophiesToEnter = 0,
               TotalTrophiesWonOnWar = 0,
               Type = ClanType.Normal,

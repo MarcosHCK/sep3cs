@@ -75,7 +75,7 @@ export function ProfileClan (props)
 
           command.description = `${playerProfile.nickname ?? userProfile.name}'s clan`
           command.name = `${playerProfile.nickname ?? userProfile.name}'s clan`
-          command.region = 'Somewhere'
+          command.region = 'Anywhere'
           command.totalTrophiesToEnter = 0
           command.totalTrophiesWonOnWar = 0
           command.type = ClanType.Normal
@@ -127,6 +127,7 @@ export function ProfileClan (props)
     }, [playerProfile])
 
   const clanTypes = Object.keys (ClanType).filter (k => !isNaN (Number (ClanType[k])))
+  const clanRegions = [ 'Africa', 'Anywhere', 'Asia', 'Europa', 'North America', 'Oceania', 'South America' ]
 
   if (!playerProfile)
     return (<Alert color='warning'>User has not player status</Alert>)
@@ -163,10 +164,12 @@ export function ProfileClan (props)
             <Label for='clan-input-name'>Clan name</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-region' type='text'
+            <Input id='clan-input-region' type='select'
               disabled={clanRole !== ClanRole.Chief}
               onChange={(e) => setClanRegion (e.target.value)}
-              value={clanRegion} />
+              defaultValue={clanRegion}>
+            { clanRegions.map (region => <option>{region}</option>) }
+            </Input>
             <Label for='clan-input-region'>Clan region</Label>
           </FormGroup>
           <FormGroup floating>

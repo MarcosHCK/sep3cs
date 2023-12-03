@@ -28,16 +28,28 @@ namespace DataClash.Domain.ValueObjects
         {
           get
           {
-            yield return Somewhere;
+            yield return Africa;
+            yield return Anywhere;
+            yield return Asia;
+            yield return Europa;
+            yield return NorthAmerica;
+            yield return Oceania;
+            yield return SouthAmerica;
           }
         }
 
-      protected override IEnumerable<object> GetEqualityComponents()
+      protected override IEnumerable<object> GetEqualityComponents ()
         {
-            yield return Code;
+          yield return Code;
         }
 
-      public static Region Somewhere = new ("Somewhere");
+      public static Region Africa = new ("Africa");
+      public static Region Anywhere = new ("Anywhere");
+      public static Region Asia = new ("Asia");
+      public static Region Europa = new ("Europa");
+      public static Region NorthAmerica = new ("North America");
+      public static Region Oceania = new ("Oceania");
+      public static Region SouthAmerica = new ("South America");
 
       static Region () { }
       private Region () => Code = "und";
@@ -51,19 +63,8 @@ namespace DataClash.Domain.ValueObjects
         return region;
         }
 
-      public override string ToString ()
-        {
-            return Code;
-        }
-
-      public static explicit operator Region (string code)
-        {
-            return From (code);
-        }
-
-      public static implicit operator string (Region colour)
-        {
-            return colour.ToString ();
-        }
+      public override string ToString () => Code;
+      public static explicit operator Region (string code) => From (code);
+      public static implicit operator string (Region colour) => colour.ToString ();
     }
 }
