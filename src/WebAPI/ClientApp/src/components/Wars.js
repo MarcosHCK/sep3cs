@@ -42,8 +42,8 @@ export function Wars (props)
   const [ warClient ] = useState (new WarClient ())
   const errorReporter = useErrorReporter ()
 
-  const pageSize = 10
-  const visibleIndices = 5
+  const pageSize = !picker ? 10 : 3
+  const visibleIndices = !picker ? 5 : 2
 
   const addWar = async () =>
     {
