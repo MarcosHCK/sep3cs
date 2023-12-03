@@ -26,7 +26,6 @@ namespace DataClash.Application.Challenges.Commands.DeleteChallenge
 {
   [Authorize (Roles = "Administrator")]
   public record DeleteChallengeCommand (long Id) : IRequest;
-
   
   public class DeleteChallengeCommandHandler : IRequestHandler<DeleteChallengeCommand>
     {

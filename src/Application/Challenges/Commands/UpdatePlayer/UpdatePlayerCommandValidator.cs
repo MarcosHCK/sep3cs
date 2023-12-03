@@ -16,14 +16,15 @@
  */
 using FluentValidation;
 
-namespace DataClash.Application.Challenges.Commands.RemovePlayer
+namespace DataClash.Application.Challenges.Commands.UpdatePlayer
 {
-  public class RemovePlayerCommandValidator : AbstractValidator<RemovePlayerCommand>
+  public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerCommand>
     {
-      public RemovePlayerCommandValidator ()
+      public UpdatePlayerCommandValidator ()
         {
           RuleFor (v => v.ChallengeId).NotEmpty ();
           RuleFor (v => v.PlayerId).NotEmpty ();
+          RuleFor (v => v.WonThrophies).GreaterThanOrEqualTo (0);
         }
     }
 }
