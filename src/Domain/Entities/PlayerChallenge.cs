@@ -19,10 +19,10 @@ namespace DataClash.Domain.Entities
 {
   public class PlayerChallenge
     {
-        public long ChallengeId { get; set; }
-        public long PlayerId { get; set; }
-        public long WonThrophies { get; set; }
-        public virtual Challenge? Challenge { get; set; }
-        public virtual Player? Player { get; set; }
+      public long ChallengeId { get; set; }
+      public long PlayerId { get; set; }
+      public long WonThrophies { get; set; }
+      public Challenge Challenge { get; set; } = null!;
+      public Player Player { get; set; } = null!;
     }
 }

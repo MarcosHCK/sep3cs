@@ -34,7 +34,7 @@ namespace DataClash.Application.Challenges.Commands.UpdateChallenge
       public TimeSpan Duration { get; init; }
       public long MaxLooses { get; init; }
       public long MinLevel { get; init; }
-      public string? Name { get; init; }
+      public string Name { get; init; } = null!;
 
 
     }
@@ -59,6 +59,7 @@ namespace DataClash.Application.Challenges.Commands.UpdateChallenge
             entity.MaxLooses= request.MaxLooses;
             entity.MinLevel= request.MinLevel;
             entity.Name= request.Name;
+
 
           entity.AddDomainEvent (new ChallengeUpdatedEvent (entity));
           await _context.SaveChangesAsync (cancellationToken);

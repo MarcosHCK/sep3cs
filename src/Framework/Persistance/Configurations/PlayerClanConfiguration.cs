@@ -26,7 +26,7 @@ namespace DataClash.Infrastructure.Persistence.Configurations
         {
           builder.HasKey (e => new { e.ClanId, e.PlayerId });
           builder.HasOne (e => e.Clan).WithMany ().HasForeignKey (e => e.ClanId);
-          builder.HasOne (e => e.Player).WithMany ().HasForeignKey (e => e.PlayerId);
+          builder.HasOne (e => e.Player).WithOne ().HasForeignKey<PlayerClan> (e => e.PlayerId);
         }
     }
 }

@@ -32,7 +32,8 @@ namespace DataClash.Application.Challenges.Commands.CreateChallenge
       public TimeSpan Duration { get; init; }
       public long MaxLooses { get; init; }
       public long MinLevel { get; init; }
-      public string? Name { get; init; }
+      public string Name { get; init; } = null!;
+
     }
 
   public class CreateChallengeCommandHandler : IRequestHandler<CreateChallengeCommand, long>

@@ -26,7 +26,7 @@ namespace DataClash.Domain.UnitTests.ValueObjects
       [Test]
       public void ShouldReturnCorrectRegionCode ()
         {
-          var code = Region.Somewhere.Code;
+          var code = Region.Anywhere.Code;
           var region = Region.From (code);
 
           region.Code.Should ().Be (code);
@@ -35,24 +35,24 @@ namespace DataClash.Domain.UnitTests.ValueObjects
       [Test]
       public void ToStringReturnsCode ()
         {
-          var region = Region.Somewhere;
+          var region = Region.Anywhere;
           region.ToString ().Should ().Be (region.Code);
         }
 
       [Test]
       public void ShouldPerformImplicitConversionToRegionCodeString ()
       {
-        string code = Region.Somewhere;
-        code.Should ().Be (Region.Somewhere.Code);
+        string code = Region.Anywhere;
+        code.Should ().Be (Region.Anywhere.Code);
       }
 
       [Test]
       public void ShouldPerformExplicitConversionGivenKnownRegionCode ()
       {
-        var code = Region.Somewhere.Code;
+        var code = Region.Anywhere.Code;
         var region = (Region) code;
 
-        region.Should ().Be (Region.Somewhere);
+        region.Should ().Be (Region.Anywhere);
       }
 
       [Test]

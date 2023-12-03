@@ -15,16 +15,19 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { ApplicationPaths } from './services/AuthorizeConstants'
+import { Challenges } from './components/Challenges'
+import { Clans } from './components/Clans'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
 import { LoginActions } from './services/AuthorizeConstants'
 import { Logout } from './components/Logout'
 import { LogoutActions } from './services/AuthorizeConstants'
-import { Players } from './components/Players'
-import { Profile } from './components/Profile'
 import { RequireAuth } from './components/RequireAuth'
 import { Route, Routes } from 'react-router-dom'
+import { Players } from './components/Players'
+import { Profile } from './components/Profile'
 import { Wars } from './components/Wars'
+import { Matches } from './components/Matches'
 
 const loginAction = (name) => (<Login action={name}></Login>)
 const logoutAction = (name) => (<Logout action={name}></Logout>)
@@ -34,11 +37,11 @@ const AppRoutes = () => (
       <Route path={'/'} element={<Home />} index={true} />
 
       <Route path={'/cards'} element={<RequireAuth><p>Cards component placeholdes</p></RequireAuth>}/>
-      <Route path={'/challenges'} element={<RequireAuth><p>Challenges component placeholdes</p></RequireAuth>}/>
-      <Route path={'/clans'} element={<RequireAuth><p>Clans component placeholdes</p></RequireAuth>}/>
-      <Route path={'/matches'} element={<RequireAuth><p>Matches component placeholdes</p></RequireAuth>}/>
+      <Route path={'/challenges'} element={<RequireAuth><Challenges /></RequireAuth>}/>
+      <Route path={'/clans'} element={<RequireAuth><Clans /></RequireAuth>}/>
+      <Route path={'/matches'} element={<RequireAuth><Matches /></RequireAuth>}/>
       <Route path={'/players'} element={<RequireAuth role='Administrator'><Players /></RequireAuth>}/>
-      <Route path={'/profile/*'} element={<RequireAuth><Profile /></RequireAuth>}/>
+      <Route path={'/profile'} element={<RequireAuth><Profile /></RequireAuth>}/>
       <Route path={'/wars'} element={<RequireAuth><Wars /></RequireAuth>}/>
 
       <Route path={ApplicationPaths.ApiAuthorizationPrefix}>
