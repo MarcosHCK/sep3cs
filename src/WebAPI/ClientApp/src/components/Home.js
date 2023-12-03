@@ -16,6 +16,7 @@
  */
 import { HomeCarousel } from './HomeCarousel'
 import Table from './HomeTable';
+import {Mural} from './HomeTable';
 import './Home.css';
 import React, { useEffect, useState } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -127,18 +128,25 @@ export function Home() {
 
   return (
     <div>
-      <HomeCarousel items={[
-        { caption: 'Administrator working', src: '/comic/administrator.jpeg', },
-        { caption: 'Querying cards statistics', src: '/comic/query_card_stats.jpeg', },
-        { caption: 'Querying challenges statistics', src: '/comic/query_challenge_stats.jpeg', },
-        { caption: 'Querying clans statistics', src: '/comic/query_clan_stats.jpeg', },
-        { caption: 'Querying wars statistics', src: '/comic/query_clan_war_stats.jpeg', },
-        { caption: 'Querying matches statistics', src: '/comic/query_match_stats.jpeg', },
-        { caption: 'User signing up for DataClash', src: '/comic/registration.jpeg', },
-      ]} />
+      <div className="home">
+   <div className="carousel">
+     <HomeCarousel items={[
+       { src: '/comic/administrator.jpeg', },
+       { src: '/comic/query_card_stats.jpeg', },
+       { src: '/comic/query_challenge_stats.jpeg', },
+       { src: '/comic/query_clan_stats.jpeg', },
+       { src: '/comic/query_clan_war_stats.jpeg', },
+       { src: '/comic/registration.jpeg', },
+     ]} />
+   </div>
+   <Mural />
+ </div>
 
-      <h1 className="table-title">Top Clans by Regions</h1>
-      <Table columns={['Clan', 'Region', 'Trofeos']} data={topClans} />
+      <h1 className="table-title">
+            <img className="table-image" src="clanes.jfif" />
+                    Top Clans by Regions
+          </h1>
+      <Table columns={['Clan', 'Region', 'Trophies']} data={topClans} />
 
       <div className="tableContainer">
         <div className="headerContainer">
@@ -161,11 +169,18 @@ export function Home() {
         </div>
         <Table columns={['Player', 'Clan', 'Trophies']} data={bestPlayers} />
 
-        <h1 className="table-title">Completed Challenges</h1>
+        <h1 className="table-title">
+            <img className="table-image" src="desafio.jfif" />
+                    Completed Challenges
+          </h1>
         <Table columns={['Player', 'Challenge']} data={completedChallenges} />
 
         <div className="headerContainer">
-          <h1 className="table-title">Most Popular Cards by Clans</h1>
+          
+          <h1 className="table-title">
+            <img className="table-image" src="cards1.jfif" />
+            Most Popular Cards by Clans
+          </h1>
           <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
             <DropdownToggle caret>
               Select a clan
@@ -181,7 +196,11 @@ export function Home() {
         </div>
         <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
 
-        <h1 className="table-title">Most Gifted Cards by Region</h1>
+        <h1 className="table-title">
+            <img className="table-image" src="cards3.jfif" />
+            Most Gifted Cards by Region
+          </h1>
+        
         <Table columns={['Card', 'Region', 'Donations']} data={giftedCards} />
 
       </div>

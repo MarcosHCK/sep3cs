@@ -20,3 +20,24 @@
     justify-content: space-between;
     align-items: center;
    }
+   .home {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+   }
+   
+   .carousel {
+    grid-column: 1;
+    margin-bottom: 50px;
+   }
+   
+   .mural {
+    grid-column: 2;
+    align-self: start;
+   
+   }
+
+   .mural p {
+    font-size: 30px;}
+   
+   

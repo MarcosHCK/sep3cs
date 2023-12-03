@@ -17,6 +17,19 @@
 import React from 'react';
 import './HomeTable.css';
 
+
+export function Mural() {
+  return (
+   <div className="mural">
+     <h2 style={{ color: '#63a5b5' }}>Welcome to DataClash</h2>
+     <p>Aquí puedes encontrar estadísticas de los mejores clanes, jugadores y cartas más donadas.</p>
+     <p>Explora nuestras diferentes secciones para obtener más información.</p>
+   </div>
+  );
+ }
+ 
+ 
+
 function convertToTableFormat(columns, data) {
   return data.map(item => {
     let obj = {};
