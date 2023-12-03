@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react'
 
 export function ProfileClan (props)
 {
-  const { playerProfile } = props
+  const { playerProfile, userProfile } = props
   const [ clanClient ] = useState (new ClanClient ())
   const [ clanDescription, setClanDescription ] = useState ()
   const [ clanId, setClanId ] = useState ()
@@ -73,8 +73,8 @@ export function ProfileClan (props)
         {
           const command = new CreateClanWithChiefCommand ()
 
-          command.description = 'My clan'
-          command.name = `${playerProfile.nick ?? playerProfile.name}'s clan`
+          command.description = `${playerProfile.nickname ?? userProfile.name}'s clan`
+          command.name = `${playerProfile.nickname ?? userProfile.name}'s clan`
           command.region = 'Somewhere'
           command.totalTrophiesToEnter = 0
           command.totalTrophiesWonOnWar = 0
