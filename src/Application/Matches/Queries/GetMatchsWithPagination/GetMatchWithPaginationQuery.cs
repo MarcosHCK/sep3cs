@@ -19,33 +19,36 @@ using AutoMapper.QueryableExtensions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Mappings;
 using DataClash.Application.Common.Models;
+using DataClash.Application.Common.Security;
 using DataClash.Application.Matches.Queries.GetMatch;
+using DataClash.Domain.Enums;
 using MediatR;
 
 namespace DataClash.Application.Matches.Queries.GetMatchesWithPagination
 {
-    public record GetMatchesWithPaginationQuery : IRequest<PaginatedList<MatchBriefDto>>
+  [Authorize (Roles = Roles.Administrator)]
+  public record GetMatchesWithPaginationQuery : IRequest<PaginatedList<MatchBriefDto>>
     {
-        public int PageNumber { get; init; } = 1;
-        public int PageSize { get; init; } = 10;
+      public int PageNumber { get; init; } = 1;
+      public int PageSize { get; init; } = 10;
     }
 
-    public class GetMatchesWithPaginationQueryHandler : IRequestHandler<GetMatchesWithPaginationQuery, PaginatedList<MatchBriefDto>>
+  public class GetMatchesWithPaginationQueryHandler : IRequestHandler<GetMatchesWithPaginationQuery, PaginatedList<MatchBriefDto>>
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
+      private readonly IApplicationDbContext _context;
+      private readonly IMapper _mapper;
 
-        public GetMatchesWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
+      public GetMatchesWithPaginationQueryHandler (IApplicationDbContext context, IMapper mapper)
         {
-            _context = context;
-            _mapper = mapper;
+          _context = context;
+          _mapper = mapper;
         }
 
-        public async Task<PaginatedList<MatchBriefDto>> Handle (GetMatchesWithPaginationQuery query, CancellationToken cancellationToken)
+      public async Task<PaginatedList<MatchBriefDto>> Handle (GetMatchesWithPaginationQuery query, CancellationToken cancellationToken)
         {
-            return await _context.Matches
-                .ProjectTo<MatchBriefDto> (_mapper.ConfigurationProvider)
-                .PaginatedListAsync (query.PageNumber, query.PageSize);
+          return await _context.Matches
+                  .ProjectTo<MatchBriefDto> (_mapper.ConfigurationProvider)
+                  .PaginatedListAsync (query.PageNumber, query.PageSize);
         }
     }
 }

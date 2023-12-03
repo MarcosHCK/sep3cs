@@ -17,56 +17,47 @@
 using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
-using DataClash.Domain.Entities;
-using DataClash.Domain.Events;
 using DataClash.Application.Matches.Commands.CreateMatch;
+using DataClash.Domain.Entities;
+using DataClash.Domain.Enums;
+using DataClash.Domain.Events;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Matches.Commands.UpdateMatch
 {
-    [Authorize (Roles = "Administrator")]
-    public record UpdateMatchCommand : IRequest
-    {
-        public long WinnerPlayerId { get; init; }
-        public long LooserPlayerId { get; init; }
-        public DateTime BeginDate { get; init; }
-        public TimeSpan Duration { get; init; }
-        public Player? LooserPlayer { get; init; }
-        public Player? WinnerPlayer { get; init; }
-    }
+  [Authorize (Roles = Roles.Administrator)]
+  public record UpdateMatchCommand () : CreateMatchCommand;
 
-    public class UpdateMatchCommandHandler : IRequestHandler<UpdateMatchCommand>
+  public class UpdateMatchCommandHandler : IRequestHandler<UpdateMatchCommand>
     {
-        private readonly IApplicationDbContext _context;
+      private readonly IApplicationDbContext _context;
 
-        public UpdateMatchCommandHandler (IApplicationDbContext context)
+      public UpdateMatchCommandHandler (IApplicationDbContext context)
         {
-            _context = context;
+          _context = context;
         }
-        private async Task<Player> GetPlayerById(long PlayerId,  CancellationToken cancellationToken)
-        {
-            var key = new object [] { PlayerId};
-            var entity = await _context.Players.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Player), key);
-            return entity;
-        }
-        public async Task Handle (UpdateMatchCommand request, CancellationToken cancellationToken)
-        {
-            DateTime ConvertedDate = request.BeginDate.AddHours(-5);
-            var key = new object [] { request.LooserPlayerId, request.WinnerPlayerId, ConvertedDate };
-            
-            var entity = await _context.Matches.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Match), key);
-            
-            entity.WinnerPlayerId = request.WinnerPlayerId;
-            entity.LooserPlayerId = request.LooserPlayerId;
-            entity.BeginDate = ConvertedDate;
-            entity.Duration = request.Duration;
-            entity.WinnerPlayer = GetPlayerById(request.WinnerPlayerId,cancellationToken).GetAwaiter().GetResult();
-            entity.LooserPlayer = GetPlayerById(request.LooserPlayerId,cancellationToken).GetAwaiter().GetResult();
-            
-            entity.WinnerPlayer.AddDomainEvent (new MatchUpdatedEvent (entity));
-            entity.LooserPlayer.AddDomainEvent (new MatchUpdatedEvent (entity));
-            
-            await _context.SaveChangesAsync (cancellationToken);
+
+      public async Task Handle (UpdateMatchCommand request, CancellationToken cancellationToken)
+        {   
+          var entity = await _context.Matches
+                        .Include (e => e.LooserPlayer)
+                        .Include (e => e.WinnerPlayer)
+                        .Where (e => e.LooserPlayerId == request.LooserPlayerId
+                                  && e.WinnerPlayerId == request.WinnerPlayerId
+                                  && e.BeginDate == request.BeginDate)
+                        .FirstOrDefaultAsync (cancellationToken)
+            ?? throw new NotFoundException (nameof (Match), new object[]
+              {
+                request.LooserPlayerId,
+                request.WinnerPlayerId,
+                request.BeginDate,
+              });
+
+          entity.Duration = request.Duration;
+          entity.WinnerPlayer!.AddDomainEvent (new MatchUpdatedEvent (entity));
+          entity.LooserPlayer!.AddDomainEvent (new MatchUpdatedEvent (entity));
+          await _context.SaveChangesAsync (cancellationToken);
         }
     }
 }
