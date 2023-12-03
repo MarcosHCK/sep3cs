@@ -44,15 +44,15 @@ export function ProfileClan (props)
     {
       if (!!playerProfile) try
         {
-          const playerClan = await clanClient.getForCurrentPlayer ()
+          const currentClan = await clanClient.getForCurrentPlayer ()
 
-          if (playerClan === null)
+          if (currentClan === null)
             setHasClan (false)
           else
             {
               setHasClan (true)
-              const clan = playerClan.clan
-              const role = playerClan.role
+              const clan = currentClan.clan
+              const role = currentClan.role
 
               setClanDescription (clan.description)
               setClanId (clan.id)
@@ -114,7 +114,7 @@ export function ProfileClan (props)
           command.totalTrophiesWonOnWar = clanTotalTrophiesWonOnWar
           command.type = clanType
 
-          await clanClient.update (clanId, command)
+          await clanClient.update (command)
         }
       catch (error) { errorReporter (error) }
     }
