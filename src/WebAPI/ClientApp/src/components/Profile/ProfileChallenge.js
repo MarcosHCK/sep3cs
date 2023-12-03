@@ -16,11 +16,12 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Button, Table, Form, FormGroup, Input, Label } from 'reactstrap';
-import { ChallengeClient, UpdateChallengeCommand } from '../../webApiClient.ts';
+import { ChallengeClient, UpdateChallengeCommand ,AddPlayerCommand} from '../../webApiClient.ts';
 import { useErrorReporter } from '../ErrorReporter.js';
 import { WaitSpinner } from '../WaitSpinner.js';
 
 export function ProfileChallenge(props) {
+  const { playerProfile } = props
  const [challenges, setChallenges] = useState([]);
  const [selectedChallenge, setSelectedChallenge] = useState(null);
  const client = new ChallengeClient();
@@ -45,7 +46,11 @@ export function ProfileChallenge(props) {
  const handleJoinChallenge = async () => {
    if (selectedChallenge) {
      try {
-       await client.joinChallenge(selectedChallenge.id);
+      const command=new AddPlayerCommand();
+      command.challengeId=selectedChallenge.id;
+      command.playerId=playerProfile.id;
+      command.wonThrophies=0;
+       await client.addPlayer(command);
        alert('Has unido el desafío exitosamente');
      } catch (error) {
        errorReporter(error);

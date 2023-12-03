@@ -28,7 +28,7 @@ namespace DataClash.Application.Common.Seeders
           where T : MagicCard, new ()
         {
           if (context.Cards.All (c => c.Picture != picture))
-              context.Cards.Add (new T
+              {var card= new T
                 { Description = description,
                   ElixirCost = elixirCost,
                   InitialLevel = initialLevel,
@@ -38,7 +38,9 @@ namespace DataClash.Application.Common.Seeders
                   DamageRadius = damageRadius,
                   AreaDamage = areaDamage,
                   TowerDamage = towerDamage,
-                  Duration = duration });
+                  Duration = duration };
+                  context.Cards.Add (card);
+                  context.MagicCards.Add (card);}
         }
 
       private void AddCard<T> (IApplicationDbContext context,
@@ -47,7 +49,7 @@ namespace DataClash.Application.Common.Seeders
           where T : StructCard, new ()
         {
           if (context.Cards.All (c => c.Picture != picture))
-              context.Cards.Add (new T
+              {var card= new T
                 { Description = description,
                   ElixirCost = elixirCost,
                   InitialLevel = initialLevel,
@@ -56,7 +58,9 @@ namespace DataClash.Application.Common.Seeders
                   Picture = picture,
                   HitPoints = hitPoints,
                   RangeDamage = rangeDamage,
-                  AttackPaseRate = attackPaseRate });
+                  AttackPaseRate = attackPaseRate };
+                  context.Cards.Add (card);
+                  context.StructCards.Add (card);}
         }
 
       private void AddCard<T> (IApplicationDbContext context,
@@ -65,7 +69,7 @@ namespace DataClash.Application.Common.Seeders
           where T : TroopCard, new ()
         {
           if (context.Cards.All (c => c.Picture != picture))
-              context.Cards.Add (new T
+           {var card= new T
                 { Description = description,
                   ElixirCost = elixirCost,
                   InitialLevel = initialLevel,
@@ -74,7 +78,11 @@ namespace DataClash.Application.Common.Seeders
                   Picture = picture,
                   AreaDamage = areaDamage,
                   HitPoints = hitPoints,
-                  UnitCount = unitCount });
+                  UnitCount = unitCount };
+                  context.Cards.Add (card);
+                  context.TroopCards.Add (card);}
+              
+
         }
 
     public void SeedAsync(IApplicationDbContext context)
@@ -93,7 +101,7 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "blowdart_goblin description", 1, 1, "blowdart_goblin", Quality.Normal, "blowdart_goblin", 100, 100, 1);
         AddCard<TroopCard>(context, "bomber description", 1, 1, "bomber", Quality.Normal, "bomber", 100, 100, 1);
         AddCard<TroopCard>(context, "bomb_tower description", 1, 1, "bomb_tower", Quality.Normal, "bomb_tower", 100, 100, 1);
-        AddCard<TroopCard>(context, "bowler description", 1, 1, "bowler", Quality.Normal, "bowler", 100, 100, 1);
+        AddCard<StructCard>(context, "bowler description", 1, 1, "bowler", Quality.Normal, "bowler", 100, 100, 1);
         AddCard<TroopCard>(context, "building_elixir_collector description", 1, 1, "building_elixir_collector", Quality.Normal, "building_elixir_collector", 100, 100, 1);
         AddCard<TroopCard>(context, "building_inferno description", 1, 1, "building_inferno", Quality.Normal, "building_inferno", 100, 100, 1);
         AddCard<TroopCard>(context, "building_mortar description", 1, 1, "building_mortar", Quality.Normal, "building_mortar", 100, 100, 1);
@@ -180,7 +188,7 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "skeleton_horde description", 1, 1, "skeleton_horde", Quality.Normal, "skeleton_horde", 100, 100, 1);
         AddCard<TroopCard>(context, "skeleton_warriors description", 1, 1, "skeleton_warriors", Quality.Normal, "skeleton_warriors", 100, 100, 1);
         AddCard<TroopCard>(context, "snowball description", 1, 1, "snowball", Quality.Normal, "snowball", 100, 100, 1);
-        AddCard<TroopCard>(context, "snow_spirits description", 1, 1, "snow_spirits", Quality.Normal, "snow_spirits", 100, 100, 1);
+        AddCard<StructCard>(context, "sparky description", 1, 1, "sparky", Quality.Normal, "sparky", 100, 100, 1);
         AddCard<TroopCard>(context, "superarcher description", 1, 1, "superarcher", Quality.Normal, "superarcher", 100, 100, 1);
         AddCard<TroopCard>(context, "superhogrider description", 1, 1, "superhogrider", Quality.Normal, "superhogrider", 100, 100, 1);
         AddCard<TroopCard>(context, "supericegolem description", 1, 1, "supericegolem", Quality.Normal, "supericegolem", 100, 100, 1);

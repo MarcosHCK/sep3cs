@@ -22,7 +22,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 namespace DataClash.Application.PlayerCards.Commands.DeletePlayerCard
 {
-    public record DeletePlayerCardCommand ((long CardId, long PlayerId) Key) : IRequest;
+    public record DeletePlayerCardCommand : IRequest
+        {
+            public long CardId { get; init; }
+            public long PlayerId { get; init; }
+        }
     
     public class DeletePlayerCardCommandHandler : IRequestHandler<DeletePlayerCardCommand>
     {
@@ -33,10 +37,12 @@ namespace DataClash.Application.PlayerCards.Commands.DeletePlayerCard
         }
         public async Task Handle (DeletePlayerCardCommand request, CancellationToken cancellationToken)
         {
+            Console.WriteLine(request.PlayerId);
+            Console.WriteLine("kjejfnnesklkfs");
             var entity = await _context.PlayerCards
-                .Where (l => l.CardId == request.Key.CardId && l.PlayerId == request.Key.PlayerId)
+                .Where (l => l.CardId == request.CardId && l.PlayerId == request.PlayerId)
                 .SingleOrDefaultAsync (cancellationToken)
-                ?? throw new NotFoundException (nameof (PlayerCard), (request.Key.CardId, request.Key.PlayerId));
+                ?? throw new NotFoundException (nameof (PlayerCard), (request.CardId, request.PlayerId));
             _context.PlayerCards.Remove (entity);
             await _context.SaveChangesAsync (cancellationToken);
         }

@@ -18,6 +18,8 @@ using DataClash.Application.Common.Models;
 using DataClash.Application.Challenges.Commands.CreateChallenge;
 using DataClash.Application.Challenges.Commands.DeleteChallenge;
 using DataClash.Application.Challenges.Commands.UpdateChallenge;
+using DataClash.Application.Challenges.Commands.AddPlayer;
+using DataClash.Application.Challenges.Commands.RemovePlayer;
 using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
 using DataClash.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -48,6 +50,21 @@ namespace DataClash.WebUI.Controllers{
         public async Task<IActionResult> Update (long id, UpdateChallengeCommand command){
             if (id != command.Id)
                 return BadRequest ();
+            await Mediator.Send (command);
+            return NoContent ();
+        }
+        [HttpPost]
+        [ProducesResponseType (StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        [Route("Player")]
+        public async Task<IActionResult> AddPlayer (AddPlayerCommand command){
+            await Mediator.Send (command);
+            return NoContent ();
+        }
+        [HttpDelete("Player")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> RemovePlayer (RemovePlayerCommand command){
             await Mediator.Send (command);
             return NoContent ();
         }

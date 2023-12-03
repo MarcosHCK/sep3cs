@@ -48,18 +48,7 @@ namespace DataClash.Application.Players.Commands.UpdatePlayer
         {
           var entity = await _context.Players.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Player), request.Id);
 
-          if (request.FavoriteCardId != entity.FavoriteCardId)
-            {
-              if (request.FavoriteCardId.HasValue == false)
-                entity.FavoriteCard = null;
-              else
-                {
-                  var card = await _context.PlayerCards.FindAsync (new object [] { request.FavoriteCardId, entity.Id }, cancellationToken)
-                            ?? throw new NotFoundException (nameof (PlayerCard), (request.FavoriteCardId, entity.Id));
-                    entity.FavoriteCard = card.Card;
-                }
-            }
-
+          entity.FavoriteCardId = request.FavoriteCardId;
           entity.Level = request.Level;
           entity.Nickname = request.Nickname;
           entity.TotalCardsFound = request.TotalCardsFound;

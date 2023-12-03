@@ -14,19 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+
 using DataClash.Application.Common.Mappings;
+using DataClash.Domain.Enums;
 using DataClash.Domain.Entities;
 
-namespace DataClash.Application.Players.Queries.GetPlayer
+namespace DataClash.Application.MagicCards.Queries.GetMagicCard
 {
-  public class PlayerBriefDto : IMapFrom<Player>
-    {
-      public long Id { get; init; }
-      public long Level { get; init; }
-      public string? Nickname { get; init; }
-      public long? FavoriteCardId{get;init;}
-      public long TotalCardsFound { get; init; }
-      public long TotalThrophies { get; init; }
-      public long TotalWins { get; init; }
-    }
+ public class CardBriefDto : IMapFrom<Card>
+   {
+     public long Id { get; init; }
+     public string? Description { get; init; }
+     public double ElixirCost { get; init; }
+     public long InitialLevel { get; init; }
+     public string? Name { get; init; }
+     public Quality Quality { get; init; }
+     public string? Picture { get; init; }
+   }
+
+ public class MagicCardBriefDto : CardBriefDto ,IMapFrom<MagicCard>
+ {
+   public double DamageRadius {get; init; }
+   public double AreaDamage { get; init; }
+   public double TowerDamage { get; init; }
+   public TimeSpan Duration { get; init; }
+ }
+
 }
