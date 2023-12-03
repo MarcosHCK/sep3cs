@@ -21,7 +21,8 @@ import { EnterWarCommand } from '../../webApiClient.ts'
 import { IntegerInput } from '../IntegerInput'
 import { LeaveWarCommand } from '../../webApiClient.ts'
 import { Pager } from '../Pager'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
+import { UncontrolledPopover } from 'reactstrap'
+import { PopoverBody, PopoverHeader } from 'reactstrap'
 import { ProfilePage } from './ProfilePage'
 import { UpdateWarCommand } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter'
@@ -41,7 +42,6 @@ export function ProfileClanWars (props)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
-  const [ pickerOpen, setPickerOpen ] = useState (false)
   const [ totalPages, setTotalPages ] = useState (0)
   const errorReporter = useErrorReporter ()
 
@@ -213,28 +213,25 @@ export function ProfileClanWars (props)
         : <>
             <Button
               color='primary'
-              id='warclan-picker-button'
-              onClick={_ => setPickerOpen (!pickerOpen)} >
+              id='warclan-picker-button' >
                 +
             </Button>
-            <Popover
+            <UncontrolledPopover
                 className='warclan-picker'
-                isOpen={pickerOpen}
                 placement='bottom'
                 target='warclan-picker-button'
-                toggle={_ => setPickerOpen (!pickerOpen)}>
+                trigger='focus' >
               <PopoverHeader>
                 Wars
               </PopoverHeader>
               <PopoverBody>
                 <Wars picker onPick={warId =>
                   {
-                    setPickerOpen (false)
                     setIsLoading (true)
                     enterWar (warId).then (_ => setActivePage (-1))
                   }} />
               </PopoverBody>
-            </Popover>
+            </UncontrolledPopover>
           </>}
         </ProfilePage>)
 }

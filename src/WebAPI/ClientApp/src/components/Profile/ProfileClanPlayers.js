@@ -15,17 +15,18 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './Profile.css'
+import { AddPlayerCommand2 } from '../../webApiClient.ts'
 import { Alert, Button, Input, Table } from 'reactstrap'
 import { ClanClient, ClanRole } from '../../webApiClient.ts'
-import { AddPlayerCommand2 } from '../../webApiClient.ts'
-import { RemovePlayerCommand2 } from '../../webApiClient.ts'
-import { UpdatePlayerCommand2 } from '../../webApiClient.ts'
 import { Pager } from '../Pager'
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
+import { Players } from '../Players'
+import { PopoverBody, PopoverHeader } from 'reactstrap'
 import { ProfilePage } from './ProfilePage'
+import { RemovePlayerCommand2 } from '../../webApiClient.ts'
+import { UncontrolledPopover } from 'reactstrap'
+import { UpdatePlayerCommand2 } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
-import { Players } from '../Players'
 import React, { useEffect, useState } from 'react'
 
 export function ProfileClanPlayers (props)
@@ -40,7 +41,6 @@ export function ProfileClanPlayers (props)
   const [ hasPreviousPage, setHasPreviousPage ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ items, setItems ] = useState (undefined)
-  const [ pickerOpen, setPickerOpen ] = useState (false)
   const [ totalPages, setTotalPages ] = useState (0)
   const errorReporter = useErrorReporter ()
 
@@ -159,7 +159,7 @@ export function ProfileClanPlayers (props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage, clanId])
 
-  const clanRoles = Object.keys (ClanRole).filter (k => !isNaN (Number (ClanRole[k])) && Number (ClanRole[k]) !== ClanRole.Chief)
+  const clanRoles = Object.keys (ClanRole).filter (k => !isNaN (Number (ClanRole[k])))
 
   if (!playerProfile)
     return <Alert color='warning'>User has not player status</Alert>
@@ -199,11 +199,13 @@ export function ProfileClanPlayers (props)
                 </td>
                 <td>
                   <Input
-                    disabled={ clanRole !== ClanRole.Chief || item.role === ClanRole.Chief }
+                    disabled={clanRole !== ClanRole.Chief || item.role === ClanRole.Chief}
                     onChange={e => { item.role = ClanRole[e.target.value]; updatePlayer (item) }}
                     defaultValue={clanRoles.find (k => k === ClanRole[item.role])}
                     type='select' >
-                  { clanRoles.map ((type) => !isNaN (Number (type)) ? <></> : <option>{type}</option>) }
+                  { clanRoles
+                      .filter (t => t !== ClanRole[ClanRole.Chief] || item.role === ClanRole.Chief)
+                      .map ((type, i) => <option key={`role${i}`}>{type}</option>) }
                   </Input>
                 </td>
                 { (clanRole !== ClanRole.Chief || item.role === ClanRole.Chief)
@@ -222,28 +224,25 @@ export function ProfileClanPlayers (props)
         : <>
             <Button
               color='primary'
-              id='playerclan-picker-button'
-              onClick={_ => setPickerOpen (!pickerOpen)} >
+              id='playerclan-picker-button' >
                 +
             </Button>
-            <Popover
+            <UncontrolledPopover
                 className='playerclan-picker'
-                isOpen={pickerOpen}
                 placement='bottom'
                 target='playerclan-picker-button'
-                toggle={_ => setPickerOpen (!pickerOpen)}>
+                trigger='focus'>
               <PopoverHeader>
                 Wars
               </PopoverHeader>
               <PopoverBody>
                 <Players picker onPick={warId =>
                   {
-                    setPickerOpen (false)
                     setIsLoading (true)
                     addPlayer (warId).then (_ => setActivePage (-1))
                   }} />
               </PopoverBody>
-            </Popover>
+            </UncontrolledPopover>
           </>}
         </ProfilePage>)
 }
