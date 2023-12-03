@@ -17,6 +17,7 @@
 import { Button, Table, Input } from 'reactstrap'
 import { CreateMatchCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
+import { DeleteMatchCommand } from '../webApiClient.ts'
 import { MatchClient } from '../webApiClient.ts'
 import { Pager } from './Pager'
 import { PlayerInput } from './PlayerInput'
@@ -69,66 +70,54 @@ export function Matches ()
 
   const removeMatch = async (item) =>
     {
-      try
-      {
-        await matchClient.delete (item.looserPlayerId,item.winnerPlayerId, item.beginDate )
+      try {
+        const command = new DeleteMatchCommand (item)
+        await matchClient.delete (command)
         setActivePage (-1)
-      }
-      catch(error)
-      {
-        errorReporter(error)
-      }
+      } catch (error)
+        {
+          errorReporter(error)
+        }
     }
 
   const updateMatch = async (item) =>
     {
-      const data = new UpdateMatchCommand ()
-      data.winnerPlayerId = item.winnerPlayerId
-      data.looserPlayerId = item.looserPlayerId
-      data.beginDate = item.beginDate
-      data.duration = item.duration
-      try
-      {
-        await matchClient.update (item.looserPlayerId,item.winnerPlayerId, item.beginDate, data)
-      }
-      catch(error)
-      {
-        errorReporter(error)
-      }
+      try {
+        const data = new UpdateMatchCommand (item)
+        await matchClient.update (data)
+      } catch (error)
+        {
+          errorReporter(error)
+        }
     }
 
   useEffect (() =>
     {
       const lastPage = async () =>
         {
-          try
-          {
+          try {
             const paginatedList = await matchClient.getWithPagination (1, pageSize)
             return paginatedList.totalPages
-          }
-          catch(error)
-          {
-            errorReporter(error)
-            return 0
-          }
-          
+          } catch (error)
+            {
+              errorReporter(error)
+              return 0
+            }
         }
 
       const refreshPage = async () =>
         {
-          try
-          {
+          try {
             const paginatedList = await matchClient.getWithPagination (activePage + 1, pageSize)
 
             setHasNextPage (paginatedList.hasNextPage)
             setHasPreviousPage (paginatedList.hasPreviousPage)
             setItems (paginatedList.items)
             setTotalPages (paginatedList.totalPages)
-          }
-          catch(error)
-          {
-            errorReporter(error)
-          }
+          } catch (error)
+            {
+              errorReporter(error)
+            }
         }
 
       if (activePage >= 0)
@@ -202,16 +191,14 @@ export function Matches ()
           ? <tr />
           : <tr key='footer0'>
               <td>
-                <Input
-                  type='number'
-                  onChange={e => setMatchWinner (e.target.value)}
-                  value={matchWinner} />
+                <PlayerInput
+                  defaultvalue={matchWinner}
+                  onChanged={id => setMatchWinner (id)} />
               </td>
               <td>
-                <Input
-                  type='number'
-                  onChange={e => setMatchLoser (e.target.value)}
-                  value={matchLoser} />
+                <PlayerInput
+                  defaultvalue={matchLoser}
+                  onChanged={id => setMatchLoser (id)} />
               </td>
               <td>
                 <DateTime

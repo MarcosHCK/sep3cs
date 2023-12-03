@@ -20,49 +20,43 @@ using DataClash.Application.Matches.Commands.DeleteMatch;
 using DataClash.Application.Matches.Commands.UpdateMatch;
 using DataClash.Application.Matches.Queries.GetMatch;
 using DataClash.Application.Matches.Queries.GetMatchesWithPagination;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataClash.WebUI.Controllers
 {
-    public class MatchController : ApiControllerBase
+  public class MatchController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<PaginatedList<MatchBriefDto>>> GetWithPagination ([FromQuery] GetMatchesWithPaginationQuery query)
+      [HttpGet]
+      public async Task<ActionResult<PaginatedList<MatchBriefDto>>> GetWithPagination ([FromQuery] GetMatchesWithPaginationQuery query)
         {
-            return await Mediator.Send (query);
+          return await Mediator.Send (query);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<(long, long, DateTime)>> Create (CreateMatchCommand command)
+      [HttpPost]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> Create (CreateMatchCommand command)
         {
-            return await Mediator.Send (command);
+          await Mediator.Send (command);
+          return NoContent ();
         }
 
-        [HttpDelete ("{winnerPlayerId}/{looserPlayerId}/{beginDate}")]
-        [ProducesResponseType (StatusCodes.Status204NoContent)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Delete ([FromRoute]long looserPlayerId,[FromRoute]long winnerPlayerId,[FromRoute]DateTime beginDate)
+      [HttpDelete]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> Delete (DeleteMatchCommand command)
         {
-            await Mediator.Send (new DeleteMatchCommand {
-                LooserPlayerId = looserPlayerId,
-                WinnerPlayerId = winnerPlayerId,
-                BeginDate = beginDate
-                });
-            return NoContent ();
+          await Mediator.Send (command);
+          return NoContent ();
         }
 
-        [HttpPut ("{winnerPlayerId}/{looserPlayerId}/{beginDate}")]
-        [ProducesResponseType (StatusCodes.Status204NoContent)]
-        [ProducesResponseType (StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Update ([FromRoute]long looserPlayerId,[FromRoute]long winnerPlayerId,[FromRoute]DateTime beginDate, UpdateMatchCommand command)
+      [HttpPut]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> Update (UpdateMatchCommand command)
         {
-            if (winnerPlayerId != command.WinnerPlayerId || looserPlayerId != command.LooserPlayerId || beginDate != command.BeginDate)
-                return BadRequest ();
-
-            await Mediator.Send (command);
-            return NoContent ();
+          await Mediator.Send (command);
+          return NoContent ();
         }
     }
 }
