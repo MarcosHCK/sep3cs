@@ -22,11 +22,10 @@ using DataClash.Application.Common.Models;
 using DataClash.Application.Common.Security;
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Challenges.Queries.GetChallengesForPlayerWithPagination
 {
-    [Authorize]
+  [Authorize]
   public record GetChallengesForPlayerWithPaginationQuery : IRequest<PaginatedList<PlayerChallengeBriefDto>>
     {
       public long PlayerId { get; init; }
