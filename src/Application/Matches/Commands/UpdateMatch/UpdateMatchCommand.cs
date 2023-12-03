@@ -26,7 +26,6 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
     [Authorize (Roles = "Administrator")]
     public record UpdateMatchCommand : IRequest
     {
-        public long Id { get; init; }
         public long WinnerPlayerId { get; init; }
         public long LooserPlayerId { get; init; }
         public DateTime BeginDate { get; init; }
@@ -46,10 +45,22 @@ namespace DataClash.Application.Matches.Commands.UpdateMatch
 
         public async Task Handle (UpdateMatchCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Matches.FindAsync (new object [] { request.Id }, cancellationToken) ?? throw new NotFoundException (nameof (Match), request.Id);
+            DateTime ConvertedDate = request.BeginDate.AddHours(-5);
+            var key = new object [] { request.LooserPlayerId, request.WinnerPlayerId, ConvertedDate };
+            System.Console.WriteLine("------------------------------------------------------");
+            System.Console.WriteLine(request.LooserPlayerId + " " + request.WinnerPlayerId + " " + request.BeginDate);
+            System.Console.WriteLine("------------------------------------------------------");
+            foreach (var item in _context.Matches)
+            {
+                System.Console.WriteLine("------------------------------------------------------");
+                System.Console.WriteLine(item.LooserPlayerId + " " + item.WinnerPlayerId + " " + item.BeginDate);
+                System.Console.WriteLine("------------------------------------------------------");   
+            }
+            var entity = await _context.Matches.FindAsync (key, cancellationToken) ?? throw new NotFoundException (nameof (Match), key);
+            
             entity.WinnerPlayerId = request.WinnerPlayerId;
             entity.LooserPlayerId = request.LooserPlayerId;
-            entity.BeginDate = request.BeginDate;
+            entity.BeginDate = ConvertedDate;
             entity.Duration = request.Duration;
             //entity.WinnerPlayer = request.WinnerPlayer;
             //entity.LooserPlayer = request.LooserPlayer;
