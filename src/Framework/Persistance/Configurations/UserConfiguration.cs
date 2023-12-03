@@ -14,15 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Framework.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using DataClash.Domain.Entities;
-
-namespace DataClash.Application.Common.Interfaces
+namespace DataClash.Infrastructure.Persistence.Configurations
 {
-  public interface IUser
+  public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {
-      public string? Email { get; }
-      public string? UserName { get; }
-      public Player? Player { get; }
+      public void Configure (EntityTypeBuilder<ApplicationUser> builder)
+        {
+          builder.HasOne (e => e.Player).WithOne ().HasForeignKey<ApplicationUser> (e => e.PlayerId);
+          builder.Navigation (e => e.Player).AutoInclude (true);
+        }
     }
 }
