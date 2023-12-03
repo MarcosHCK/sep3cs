@@ -18,22 +18,13 @@
 using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Enums;
 using DataClash.Domain.Entities;
+using DataClash.Application.Cards.Queries.GetCard;
 
 namespace DataClash.Application.StructCards.Queries.GetStructCard
 {
- public class CardBriefDto : IMapFrom<Card>
-   {
-     public long Id { get; init; }
-     public string? Description { get; init; }
-     public double ElixirCost { get; init; }
-     public long InitialLevel { get; init; }
-     public string? Name { get; init; }
-     public Quality Quality { get; init; }
-     public string? Picture { get; init; }
-   }
+ 
 
-
- public class StructCardBriefDto : CardBriefDto, IMapFrom<StructCard>
+ public class StructCardBriefDto : CardBrief, IMapFrom<StructCard>
  {
    public double HitPoints { get; init; }
    public double RangeDamage { get; init; }

@@ -18,21 +18,12 @@
 using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Enums;
 using DataClash.Domain.Entities;
+using DataClash.Application.Cards.Queries.GetCard;
 
 namespace DataClash.Application.MagicCards.Queries.GetMagicCard
 {
- public class CardBriefDto : IMapFrom<Card>
-   {
-     public long Id { get; init; }
-     public string? Description { get; init; }
-     public double ElixirCost { get; init; }
-     public long InitialLevel { get; init; }
-     public string? Name { get; init; }
-     public Quality Quality { get; init; }
-     public string? Picture { get; init; }
-   }
-
- public class MagicCardBriefDto : CardBriefDto ,IMapFrom<MagicCard>
+ 
+ public class MagicCardBriefDto : CardBrief ,IMapFrom<MagicCard>
  {
    public double DamageRadius {get; init; }
    public double AreaDamage { get; init; }

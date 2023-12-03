@@ -59,6 +59,9 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardImg, Row, Col, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { CardClient } from '../webApiClient.ts'
 import { useErrorReporter } from './ErrorReporter'
+import { FaInfo, FaHeart, FaFire, FaSquare, FaUsers, FaClock } from 'react-icons/fa';
+
+
 export function Cards () {
   const [ troopCards, setTroopCards ] = useState (undefined)
   const [ structCards, setStructCards ] = useState (undefined)
@@ -86,7 +89,8 @@ export function Cards () {
    
   return (
   <>
-    <h2>Tropas</h2>
+      <h2>Cards</h2>
+    <h2>Troops</h2>
     <Row>
       { (troopCards ?? []).map ((item, index) => (
         <Col sm="2" key={`troopcard${index}`}>
@@ -95,17 +99,18 @@ export function Cards () {
             <UncontrolledPopover trigger="hover" placement="top" target={`troopcard${index}`}>
               <PopoverHeader>{item.name}</PopoverHeader>
               <PopoverBody>
-              <p>{item.description}</p>
-              <p>{item.areaDamage}</p>
-              <p>{item.hitPoints}</p>
-              <p>{item.unitCount}</p>
+                <p><FaInfo /> {item.description}</p>
+                <p><FaFire color='orange'/> {item.areaDamage}</p>
+                <p><FaHeart color='red' /> {item.hitPoints}</p>
+                <p><FaUsers color='blue'/> {item.unitCount}</p>
+
               </PopoverBody>
             </UncontrolledPopover>
           </Card>
         </Col>
       ))}
     </Row>
-    <h2>Estructuras</h2>
+    <h2>Structs</h2>
     <Row>
       {(structCards ?? []).map ((item, index) => (
         <Col sm="2" key={`structcard${index}`}>
@@ -113,13 +118,18 @@ export function Cards () {
             <CardImg top width="100%" src={`/cards/${item.picture}.png`} alt={item.name} />
             <UncontrolledPopover trigger="hover" placement="top" target={`structcard${index}`}>
               <PopoverHeader>{item.name}</PopoverHeader>
-              <PopoverBody>{item.description}</PopoverBody>
+              <PopoverBody>
+                <p><FaInfo /> {item.description}</p>
+                <p><FaHeart /> {item.hitPoints}</p>
+                <p><FaFire /> {item.AttackPaseRate}</p>
+                <p><FaSquare /> {item.RangeDamage}</p>
+                </PopoverBody>
             </UncontrolledPopover>
           </Card>
         </Col>
       ))}
     </Row>
-    <h2>Mágicas</h2>
+    <h2>Magic</h2>
     <Row>
       { (magicCards ?? []).map ((item, index) => (
         <Col sm="2" key={`magiccard${index}`}>
@@ -127,7 +137,13 @@ export function Cards () {
             <CardImg top width="100%" src={`/cards/${item.picture}.png`} alt={item.name} />
             <UncontrolledPopover trigger="hover" placement="top" target={`magiccard${index}`}>
               <PopoverHeader>{item.name}</PopoverHeader>
-              <PopoverBody>{item.description}</PopoverBody>
+              <PopoverBody>
+                <p><FaInfo /> {item.description}</p>
+                <p><FaClock /> {item.DamageRadius}</p>
+                <p><FaUsers /> {item.AreaDamage}</p>
+                <p><FaFire /> {item.TowerDamage}</p>
+                <p><FaClock /> {item.Duration}</p>
+                </PopoverBody>
             </UncontrolledPopover>
           </Card>
         </Col>

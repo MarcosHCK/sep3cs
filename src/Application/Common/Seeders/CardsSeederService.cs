@@ -113,8 +113,8 @@ namespace DataClash.Application.Common.Seeders
         AddCard<TroopCard>(context, "chr_golem description", 1, 1, "chr_golem", Quality.Normal, "chr_golem", 100, 100, 1);
         AddCard<TroopCard>(context, "copy description", 1, 1, "copy", Quality.Normal, "copy", 100, 100, 1);
         AddCard<TroopCard>(context, "dark_prince description", 1, 1, "dark_prince", Quality.Normal, "dark_prince", 100, 100, 1);
-        AddCard<TroopCard>(context, "earthquake description", 1, 1, "earthquake", Quality.Normal, "earthquake", 100, 100, 1);
-        AddCard<TroopCard>(context, "electrogiant description", 1, 1, "electrogiant", Quality.Normal, "electrogiant", 100, 100, 1);
+        AddCard<StructCard>(context, "earthquake description", 1, 1, "earth", Quality.Normal, "earthquake", 100, 100, 1);
+        AddCard<StructCard>(context, "electrogiant description", 1, 1, "electro", Quality.Normal, "electrogiant", 100, 100, 1);
         AddCard<TroopCard>(context, "electrospirit description", 1, 1, "electrospirit", Quality.Normal, "electrospirit", 100, 100, 1);
         AddCard<TroopCard>(context, "electro_dragon description", 1, 1, "electro_dragon", Quality.Normal, "electro_dragon", 100, 100, 1);
         AddCard<TroopCard>(context, "electro_wizard description", 1, 1, "electro_wizard", Quality.Normal, "electro_wizard", 100, 100, 1);

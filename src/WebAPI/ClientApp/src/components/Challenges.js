@@ -29,6 +29,8 @@ import React, { useEffect, useState } from 'react'
 import { WaitSpinner } from './WaitSpinner'
 import { useErrorReporter } from './ErrorReporter'
 
+
+
 export function Challenges ()
 {
   const { initialPage } = useParams ()
@@ -160,7 +162,7 @@ export function Challenges ()
             visibleIndices={visibleIndices} />
         </div>
         <div>
-          <Table>
+          <Table striped responsive bordered  className='my-custom-class'>
             <thead>
               <tr>
                 <th>{'#'}</th>
