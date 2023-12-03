@@ -91,20 +91,6 @@ namespace DataClash.WebUI.Controllers
           await Mediator.Send (command);
           return NoContent ();
         }
-        [HttpPost]
-        [ProducesResponseType (StatusCodes.Status204NoContent)]
-        [ProducesDefaultResponseType]
-        [Route("Player")]
-        public async Task<IActionResult> AddPlayer (AddPlayerCommand command){
-            await Mediator.Send (command);
-            return NoContent ();
-        }
-        [HttpDelete("Player")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> RemovePlayer (RemovePlayerCommand command){
-            await Mediator.Send (command);
-            return NoContent ();
-        }
+        
     }
 }
