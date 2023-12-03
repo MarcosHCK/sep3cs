@@ -18,6 +18,7 @@ import './Profile.css'
 import { Alert, Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { ClanClient, ClanRole, ClanType, DeleteClanCommand } from '../../webApiClient.ts'
 import { CreateClanWithChiefCommand } from '../../webApiClient.ts'
+import { IntegerInput } from '../IntegerInput'
 import { ProfilePage } from './ProfilePage'
 import { UpdateClanCommand } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter'
@@ -173,17 +174,19 @@ export function ProfileClan (props)
             <Label for='clan-input-region'>Clan region</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-total-trophies-to-enter' type='number'
+            <IntegerInput id='clan-input-total-trophies-to-enter'
+              defaultValue={clanTotalTrophiesToEnter}
               disabled={clanRole !== ClanRole.Chief}
-              onChange={(e) => setClanTotalTrophiesToEnter (e.target.value)}
-              value={clanTotalTrophiesToEnter} />
+              natural
+              onChanged={value => setClanTotalTrophiesToEnter (value)}/>
             <Label for='clan-input-total-trophies-to-enter'>Throphies needed to enter</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-total-trophies-won-on-war' type='number'
+            <IntegerInput id='clan-input-total-trophies-won-on-war'
+              defaultValue={clanTotalTrophiesWonOnWar}
               disabled={clanRole !== ClanRole.Chief}
-              onChange={(e) => setClanTotalTrophiesWonOnWar (e.target.value)}
-              value={clanTotalTrophiesWonOnWar} />
+              natural
+              onChanged={value => setClanTotalTrophiesWonOnWar (value)}/>
             <Label for='clan-input-total-trophies-won-on-war'>Total trophies won on clan wars</Label>
           </FormGroup>
           <FormGroup floating>

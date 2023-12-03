@@ -15,14 +15,15 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './Profile.css'
-import { Alert, Button, Input, Table } from 'reactstrap'
+import { Alert, Button, Table } from 'reactstrap'
 import { ClanClient, ClanRole } from '../../webApiClient.ts'
 import { EnterWarCommand } from '../../webApiClient.ts'
+import { IntegerInput } from '../IntegerInput'
 import { LeaveWarCommand } from '../../webApiClient.ts'
-import { UpdateWarCommand } from '../../webApiClient.ts'
 import { Pager } from '../Pager'
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 import { ProfilePage } from './ProfilePage'
+import { UpdateWarCommand } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
 import { Wars } from '../Wars'
@@ -190,10 +191,11 @@ export function ProfileClanWars (props)
                   <p>{ item.warId }</p>
                 </th>
                 <td>
-                  <Input disabled={clanRole !== ClanRole.Chief}
-                      defaultValue={item.wonThrophies}
-                      onChange={e => { item.wonThrophies = Number (e.target.value); updateWar (item) }}
-                      type='number' />
+                  <IntegerInput
+                    defaultValue={item.wonThrophies}
+                    disabled={clanRole !== ClanRole.Chief}
+                    natural
+                    onChanged={value => { item.wonThrophies = value; updateWar (item) }} />
                 </td>
               { clanRole !== ClanRole.Chief
                 ? <></>
