@@ -21,9 +21,9 @@ import { EnterWarCommand } from '../../webApiClient.ts'
 import { IntegerInput } from '../IntegerInput'
 import { LeaveWarCommand } from '../../webApiClient.ts'
 import { Pager } from '../Pager'
-import { UncontrolledPopover } from 'reactstrap'
 import { PopoverBody, PopoverHeader } from 'reactstrap'
 import { ProfilePage } from './ProfilePage'
+import { UncontrolledPopover } from 'reactstrap'
 import { UpdateWarCommand } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
@@ -158,9 +158,7 @@ export function ProfileClanWars (props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage, clanId])
 
-  if (!playerProfile)
-    return <Alert color='warning'>User has not player status</Alert>
-  else if (!hasClan)
+  if (!hasClan)
     return <Alert color='danger'>You do not belong to any clan</Alert>
   else
     return (
