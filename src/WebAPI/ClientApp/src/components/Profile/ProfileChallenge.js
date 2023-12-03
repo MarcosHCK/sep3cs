@@ -15,17 +15,18 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import './Profile.css'
-import { Alert, Button, Input, Table } from 'reactstrap'
-import { ChallengeClient } from '../../webApiClient.ts'
 import { AddPlayerCommand } from '../../webApiClient.ts'
-import { RemovePlayerCommand } from '../../webApiClient.ts'
-import { UpdatePlayerCommand } from '../../webApiClient.ts'
+import { Alert, Button, Table } from 'reactstrap'
+import { ChallengeClient } from '../../webApiClient.ts'
+import { Challenges } from '../Challenges'
+import { IntegerInput } from '../IntegerInput'
 import { Pager } from '../Pager'
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 import { ProfilePage } from './ProfilePage'
+import { RemovePlayerCommand } from '../../webApiClient.ts'
+import { UpdatePlayerCommand } from '../../webApiClient.ts'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
-import { Challenges } from '../Challenges'
 import React, { useEffect, useState } from 'react'
 
 export function ProfileChallenge (props)
@@ -159,10 +160,10 @@ export function ProfileChallenge (props)
                 <p>{ item.challengeId }</p>
               </th>
               <td>
-                <Input
+                <IntegerInput
                   defaultValue={item.wonThrophies}
-                  onChange={e => { item.wonThrophies = Number (e.target.value); updatePlayer (item) }}
-                  type='number' />
+                  onChanged={value => { item.wonThrophies = value; updatePlayer (item) }}
+                  natural />
               </td>
               <td>
                 <Button close onClick={_ => {

@@ -14,46 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-
 using DataClash.Application.Common.Interfaces;
 using MediatR;
-using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Statistics.CompletedChallenges
 {
-    public record GetCompletedChallengesQuery : IRequest<List<string[]>>;
+  public record GetCompletedChallengesQuery : IRequest<List<string[]>>;
 
-    public class GetCompletedChallengesQueryHandler : IRequestHandler<GetCompletedChallengesQuery, List<string[]>>
+  public class GetCompletedChallengesQueryHandler : IRequestHandler<GetCompletedChallengesQuery, List<string[]>>
     {
-        private readonly IApplicationDbContext _context;
+      private readonly IApplicationDbContext _context;
 
-        public GetCompletedChallengesQueryHandler(IApplicationDbContext context)
+      public GetCompletedChallengesQueryHandler (IApplicationDbContext context)
         {
-            _context = context;
+          _context = context;
         }
 
-        public async Task<List<string[]>> Handle(GetCompletedChallengesQuery request, CancellationToken cancellationToken)
+      public async Task<List<string[]>> Handle (GetCompletedChallengesQuery request, CancellationToken cancellationToken)
         {
-            var result = _context.PlayerChallenges
-            .Where(pc => pc.WonThrophies == pc.Challenge.Bounty)
-            .Select(pc => new string[] {
-            pc.Player.Nickname,
-            pc.Challenge.Name
-      })
-      .ToList();
-
-            return result;
+          return await _context.PlayerChallenges
+                  .Where (pc => pc.WonThrophies == pc.Challenge.Bounty)
+                  .Select (pc => new string[] { pc.Player.Nickname ?? "<no nickname>", pc.Challenge.Name })
+                  .ToListAsync (cancellationToken);
         }
     }
-
-    public class GetCompletedChallengesQueryValidator : AbstractValidator<GetCompletedChallengesQuery>
-    {
-        public GetCompletedChallengesQueryValidator()
-        {
-            // Add validation rules here
-        }
-    }
-
-
 }
 

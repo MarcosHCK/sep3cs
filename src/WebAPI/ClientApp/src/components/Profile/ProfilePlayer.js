@@ -16,6 +16,7 @@
  */
 import { Alert, Button } from 'reactstrap'
 import { Form, FormGroup, Input, Label } from 'reactstrap'
+import { IntegerInput } from '../IntegerInput'
 import { PlayerClient, UpdatePlayerCommand3 } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
 import { useErrorReporter } from '../ErrorReporter'
@@ -64,7 +65,7 @@ export function ProfilePlayer (props)
       : <ProfilePage title='Identity'>
           <Form onSubmit={(e) => { setIsLoading (true); onSubmit (e).then (() => setIsLoading (false)) }}>
             <FormGroup floating>
-              <Input id='player-input-level' type='number' onChange={(e) => setPlayerLevel (e.target.value)} value={playerLevel} />
+              <IntegerInput id='player-input-level' defaultValue={playerLevel} onChanged={value => setPlayerLevel (value)} natural />
               <Label for='player-input-level'>Level</Label>
             </FormGroup>
             <FormGroup floating>
@@ -72,15 +73,15 @@ export function ProfilePlayer (props)
               <Label for='player-input-nickname'>Nickname</Label>
             </FormGroup>
             <FormGroup floating>
-              <Input id='player-input-total-cards-found' type='number' onChange={(e) => setPlayerTotalCardsFound (e.target.value)} value={playerTotalCardsFound} />
+              <IntegerInput id='player-input-total-cards-found' defaultValue={playerTotalCardsFound} onChanged={value => setPlayerTotalCardsFound (value)} natural />
               <Label for='player-input-total-cards-found'>Total cards found</Label>
             </FormGroup>
             <FormGroup floating>
-              <Input id='player-input-total-throphies' type='number' onChange={(e) => setPlayerTotalThrophies (e.target.value)} value={playerTotalThrophies} />
+              <IntegerInput id='player-input-total-throphies' defaultValue={playerTotalThrophies} onChanged={value => setPlayerTotalThrophies (value)} natural />
               <Label for='player-input-total-throphies'>Total throphies won</Label>
             </FormGroup>
             <FormGroup floating>
-              <Input id='player-input-total-wins' type='number' onChange={(e) => setPlayerTotalWins (e.target.value)} value={playerTotalWins} />
+              <IntegerInput id='player-input-total-wins' defaultValue={playerTotalWins} onChanged={value => setPlayerTotalWins (value)} natural />
               <Label for='player-input-total-wins'>Total battles won</Label>
             </FormGroup>
             <Button color='primary'>Update</Button>

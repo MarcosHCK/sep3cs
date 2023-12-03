@@ -14,18 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Mappings;
+using DataClash.Domain.Entities;
 
-using DataClash.Application.Common.Interfaces;
-using Duende.IdentityServer.Services;
-
-namespace DataClash.WebUI.Controllers
+namespace DataClash.Application.Players.Queries.GetPlayersWithPagination
 {
-  public abstract class UserControllerBase : ApiControllerBase
+  public class PlayerBriefDto : IMapFrom<Player>
     {
-      private ICurrentUserService? _currentUserService;
-      private IIdentityService? _identityService;
-
-      public ICurrentUserService CurrentUser => _currentUserService ??= HttpContext.RequestServices.GetRequiredService<ICurrentUserService> ();
-      public IIdentityService Identity => _identityService ??= HttpContext.RequestServices.GetRequiredService<IIdentityService> ();
+      public long Id { get; init; }
+      public long Level { get; init; }
+      public string? Nickname { get; init; }
+      public long? FavoriteCardId{get;init;}
+      public long TotalCardsFound { get; init; }
+      public long TotalThrophies { get; init; }
+      public long TotalWins { get; init; }
     }
 }

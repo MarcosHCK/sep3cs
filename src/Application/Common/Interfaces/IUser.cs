@@ -15,11 +15,14 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using DataClash.Domain.Entities;
+
 namespace DataClash.Application.Common.Interfaces
 {
   public interface IUser
     {
-      public string? Email { get; set; }
-      public string? UserName { get; set; }
+      public string? Email { get; }
+      public string? UserName { get; }
+      public Player? Player { get; }
     }
 }

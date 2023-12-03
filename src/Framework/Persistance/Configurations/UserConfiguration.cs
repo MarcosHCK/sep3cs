@@ -14,26 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Interfaces;
-using MediatR;
+using DataClash.Framework.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataClash.Application.Statistics.AllClanNames
+namespace DataClash.Infrastructure.Persistence.Configurations
 {
-  public record GetAllClanNamesQuery : IRequest<List<string>>;
-
-  public class GetAllClanNamesQueryHandler : IRequestHandler<GetAllClanNamesQuery, List<string>>
-  	{
-      private readonly IApplicationDbContext _context;
-
-      public GetAllClanNamesQueryHandler (IApplicationDbContext context)
-      	{
-          _context = context;
-       	}
-
-      public async Task<List<string>> Handle (GetAllClanNamesQuery request, CancellationToken cancellationToken)
-       	{
-          return await _context.Clans.Select (c => c.Name).ToListAsync (cancellationToken);
-       	}
-   	}
+  public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+    {
+      public void Configure (EntityTypeBuilder<ApplicationUser> builder)
+        {
+          builder.HasOne (e => e.Player).WithOne ().HasForeignKey<ApplicationUser> (e => e.PlayerId);
+          builder.Navigation (e => e.Player).AutoInclude (true);
+        }
+    }
 }

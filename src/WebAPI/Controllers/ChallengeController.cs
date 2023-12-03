@@ -31,66 +31,37 @@ namespace DataClash.WebUI.Controllers
     {
       [HttpGet ("Player")]
       public async Task<ActionResult<PaginatedList<PlayerChallengeBriefDto>>> GetForPlayer ([FromQuery] GetChallengesForPlayerWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpGet]
       public async Task<ActionResult<PaginatedList<ChallengeBriefDto>>> GetWithPagination ([FromQuery] GetChallengesWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpPost ("Player")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> AddPlayer (AddPlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPost]
       public async Task<ActionResult<long>> Create (CreateChallengeCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
+        => await Mediator.Send (command);
       [HttpDelete ("Player")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> RemovePlayer (RemovePlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpDelete]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Delete (DeleteChallengeCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut ("Player")]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
        public async Task<IActionResult> UpdatePlayer (UpdatePlayerCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
        public async Task<IActionResult> Update (UpdateChallengeCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-        
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }
