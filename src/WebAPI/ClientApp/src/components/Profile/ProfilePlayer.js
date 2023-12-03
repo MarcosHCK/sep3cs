@@ -16,7 +16,7 @@
  */
 import { Alert, Button } from 'reactstrap'
 import { Form, FormGroup, Input, Label } from 'reactstrap'
-import { PlayerClient, UpdatePlayerCommand } from '../../webApiClient.ts'
+import { PlayerClient, UpdatePlayerCommand3 } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
 import { useErrorReporter } from '../ErrorReporter'
 import { WaitSpinner } from '../WaitSpinner'
@@ -38,10 +38,9 @@ export function ProfilePlayer (props)
     {
       e.preventDefault ()
 
-      const id = playerProfile.id
-      const command = new UpdatePlayerCommand ()
+      const command = new UpdatePlayerCommand3 ()
 
-      command.id = id
+      command.id = playerProfile.id
       command.level = playerLevel
       command.nickname = playerNickname === '' ? undefined : playerNickname
       command.totalCardsFound = playerTotalCardsFound
@@ -49,7 +48,7 @@ export function ProfilePlayer (props)
       command.totalWins = playerTotalWins
 
       try {
-        await playerClient.update (id, command)
+        await playerClient.update (command)
       } catch (error)
         {
           errorReporter (error)
@@ -69,7 +68,7 @@ export function ProfilePlayer (props)
               <Label for='player-input-level'>Level</Label>
             </FormGroup>
             <FormGroup floating>
-              <Input id='player-input-nickname' type='text' onChange={(e) => setPlayerNickname(e.target.value)} value={playerNickname} />
+              <Input id='player-input-nickname' type='text' onChange={(e) => setPlayerNickname (e.target.value)} value={playerNickname} />
               <Label for='player-input-nickname'>Nickname</Label>
             </FormGroup>
             <FormGroup floating>

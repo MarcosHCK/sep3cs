@@ -21,5 +21,6 @@ namespace DataClash.Domain.Enums
     {
       Chief,
       Commoner,
+      Veteran,
     }
 }

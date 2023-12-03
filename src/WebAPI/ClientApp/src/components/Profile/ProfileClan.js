@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+import './Profile.css'
 import { Alert, Button, Form, FormGroup, Input, Label } from 'reactstrap'
-import { ClanClient, ClanRole, ClanType } from '../../webApiClient.ts'
+import { ClanClient, ClanRole, ClanType, DeleteClanCommand } from '../../webApiClient.ts'
 import { CreateClanWithChiefCommand } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
 import { UpdateClanCommand } from '../../webApiClient.ts'
@@ -25,7 +26,7 @@ import React, { useEffect, useState } from 'react'
 
 export function ProfileClan (props)
 {
-  const { playerProfile } = props
+  const { playerProfile, userProfile } = props
   const [ clanClient ] = useState (new ClanClient ())
   const [ clanDescription, setClanDescription ] = useState ()
   const [ clanId, setClanId ] = useState ()
@@ -43,15 +44,15 @@ export function ProfileClan (props)
     {
       if (!!playerProfile) try
         {
-          const playerClan = await clanClient.getForCurrentPlayer ()
+          const currentClan = await clanClient.getForCurrentPlayer ()
 
-          if (playerClan === null)
+          if (currentClan === null)
             setHasClan (false)
           else
             {
               setHasClan (true)
-              const clan = playerClan.clan
-              const role = playerClan.role
+              const clan = currentClan.clan
+              const role = currentClan.role
 
               setClanDescription (clan.description)
               setClanId (clan.id)
@@ -72,9 +73,9 @@ export function ProfileClan (props)
         {
           const command = new CreateClanWithChiefCommand ()
 
-          command.description = 'My clan'
-          command.name = `${playerProfile.nick ?? playerProfile.name}'s clan`
-          command.region = 'Somewhere'
+          command.description = `${playerProfile.nickname ?? userProfile.name}'s clan`
+          command.name = `${playerProfile.nickname ?? userProfile.name}'s clan`
+          command.region = 'Anywhere'
           command.totalTrophiesToEnter = 0
           command.totalTrophiesWonOnWar = 0
           command.type = ClanType.Normal
@@ -89,7 +90,11 @@ export function ProfileClan (props)
     {
       if (hasClan) try
         {
-          await clanClient.delete (clanId)
+          const command = new DeleteClanCommand ()
+
+          command.id = clanId
+
+          await clanClient.delete (command)
           await refreshClan ()
         }
       catch (error) { errorReporter (error) }
@@ -109,7 +114,7 @@ export function ProfileClan (props)
           command.totalTrophiesWonOnWar = clanTotalTrophiesWonOnWar
           command.type = clanType
 
-          await clanClient.update (clanId, command)
+          await clanClient.update (command)
         }
       catch (error) { errorReporter (error) }
     }
@@ -122,6 +127,7 @@ export function ProfileClan (props)
     }, [playerProfile])
 
   const clanTypes = Object.keys (ClanType).filter (k => !isNaN (Number (ClanType[k])))
+  const clanRegions = [ 'Africa', 'Anywhere', 'Asia', 'Europa', 'North America', 'Oceania', 'South America' ]
 
   if (!playerProfile)
     return (<Alert color='warning'>User has not player status</Alert>)
@@ -158,10 +164,12 @@ export function ProfileClan (props)
             <Label for='clan-input-name'>Clan name</Label>
           </FormGroup>
           <FormGroup floating>
-            <Input id='clan-input-region' type='text'
+            <Input id='clan-input-region' type='select'
               disabled={clanRole !== ClanRole.Chief}
               onChange={(e) => setClanRegion (e.target.value)}
-              value={clanRegion} />
+              defaultValue={clanRegion}>
+            { clanRegions.map (region => <option>{region}</option>) }
+            </Input>
             <Label for='clan-input-region'>Clan region</Label>
           </FormGroup>
           <FormGroup floating>

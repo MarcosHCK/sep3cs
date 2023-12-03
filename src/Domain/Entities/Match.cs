@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Domain.Common;
 
 namespace DataClash.Domain.Entities
 {
-  public class Match
+  public class Match// : BaseEntity
     {
       public long WinnerPlayerId { get; set; }
       public long LooserPlayerId { get; set; }
       public DateTime BeginDate { get; set; }
       public TimeSpan Duration { get; set; }
-
-      public Player LooserPlayer { get; set; } = null!;
-      public Player WinnerPlayer { get; set; } = null!;
+      public virtual Player? LooserPlayer { get; set; }
+      public virtual Player? WinnerPlayer { get; set; }
     }
 }

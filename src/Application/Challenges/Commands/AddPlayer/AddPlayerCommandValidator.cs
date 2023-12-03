@@ -24,7 +24,7 @@ namespace DataClash.Application.Challenges.Commands.AddPlayer
         {
           RuleFor (v => v.ChallengeId).NotEmpty ();
           RuleFor (v => v.PlayerId).NotEmpty ();
-          RuleFor (v => v.WonThrophies).GreaterThanOrEqualTo(0);
+          RuleFor (v => v.WonThrophies).GreaterThanOrEqualTo (0);
         }
     }
 }

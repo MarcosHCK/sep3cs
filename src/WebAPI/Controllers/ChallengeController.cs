@@ -14,44 +14,82 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.Common.Models;
+using DataClash.Application.Challenges.Commands.AddPlayer;
 using DataClash.Application.Challenges.Commands.CreateChallenge;
 using DataClash.Application.Challenges.Commands.DeleteChallenge;
-using DataClash.Application.Challenges.Commands.UpdateChallenge;
-using DataClash.Application.Challenges.Commands.AddPlayer;
 using DataClash.Application.Challenges.Commands.RemovePlayer;
+using DataClash.Application.Challenges.Commands.UpdateChallenge;
+using DataClash.Application.Challenges.Commands.UpdatePlayer;
+using DataClash.Application.Challenges.Queries.GetChallengesForPlayerWithPagination;
 using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
-using DataClash.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
+using DataClash.Application.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DataClash.WebUI.Controllers{
-    public class ChallengeController : ApiControllerBase
+namespace DataClash.WebUI.Controllers
+{
+  public class ChallengeController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<PaginatedList<ChallengeBriefDto>>> GetWithPagination ([FromQuery] GetChallengesWithPaginationQuery query){
-            return await Mediator.Send (query);
+      [HttpGet ("Player")]
+      public async Task<ActionResult<PaginatedList<PlayerChallengeBriefDto>>> GetForPlayer ([FromQuery] GetChallengesForPlayerWithPaginationQuery query)
+        {
+          return await Mediator.Send (query);
         }
-        [HttpPost]
-        public async Task<ActionResult<long>> Create (CreateChallengeCommand command){
-            return await Mediator.Send (command);
+
+      [HttpGet]
+      public async Task<ActionResult<PaginatedList<ChallengeBriefDto>>> GetWithPagination ([FromQuery] GetChallengesWithPaginationQuery query)
+        {
+          return await Mediator.Send (query);
         }
-        [HttpDelete ("{id}")]
-        [ProducesResponseType (StatusCodes.Status204NoContent)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Delete (long id){
-            await Mediator.Send (new DeleteChallengeCommand (id));
-            return NoContent ();
+
+      [HttpPost ("Player")]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> AddPlayer (AddPlayerCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
         }
-        [HttpPut("{id}")]
-        [ProducesResponseType (StatusCodes.Status204NoContent)]
-        [ProducesResponseType (StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> Update (long id, UpdateChallengeCommand command){
-            if (id != command.Id)
-                return BadRequest ();
-            await Mediator.Send (command);
-            return NoContent ();
+
+      [HttpPost]
+      public async Task<ActionResult<long>> Create (CreateChallengeCommand command)
+        {
+          return await Mediator.Send (command);
+        }
+
+      [HttpDelete ("Player")]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> RemovePlayer (RemovePlayerCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpDelete]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+      public async Task<IActionResult> Delete (DeleteChallengeCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPut ("Player")]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+       public async Task<IActionResult> UpdatePlayer (UpdatePlayerCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
+        }
+
+      [HttpPut]
+      [ProducesResponseType (StatusCodes.Status204NoContent)]
+      [ProducesDefaultResponseType]
+       public async Task<IActionResult> Update (UpdateChallengeCommand command)
+        {
+          await Mediator.Send (command);
+          return NoContent ();
         }
         [HttpPost]
         [ProducesResponseType (StatusCodes.Status204NoContent)]

@@ -29,8 +29,6 @@ namespace DataClash.Application.Challenges.Commands.RemovePlayer
     {
       public long ChallengeId { get; init; }
       public long PlayerId { get; init; }
-      public long WonThrophies { get; init; }
-
     }
 
   public class RemovePlayerCommandHandler : IRequestHandler<RemovePlayerCommand>
@@ -50,19 +48,20 @@ namespace DataClash.Application.Challenges.Commands.RemovePlayer
 
       public async Task Handle (RemovePlayerCommand request, CancellationToken cancellationToken)
         {
-          var userId = _currentUser.UserId!;
-          var challenge = await _context.Challenges.FindAsync (new object[] { request.ChallengeId }, cancellationToken) ?? throw new NotFoundException (nameof (Challenge), request.ChallengeId);
-          var playerChallenge= await _context.PlayerChallenges.FindAsync (new object[] { request.ChallengeId, request.PlayerId }, cancellationToken) ?? throw new NotFoundException (nameof (PlayerChallenge), new object[] { request.ChallengeId, request.PlayerId });
+          if (_currentPlayer.PlayerId != request.PlayerId
+            && await _identityService.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator))
+            throw new ForbiddenAccessException ();
+          else
+            {
+              var challenge = await _context.Challenges.FindAsync (new object[] { request.ChallengeId }, cancellationToken)
+                              ?? throw new NotFoundException (nameof (Challenge), request.ChallengeId);
+              var playerChallenge = await _context.PlayerChallenges.FindAsync (new object[] { request.ChallengeId, request.PlayerId }, cancellationToken)
+                                    ?? throw new NotFoundException (nameof (PlayerChallenge), new object[] { request.ChallengeId, request.PlayerId });
 
-          
-              var entity = await _context.PlayerChallenges.FindAsync (new object[] { request.ChallengeId, request.PlayerId }, cancellationToken)
-                              ?? throw new NotFoundException (nameof (PlayerChallenge), new object[] { request.ChallengeId, request.PlayerId });
-
-              _context.PlayerChallenges.Remove (entity);
-              challenge.AddDomainEvent (new PlayerRemovedEvent<PlayerChallenge> (entity));
-
+              _context.PlayerChallenges.Remove (playerChallenge);
+              challenge.AddDomainEvent (new PlayerRemovedEvent<PlayerChallenge> (playerChallenge));
               await _context.SaveChangesAsync (cancellationToken);
-            
+            }
         }
     }
 }
