@@ -99,7 +99,7 @@ export function ProfileDeck (props)
       newCard.cardId = card.id
       newCard.playerId = playerProfile.id
       newCard.level = card.initialLevel
-      playerCardClient.create (newCard, playerProfile.id)
+      await playerCardClient.create (newCard, playerProfile.id)
       await loadCards ()
     }
 
