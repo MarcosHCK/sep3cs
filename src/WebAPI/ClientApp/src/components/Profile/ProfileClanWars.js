@@ -196,7 +196,7 @@ export function ProfileClanWars (props)
                     onChanged={value => { item.wonThrophies = value; updateWar (item) }} />
                 </td>
               { clanRole !== ClanRole.Chief
-                ? <></>
+                ? <td />
                 : <td>
                     <Button close onClick={_ => {
                         setIsLoading (true)
