@@ -19,9 +19,9 @@ using DataClash.Application.Common.Mappings;
 using DataClash.Domain.Entities;
 using DataClash.Domain.Enums;
 
-namespace DataClash.Application.Clans.Queries.GetClanForCurrentPlayer
+namespace DataClash.Application.Clans.Queries.GetClanForPlayer
 {
-  public class CurrentPlayerClanVm : IMapFrom<PlayerClan>
+  public class PlayerClanVm : IMapFrom<PlayerClan>
     {
       public ClanBriefDto? Clan { get; init; }
       public ClanRole Role { get; init; }
