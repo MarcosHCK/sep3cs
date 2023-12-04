@@ -69,6 +69,8 @@ namespace Microsoft.Extensions.DependencyInjection
           services.AddTransient<IDateTime, DateTimeService> ();
           services.AddTransient<IIdentityService, IdentityService> ();
 
+          services.AddTransient (typeof (IExporterService<>), typeof (ExporterService<>));
+
           services
               .AddAuthentication ()
               .AddIdentityServerJwt ();
