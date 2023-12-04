@@ -72,9 +72,9 @@ export function Cards () {
   useEffect(() => {
     const loadCards = async () => {
       try {
-        const troopCardsList = await cardClient.getWithPagination2 ('TroopCard', 1, 200);
-        const structCardsList = await cardClient.getWithPagination3 ('StructCard', 1, 200);
-        const magicCardsList = await cardClient.getWithPagination ('MagicCard', 1, 200);
+        const troopCardsList = await cardClient.getTroopCardsWithPagination ('TroopCard', 100, 100);
+        const structCardsList = await cardClient.getStructCardsWithPagination ('StructCard', 100, 100);
+        const magicCardsList = await cardClient.getMagicCardsWithPagination('MagicCard', 100, 100);
         setTroopCards(troopCardsList.items);
         setStructCards(structCardsList.items);
         setMagicCards(magicCardsList.items);
