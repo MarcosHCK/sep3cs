@@ -18,31 +18,53 @@ using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Enums;
+using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+
 namespace DataClash.Application.PlayerCards.Commands.DeletePlayerCard
 {
-    public record DeletePlayerCardCommand : IRequest
-        {
-            public long CardId { get; init; }
-            public long PlayerId { get; init; }
-        }
-    
-    public class DeletePlayerCardCommandHandler : IRequestHandler<DeletePlayerCardCommand>
+  [Authorize]
+  public record DeletePlayerCardCommand : IRequest
     {
-        private readonly IApplicationDbContext _context;
-        public DeletePlayerCardCommandHandler (IApplicationDbContext context)
+      public long CardId { get; init; }
+      public long PlayerId { get; init; }
+    }
+    
+  public class DeletePlayerCardCommandHandler : IRequestHandler<DeletePlayerCardCommand>
+    {
+      private readonly IApplicationDbContext _context;
+      private readonly ICurrentPlayerService _currentPlayer;
+      private readonly ICurrentUserService _currentUser;
+      private readonly IIdentityService _identity;
+
+      public DeletePlayerCardCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identity)
         {
-            _context = context;
+          _context = context;
+          _currentPlayer = currentPlayer;
+          _currentUser = currentUser;
+          _identity = identity;
         }
-        public async Task Handle (DeletePlayerCardCommand request, CancellationToken cancellationToken)
+  
+      public async Task Handle (DeletePlayerCardCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.PlayerCards
-                .Where (l => l.CardId == request.CardId && l.PlayerId == request.PlayerId)
-                .SingleOrDefaultAsync (cancellationToken)
-                ?? throw new NotFoundException (nameof (PlayerCard), (request.CardId, request.PlayerId));
-            _context.PlayerCards.Remove (entity);
-            await _context.SaveChangesAsync (cancellationToken);
+          if (_currentPlayer.PlayerId != request.PlayerId
+            && await _identity.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false)
+            throw new ForbiddenAccessException ();
+          else
+            {
+              var playerCard = await _context.PlayerCards
+                        .Include (e => e.Card)
+                        .Include (e => e.Player)
+                        .Where (e => e.CardId == request.CardId && e.PlayerId == request.PlayerId)
+                        .SingleOrDefaultAsync (cancellationToken)
+                ?? throw new NotFoundException (nameof (PlayerCard), new object[] { request.CardId, request.PlayerId });
+
+              _context.PlayerCards.Remove (playerCard);
+              playerCard.Player!.AddDomainEvent (new PlayerCardDeletedEvent (playerCard));
+              await _context.SaveChangesAsync (cancellationToken);
+            }
         }
     }
 }

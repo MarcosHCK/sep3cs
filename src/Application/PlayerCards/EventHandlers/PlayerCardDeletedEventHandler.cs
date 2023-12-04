@@ -14,25 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Interfaces;
 using DataClash.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace DataClash.Application.PlayerCards.EventHandlers
 {
-    public class PlayerCardDeletedEventHandler : INotificationHandler<PlayerCardDeletedEvent>
+  public class PlayerCardDeletedEventHandler : INotificationHandler<PlayerCardDeletedEvent>
     {
-        private readonly ILogger<PlayerCardDeletedEventHandler> _logger;
+      private readonly IApplicationDbContext _context;
+      private readonly ICurrentPlayerService _currentPlayer;
+      private readonly ILogger<PlayerCardDeletedEventHandler> _logger;
 
-        public PlayerCardDeletedEventHandler(ILogger<PlayerCardDeletedEventHandler> logger)
+      public PlayerCardDeletedEventHandler(IApplicationDbContext context, ICurrentPlayerService currentPlayer, ILogger<PlayerCardDeletedEventHandler> logger)
         {
-            _logger = logger;
+          _context = context;
+          _currentPlayer = currentPlayer;
+          _logger = logger;
         }
 
-        public Task Handle(PlayerCardDeletedEvent notification, CancellationToken cancellationToken)
+      public async Task Handle(PlayerCardDeletedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("DataClash Domain Event: {DomainEvent}", notification.GetType().Name);
-            return Task.CompletedTask;
+          _logger.LogInformation("DataClash Domain Event: {DomainEvent}", notification.GetType ().Name);
+          var player = await _context.Players.FindAsync (new object[] { _currentPlayer.PlayerId! }, cancellationToken);
+
+          if (player!.FavoriteCardId == notification.Item.CardId)
+            {
+              player.FavoriteCardId = null;
+            }
         }
     }
 }

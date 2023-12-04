@@ -24,7 +24,7 @@ namespace DataClash.Infrastructure.Persistence.Configurations
     {
       public void Configure (EntityTypeBuilder<Player> builder)
         {
-          builder.HasOne (e => e.FavoriteCard).WithMany ().HasForeignKey (e => e.FavoriteCardId).OnDelete(DeleteBehavior.SetNull);
+          builder.HasOne (e => e.FavoriteCard).WithMany ().HasForeignKey (e => e.FavoriteCardId).OnDelete (DeleteBehavior.SetNull);
         }
     }
 }
