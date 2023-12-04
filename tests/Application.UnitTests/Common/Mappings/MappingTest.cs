@@ -16,7 +16,7 @@
  */
 using AutoMapper;
 using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
-using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
+using DataClash.Application.Clans.Queries.GetClanForPlayer;
 using DataClash.Application.Clans.Queries.GetClansWithPagination;
 using DataClash.Application.Clans.Queries.GetPlayerClansWithPagination;
 using DataClash.Application.Clans.Queries.GetWarClansWithPagination;
@@ -63,8 +63,8 @@ namespace DataClash.Application.UnitTests.Common.Mappings
       [TestCase (typeof (Player), typeof (PlayerBriefDto))]
       [TestCase (typeof (PlayerCard), typeof (PlayerCardBriefDto))]
       [TestCase (typeof (PlayerCard), typeof (PlayerCardBriefDto))]
-      [TestCase (typeof (PlayerClan), typeof (CurrentPlayerClanVm))]
       [TestCase (typeof (PlayerClan), typeof (PlayerClanBriefDto))]
+      [TestCase (typeof (PlayerClan), typeof (PlayerClanVm))]
       [TestCase (typeof (StructCard), typeof (StructCardBriefDto))]
       [TestCase (typeof (TroopCard), typeof (TroopCardBriefDto))]
       [TestCase (typeof (War), typeof (WarBriefDto))]

@@ -16,7 +16,7 @@
  */
 using DataClash.Application.Clans.Commands.CreateClan;
 using DataClash.Application.Clans.Commands.CreateClanWithChief;
-using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
+using DataClash.Application.Clans.Queries.GetClanForPlayer;
 using DataClash.Domain.Enums;
 using DataClash.Domain.ValueObjects;
 using FluentAssertions;
@@ -31,7 +31,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
       [Test]
       public async Task ShouldWorkWithNoPlayer ()
         {
-          await RunAsDefaultUserAsync ();
+          var userId = await RunAsDefaultUserAsync ();
 
           var command = new CreateClanCommand
             {
@@ -44,7 +44,8 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
             };
 
           var newId = await SendAsync (command);
-          var dto = await SendAsync (new GetClanForCurrentPlayerQuery ());
+          var playerId = await GetPlayerIdForUser (userId);
+          var dto = await SendAsync (new GetClanForPlayerQuery (playerId));
 
           dto.Should ().BeNull ();
         }
@@ -52,7 +53,7 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
       [Test]
       public async Task ShouldWorkWithPlayer ()
         {
-          await RunAsDefaultUserAsync ();
+          var userId = await RunAsDefaultUserAsync ();
 
           var command = new CreateClanWithChiefCommand
             {
@@ -65,7 +66,8 @@ namespace DataClash.Application.IntegrationTests.Clans.Queries.GetClanForCurrent
             };
 
           var newId = await SendAsync (command);
-          var dto = await SendAsync (new GetClanForCurrentPlayerQuery ());
+          var playerId = await GetPlayerIdForUser (userId);
+          var dto = await SendAsync (new GetClanForPlayerQuery (playerId));
 
           dto.Should ().NotBeNull ();
 
