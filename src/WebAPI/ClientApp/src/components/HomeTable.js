@@ -20,11 +20,14 @@ import './HomeTable.css';
 
 export function Mural() {
   return (
-   <div className="mural">
-     <h2 style={{ color: '#63a5b5' }}>Welcome to DataClash</h2>
-     <p>Aquí puedes encontrar estadísticas de los mejores clanes, jugadores y cartas más donadas.</p>
-     <p>Explora nuestras diferentes secciones para obtener más información.</p>
-   </div>
+  <div className="mural">
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <img src="welcome.jfif" alt="Welcome" style={{ marginRight: '20px' }} />
+      <h2 style={{ color: '#63a5b5' }}>Welcome to DataClash</h2>
+    </div>
+    <p style={{ fontSize: '20px', fontFamily: 'unset' }}>Discover the world of Clash Royale like never before! Here you can find detailed statistics of the best clans, players, and most popular cards in Clash Royale. But that's not all, you can also create your own profile and manage your data. Come and join the Clash Royale community!</p>
+    <p style={{ fontSize: '20px', fontFamily: 'unset' }}>Explore our different sections to get more information.Dive even deeper into the exciting world of Clash Royale. We're thrilled to have you with us!</p>
+  </div>
   );
  }
  
