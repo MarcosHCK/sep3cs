@@ -176,7 +176,7 @@ console.log (playerProfile)
                     <Button onClick={() => handleCardRemove(item)}>
                     <FontAwesomeIcon icon={faTrash} /></Button>
                     <Button onClick={() => handleFavoriteCard(item)}>
-                      <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId == item.id ? 'gold' : 'gray' }} />
+                      <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId === item.id ? 'gold' : 'gray' }} />
                     </Button>
                     { !hasClan
                       ? <></>

@@ -59,7 +59,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardImg, Row, Col, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { CardClient } from '../webApiClient.ts'
 import { useErrorReporter } from './ErrorReporter'
-import { FaInfo, FaHeart, FaFire, FaSquare, FaUsers, FaClock } from 'react-icons/fa';
+import { FaInfo, FaHeart, FaFire, FaSquare, FaUsers, FaClock ,FaBuilding,FaBomb, FaCircle} from 'react-icons/fa';
 
 
 export function Cards () {
@@ -72,9 +72,9 @@ export function Cards () {
   useEffect(() => {
     const loadCards = async () => {
       try {
-        const troopCardsList = await cardClient.getWithPagination2 ('TroopCard', 1, 10);
-        const structCardsList = await cardClient.getWithPagination3 ('StructCard', 1, 10);
-        const magicCardsList = await cardClient.getWithPagination ('MagicCard', 1, 10);
+        const troopCardsList = await cardClient.getWithPagination2 ('TroopCard', 1, 200);
+        const structCardsList = await cardClient.getWithPagination3 ('StructCard', 1, 200);
+        const magicCardsList = await cardClient.getWithPagination ('MagicCard', 1, 200);
         setTroopCards(troopCardsList.items);
         setStructCards(structCardsList.items);
         setMagicCards(magicCardsList.items);
@@ -119,10 +119,10 @@ export function Cards () {
             <UncontrolledPopover trigger="hover" placement="top" target={`structcard${index}`}>
               <PopoverHeader>{item.name}</PopoverHeader>
               <PopoverBody>
-                <p><FaInfo /> {item.description}</p>
-                <p><FaHeart /> {item.hitPoints}</p>
-                <p><FaFire /> {item.AttackPaseRate}</p>
-                <p><FaSquare /> {item.RangeDamage}</p>
+                <p><FaInfo color='blue' /> {item.description}</p>
+                <p><FaHeart color='red' /> {item.hitPoints}</p>
+                <p><FaFire color='orange' /> {item.attackPaseRate}</p>
+                <p><FaSquare color='green' /> {item.rangeDamage}</p>
                 </PopoverBody>
             </UncontrolledPopover>
           </Card>
@@ -138,11 +138,11 @@ export function Cards () {
             <UncontrolledPopover trigger="hover" placement="top" target={`magiccard${index}`}>
               <PopoverHeader>{item.name}</PopoverHeader>
               <PopoverBody>
-                <p><FaInfo /> {item.description}</p>
-                <p><FaClock /> {item.DamageRadius}</p>
-                <p><FaUsers /> {item.AreaDamage}</p>
-                <p><FaFire /> {item.TowerDamage}</p>
-                <p><FaClock /> {item.Duration}</p>
+                <p><FaInfo color='blue' /> {item.description}</p>
+                <p><FaCircle color='red' /> {item.damageRadius}</p>
+                <p><FaBomb color='orange' /> {item.areaDamage}</p>
+                <p><FaBuilding color='green' /> {item.towerDamage}</p>
+                <p><FaClock color='purple' /> {item.duration}</p>
                 </PopoverBody>
             </UncontrolledPopover>
           </Card>

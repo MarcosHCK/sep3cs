@@ -23,5 +23,7 @@ namespace DataClash.Domain.Enums
       Uncommon,
       Rare,
       Legendary,
+      Epic,
+      Champion
     }
 }
