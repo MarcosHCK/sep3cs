@@ -27,10 +27,15 @@ namespace DataClash.Framework.Files
       public async Task<byte[]> Export (IEnumerable<T> Rows)
         {
           using var memoryStream = new MemoryStream ();
+            {
           using var streamWriter = new StreamWriter (memoryStream);
+            {
           using var csvWriter = new CsvWriter (streamWriter, CultureInfo.InvariantCulture);
-            await csvWriter.WriteRecordsAsync (Rows);
-          return memoryStream.ToArray ();
+            {
+              await csvWriter.WriteRecordsAsync (Rows);
+            }}
+              return memoryStream.ToArray ();
+            }
         }
     }
 }
