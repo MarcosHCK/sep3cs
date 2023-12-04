@@ -198,7 +198,7 @@ export function Challenges (props)
                 <Input
                   type='text'
                   defaultValue={item.description}
-                  onChange={(e) => { item.description = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.description = e.target.value;if (item.description!=="") updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
               <td>
@@ -225,7 +225,7 @@ export function Challenges (props)
                 <Input
                   type='text'
                   defaultValue={item.name}
-                  onChange={(e) => { item.name = e.target.value; updateChallenge (item) }}
+                  onChange={(e) => { item.name = e.target.value;if (item.name!=="") updateChallenge (item) }}
                   readOnly={readOnly} />
               </td>
           { readOnly && !picker
