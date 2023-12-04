@@ -30,15 +30,16 @@ namespace DataClash.WebUI.Controllers{
             return await Mediator.Send (query);
         }
         [HttpPost]
-        public async Task<ActionResult<(long,long)>> Create (CreatePlayerCardCommand command){
-            return await Mediator.Send (command);
+        [ProducesResponseType (StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> Create (CreatePlayerCardCommand command){
+            await Mediator.Send (command);
+            return NoContent ();
         }
         [HttpDelete ]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> Delete (DeletePlayerCardCommand command){
-            Console.WriteLine(command);
-
             await Mediator.Send (command);
             return NoContent ();
         }

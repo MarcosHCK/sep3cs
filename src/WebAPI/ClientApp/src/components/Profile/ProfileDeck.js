@@ -35,6 +35,7 @@ export function ProfileDeck (props)
   const [ clanId, setClanId ] = useState ()
   const [ deck, setDeck ] = useState ([])
   const [ dropdownOpen, setDropdownOpen ] = useState (false)
+  const [ favoriteCard, setFavoriteCard ] = useState (playerProfile.favoriteCardId)
   const [ hasClan, setHasClan ] = useState (false)
   const [ isLoading, setIsLoading ] = useState (false)
   const [ playerCardClient ] = useState (new PlayerCardClient ())
@@ -128,8 +129,17 @@ export function ProfileDeck (props)
     {
       const playerClient = new PlayerClient ()
       const command = new UpdatePlayerCommand3 (playerProfile)
-      command.favoriteCardId = card.id
-      await playerClient.update(command)
+
+      if (command.favoriteCardId === card.id)
+        command.favoriteCardId = null
+      else
+        command.favoriteCardId = card.id
+
+      await playerClient.update (command)
+
+      // Messy workaround
+      setFavoriteCard (command.favoriteCardId)
+      playerProfile.favoriteCardId = command.favoriteCardId
     }
 
   const handleGiftCardClick = async (card) =>
@@ -140,16 +150,16 @@ export function ProfileDeck (props)
       command.clanId = clanId
       command.playerId = playerProfile.id
       await playerCardClient.createCardGift (command)
-      }
-      catch(error){
-        errorReporter(error)
-      }
+      } catch(error)
+        {
+          errorReporter(error)
+        }
     }
  
   return (
     isLoading
     ? <WaitSpinner />
-    : <ProfilePage title='PlayerCards'>
+    : <ProfilePage title='Cards'>
         <Row>
       { (deck ?? []).map((item, index) => (
           <Col sm="2" key={`card${index}`}>
@@ -167,7 +177,7 @@ export function ProfileDeck (props)
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
                 <Button onClick={() => { setIsLoading (true); handleFavoriteCard (item).then (_ => setIsLoading (false)) }} >
-                  <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId === item.id ? 'gold' : 'gray' }} />
+                  <FontAwesomeIcon icon={faStar} style={{ color: favoriteCard === item.id ? 'gold' : 'gray' }} />
                 </Button>
             { !hasClan
               ? <></>

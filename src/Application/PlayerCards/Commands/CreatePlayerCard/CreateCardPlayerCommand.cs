@@ -14,41 +14,60 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
+using DataClash.Application.Common.Exceptions;
 using DataClash.Application.Common.Interfaces;
 using DataClash.Application.Common.Security;
 using DataClash.Domain.Entities;
+using DataClash.Domain.Enums;
+using DataClash.Domain.Events;
 using MediatR;
 
 namespace DataClash.Application.PlayerCards.Commands.CreatePlayerCard
 {
-    
-    public record CreatePlayerCardCommand : IRequest<(long, long)>
+  [Authorize]
+  public record CreatePlayerCardCommand : IRequest
     {
-        public long CardId { get; init; }
-        public long PlayerId { get; init; }
-        public int Level { get; init; }
+      public long CardId { get; init; }
+      public long PlayerId { get; init; }
+      public int Level { get; init; }
     }
-    public class CreatePlayerCardCommandHandler : IRequestHandler<CreatePlayerCardCommand, (long, long)>
-    {
-        private readonly IApplicationDbContext _context;
-        public CreatePlayerCardCommandHandler(IApplicationDbContext context)
-        {
-            _context = context;
-        }
-        public async Task<(long, long)> Handle(CreatePlayerCardCommand request, CancellationToken cancellationToken)
-        {
-            var entity =new PlayerCard
-            {
-                CardId = request.CardId,
-                PlayerId = request.PlayerId,
-                Level = request.Level,
-                    
 
-            };
-            _context.PlayerCards.Add(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-            return (entity.CardId, entity.PlayerId);
-            
+  public class CreatePlayerCardCommandHandler : IRequestHandler<CreatePlayerCardCommand>
+    {
+      private readonly IApplicationDbContext _context;
+      private readonly ICurrentPlayerService _currentPlayer;
+      private readonly ICurrentUserService _currentUser;
+      private readonly IIdentityService _identity;
+
+      public CreatePlayerCardCommandHandler (IApplicationDbContext context, ICurrentPlayerService currentPlayer, ICurrentUserService currentUser, IIdentityService identity)
+        {
+          _context = context;
+          _currentPlayer = currentPlayer;
+          _currentUser = currentUser;
+          _identity = identity;
+        }
+
+      public async Task Handle (CreatePlayerCardCommand request, CancellationToken cancellationToken)
+        {
+          if (_currentPlayer.PlayerId != request.PlayerId
+            && await _identity.IsInRoleAsync (_currentUser.UserId!, Roles.Administrator) == false)
+            throw new ForbiddenAccessException ();
+          else
+            {
+              var playerCard = new PlayerCard
+                {
+                  CardId = request.CardId,
+                  PlayerId = request.PlayerId,
+                  Level = request.Level,
+                };
+
+              var player = await _context.Players.FindAsync (new object[] { request.PlayerId }, cancellationToken)
+                ?? throw new NotFoundException (nameof (Player), new object[] { request.PlayerId });
+
+              player.AddDomainEvent (new PlayerCardCreatedEvent (playerCard));
+              await _context.PlayerCards.AddAsync (playerCard, cancellationToken);
+              await _context.SaveChangesAsync (cancellationToken);
+            }
         }
     }
 }
