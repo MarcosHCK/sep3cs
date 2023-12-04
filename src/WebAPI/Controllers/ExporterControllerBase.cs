@@ -24,7 +24,7 @@ namespace DataClash.WebUI.Controllers
       private IExporterService<T>? _exporter;
       protected IExporterService<T> Exporter => _exporter ??= HttpContext.RequestServices.GetRequiredService<IExporterService<T>> ();
 
-      protected delegate Task<List<T>> ExportAction ();
+      protected delegate Task<IEnumerable<T>> ExportAction ();
       protected async Task<FileResult> ExportResult (string contentType, string? fileName, ExportAction action)
         {
           var valueResult = await action ();
