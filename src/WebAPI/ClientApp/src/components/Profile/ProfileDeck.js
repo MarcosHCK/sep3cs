@@ -44,9 +44,9 @@ export function ProfileDeck (props)
   const loadCards = async () =>
     {
       try {
-        const magicCardsList = await cardClient.getMagicCardsWithPagination (1, 10)
-        const troopCardsList = await cardClient.getTroopCardsWithPagination (1, 10)
-        const structCardsList = await cardClient.getStructCardsWithPagination (1, 10)
+        const magicCardsList = await cardClient.getMagicCardsWithPagination (1, 100)
+        const troopCardsList = await cardClient.getTroopCardsWithPagination (1, 100)
+        const structCardsList = await cardClient.getStructCardsWithPagination (1, 100)
         const playerCardsList = await playerCardClient.getWithPagination (playerProfile.id, 1, 10)
         const allCardsList = [ ...magicCardsList.items, ...troopCardsList.items, ...structCardsList.items ]
         const CardMap = {}
@@ -134,18 +134,22 @@ export function ProfileDeck (props)
 
   const handleGiftCardClick = async (card) =>
     {
+      try{
       const command = new CreateCardGiftCommand ()
-
       command.cardId = card.id
       command.clanId = clanId
       command.playerId = playerProfile.id
       await playerCardClient.createCardGift (command)
+      }
+      catch(error){
+        errorReporter(error)
+      }
     }
  
   return (
     isLoading
     ? <WaitSpinner />
-    : <ProfilePage title='Deck'>
+    : <ProfilePage title='PlayerCards'>
         <Row>
       { (deck ?? []).map((item, index) => (
           <Col sm="2" key={`card${index}`}>
