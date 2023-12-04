@@ -28,35 +28,21 @@ namespace DataClash.WebUI.Controllers
     {
       [HttpGet]
       public async Task<ActionResult<PaginatedList<MatchBriefDto>>> GetWithPagination ([FromQuery] GetMatchesWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpPost]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Create (CreateMatchCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpDelete]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Delete (DeleteMatchCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdateMatchCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }

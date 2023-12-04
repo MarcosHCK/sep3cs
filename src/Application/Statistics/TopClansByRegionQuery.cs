@@ -21,36 +21,26 @@ using FluentValidation;
 
 namespace DataClash.Application.Statistics.TopClansByRegion
 {
-    public record GetTopClansQuery : IRequest<List<string[]>>;
+  public record GetTopClansQuery : IRequest<List<string[]>>;
 
-    public class GetTopClansQueryHandler : IRequestHandler<GetTopClansQuery, List<string[]>>
+  public class GetTopClansQueryHandler : IRequestHandler<GetTopClansQuery, List<string[]>>
     {
-        private readonly IApplicationDbContext _context;
+      private readonly IApplicationDbContext _context;
 
-        public GetTopClansQueryHandler(IApplicationDbContext context)
+      public GetTopClansQueryHandler (IApplicationDbContext context)
         {
-            _context = context;
+          _context = context;
         }
 
-        public async Task<List<string[]>> Handle(GetTopClansQuery request, CancellationToken cancellationToken)
+      public async Task<List<string[]>> Handle (GetTopClansQuery request, CancellationToken cancellationToken)
         {
-            var topClans = _context.Clans
-                .GroupBy(c => c.Region.Code)
-                .AsEnumerable()
-                .Select(g => g.OrderByDescending(c => c.TotalTrophiesWonOnWar).First())
-                .Select(c => new string[] { c.Name, c.Region.ToString(), c.TotalTrophiesWonOnWar.ToString() })
-                .ToList();
-
-            return topClans;
+          return await Task.FromResult (
+            _context.Clans
+              .GroupBy (c => c.Region.Code)
+              .AsEnumerable ()
+              .Select (g => g.OrderByDescending (c => c.TotalTrophiesWonOnWar).First ())
+              .Select (c => new string[] { c.Name, c.Region.ToString (), c.TotalTrophiesWonOnWar.ToString () })
+              .ToList ());
         }
     }
-
-    public class GetTopClansQueryValidator : AbstractValidator<GetTopClansQuery>
-    {
-        public GetTopClansQueryValidator()
-        {
-            // Add validation rules here
-        }
-    }
-
 }

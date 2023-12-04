@@ -18,7 +18,7 @@ import { Pager } from './Pager'
 import { PlayerClient } from '../webApiClient.ts'
 import { Button, Table } from 'reactstrap'
 import { useErrorReporter } from './ErrorReporter'
-import { useParams } from 'react-router-dom'
+import { useParams, NavLink } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 
 export function Players (props)
@@ -103,30 +103,26 @@ export function Players (props)
               <th>{'#'}</th>
               <th>{'Nick'}</th>
               <th>{'Level'}</th>
-            { !picker ? <></> : <th /> }
+              <th />
             </tr>
           </thead>
           <tbody>
         { (items ?? []).map ((item, index) => (
             <tr key={`body${index}`}>
-              <th scope="row">
-                <p>{ item.id }</p>
-              </th>
-              <td>
-                <p>{ item.nickname ?? "<no nickname>" }</p>
-              </td>
-              <td>
-                <p>{ item.level }</p>
-              </td>
-          { !picker
-            ? <></>
-            : <td>
+              <th scope="row"> <p>{ item.id }</p> </th>
+              <td> <p>{ item.nickname ?? "<no nickname>" }</p> </td>
+              <td> <p>{ item.level }</p> </td>
+          { !!picker
+            ? <td>
                 <Button color='primary' onClick={_ => onPick (item.id)}>+</Button>
+              </td>
+            : <td>
+                <NavLink to={`/players/${item.id}/`}>
+                  <Button color='primary'>+</Button>
+                </NavLink>
               </td>}
             </tr>))}
           </tbody>
         </Table>
-      </>
-    )
-  )
+      </>))
 }

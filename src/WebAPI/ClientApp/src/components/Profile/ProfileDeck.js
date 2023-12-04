@@ -14,64 +14,61 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Alert, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { WaitSpinner } from '../WaitSpinner'
+import { Button, Card, CardImg, CardBody, CardTitle, Col, Row } from 'reactstrap'
+import { CardClient, CreatePlayerCardCommand, DeletePlayerCardCommand } from '../../webApiClient.ts'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { faTrash, faStar, faGift } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { PlayerCardClient, PlayerClient, UpdatePlayerCommand3, CreateCardGiftCommand, ClanClient } from '../../webApiClient.ts'
 import { ProfilePage } from './ProfilePage'
-import React, { useState, useEffect } from 'react';
-import { Card, CardImg, Row, Col, UncontrolledPopover, PopoverHeader, PopoverBody, CardBody, CardTitle, CardText } from 'reactstrap';
-import { CardClient, PlayerCardClient, CreatePlayerCardCommand, ValueTupleOfLongAndLong, DeletePlayerCardCommand, PlayerClient, UpdatePlayerCommand, UpdatePlayerCommand2, UpdatePlayerCommand3,CreateCardGiftCommand,ClanClient } from '../../webApiClient.ts'
-import { useErrorReporter } from '../ErrorReporter';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faStar } from '@fortawesome/free-solid-svg-icons';
-import { faGift } from '@fortawesome/free-solid-svg-icons';
+import { UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { useErrorReporter } from '../ErrorReporter'
+import { WaitSpinner } from '../WaitSpinner'
+import React, { useState, useEffect } from 'react'
 
-
-
-export function ProfileDeck(props) {
-  const { playerProfile } = props;
-  const [isLoading, setIsLoading] = useState(false);
-  const [deck, setDeck] = useState([]);
-  const [selectedCards, setSelectedCards] = useState([]);
+export function ProfileDeck (props)
+{
+  const { playerProfile } = props
+  const [ availableCards, setAvailableCards ] = useState ([])
+  const [ cardClient ] = useState (new CardClient ())
   const [ clanClient ] = useState (new ClanClient ())
+  const [ clanId, setClanId ] = useState ()
+  const [ deck, setDeck ] = useState ([])
+  const [ dropdownOpen, setDropdownOpen ] = useState (false)
   const [ hasClan, setHasClan ] = useState (false)
-  const [ clanId, setClanId ] = useState ();
-  const [availableCards, setAvailableCards] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const cardClient = new CardClient();
-  const errorReporter = useErrorReporter();
-  const playerCardClient = new PlayerCardClient();
-  const loadCards = async () => {
-    try {
-      const magicCardsList = await cardClient.getWithPagination('MagicCard', 1, 10);
-      const troopCardsList = await cardClient.getWithPagination2('TroopCard', 1, 10);
-      const structCardsList = await cardClient.getWithPagination3('StructCard', 1, 10);
-      const playerCardsList = await playerCardClient.getWithPagination (playerProfile.id, 1, 10);
-      let CardMap = {};
-      const allCardsList = [...magicCardsList.items, ...troopCardsList.items, ...structCardsList.items];
-      allCardsList.forEach(card => {
-        CardMap[card.id] = card;
+  const [ isLoading, setIsLoading ] = useState (false)
+  const [ playerCardClient ] = useState (new PlayerCardClient ())
+  const [ selectedCards, setSelectedCards ] = useState ([])
+  const errorReporter = useErrorReporter ()
 
-      });
-      let newDeck = playerCardsList.items.map(playerCard => {
-        return CardMap[playerCard.cardId];
-      })
-      setDeck(newDeck);
+  const loadCards = async () =>
+    {
+      try {
+        const magicCardsList = await cardClient.getMagicCardsWithPagination (1, 10)
+        const troopCardsList = await cardClient.getTroopCardsWithPagination (1, 10)
+        const structCardsList = await cardClient.getStructCardsWithPagination (1, 10)
+        const playerCardsList = await playerCardClient.getWithPagination (playerProfile.id, 1, 10)
+        const allCardsList = [ ...magicCardsList.items, ...troopCardsList.items, ...structCardsList.items ]
+        const CardMap = {}
 
+        allCardsList.forEach (card =>
+          {
+            CardMap[card.id] = card;
+          })
 
-
-      const availableCardsList = allCardsList.filter(card => {
-        return !newDeck.find(deckCard => deckCard.id === card.id);
-      });
-      setAvailableCards(availableCardsList);
-
-
-
-    } catch (error) {
-      errorReporter(error);
+        const newDeck = playerCardsList.items.map (playerCard => CardMap[playerCard.cardId])
+        setDeck (newDeck)
+        const availableCardsList = allCardsList.filter (card => !newDeck.find(deckCard => deckCard.id === card.id))
+        setAvailableCards(availableCardsList)
+      } catch (error)
+        {
+          errorReporter(error);
+        }
     }
-  };
-  useEffect(() => {
-    const refreshClan = async () =>
+
+  useEffect(() =>
+    {
+      const refreshClan = async () =>
         {
           if (!!playerProfile) try
             {
@@ -83,131 +80,116 @@ export function ProfileDeck(props) {
                 {
                   setHasClan (true)
                   setClanId (currentClan.clan.id)
-                  
                 }
             }
           catch (error) { errorReporter (error) }
         }
 
       setIsLoading (true)
-      refreshClan ().then (() => setIsLoading (false))
+      refreshClan ().then (() =>
+        {
+          loadCards ().then (() => setIsLoading (false))
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [playerProfile])
 
-    loadCards();
-  }, [playerProfile]);
-
-  const handleCardClick = (card) => {
-    setSelectedCards([...selectedCards, card]);
-    const newCard = new CreatePlayerCardCommand();
-    newCard.cardId = card.id;
-    newCard.playerId = playerProfile.id;
-    newCard.level = 1; // Ajusta este valor según sea necesario
-    playerCardClient.create(newCard, playerProfile.id);
-    loadCards();
-  };
-  const handleCardRemove = async (card) => {
-    const playerCardsList = await playerCardClient.getWithPagination(playerProfile.id,1, 10);
-    console.log(playerCardsList.items)
-    console.log(card)
-    const cardToRemove = playerCardsList.items.find(playerCard => playerCard.cardId === card.id);
-    const command = new DeletePlayerCardCommand();
-    command.cardId = cardToRemove.cardId;
-    command.playerId = playerProfile.id;
-    try {
-      await playerCardClient.delete(command);
-      setDeck(prevDeck => prevDeck.filter(deckCard => deckCard.id !== card.id));
-    } catch (error) {
-      console.error('Error al eliminar la carta', error);
-
+  const handleCardClick = async (card) =>
+    {
+      setSelectedCards ([...selectedCards, card])
+      const newCard = new CreatePlayerCardCommand ()
+      newCard.cardId = card.id
+      newCard.playerId = playerProfile.id
+      newCard.level = card.initialLevel
+      await playerCardClient.create (newCard, playerProfile.id)
+      await loadCards ()
     }
-    loadCards();
-  };
-  const handleFavoriteCard =async (card) =>{
-    const playerClient=new PlayerClient();
-    const command=new UpdatePlayerCommand3(playerProfile);
-    command.favoriteCardId=card.id;
-    console.log(card.id);
-    console.log("cardid")
-    console.log(playerProfile.favoriteCardId);
-    await playerClient.update(command);
 
-  } 
-  const handleGiftCardClick = (card) => {
-    
-    const command = new CreateCardGiftCommand();
-    command.cardId = card.id;
-    command.clanId = clanId;
-    command.playerId = playerProfile.id;
-    
-    
-    playerCardClient.createCardGift(command).then(response => {
-        
-        console.log(response);
-    }).catch(error => {
-        
-        console.error(error);
-    });
- };
+  const handleCardRemove = async (card) =>
+    {
+      const playerCardsList = await playerCardClient.getWithPagination (playerProfile.id, 1, 10)
+      const cardToRemove = playerCardsList.items.find (playerCard => playerCard.cardId === card.id)
+      const command = new DeletePlayerCardCommand ()
+
+      command.cardId = cardToRemove.cardId
+      command.playerId = playerProfile.id
+
+      try {
+        await playerCardClient.delete (command);
+        setDeck(prevDeck => prevDeck.filter (deckCard => deckCard.id !== card.id))
+      } catch (error)
+        {
+          errorReporter (error)
+        }
+
+      await loadCards ()
+    }
+
+  const handleFavoriteCard = async (card) =>
+    {
+      const playerClient = new PlayerClient ()
+      const command = new UpdatePlayerCommand3 (playerProfile)
+      command.favoriteCardId = card.id
+      await playerClient.update(command)
+    }
+
+  const handleGiftCardClick = async (card) =>
+    {
+      const command = new CreateCardGiftCommand ()
+
+      command.cardId = card.id
+      command.clanId = clanId
+      command.playerId = playerProfile.id
+      await playerCardClient.createCardGift (command)
+    }
  
-   
-console.log (playerProfile)
+  return (
+    isLoading
+    ? <WaitSpinner />
+    : <ProfilePage title='Deck'>
+        <Row>
+      { (deck ?? []).map((item, index) => (
+          <Col sm="2" key={`card${index}`}>
+            <Card id={`card${index}`}>
+              <CardImg alt={item.name} src={`/cards/${item.picture}.png`} top width="100%" />
+              <UncontrolledPopover trigger="hover" placement="top" target={`card${index}`}>
+                <PopoverHeader>{item.name}</PopoverHeader>
+                <PopoverBody>{item.description}</PopoverBody>
+              </UncontrolledPopover>
+              <CardTitle className='d-flex justify-content-center'>
+                { item.name }
+              </CardTitle>
+              <CardBody className='d-flex justify-content-center gap-1'>
+                <Button onClick={() => { setIsLoading (true); handleCardRemove (item).then (_ => setIsLoading (false)) }} >
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
+                <Button onClick={() => { setIsLoading (true); handleFavoriteCard (item).then (_ => setIsLoading (false)) }} >
+                  <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId === item.id ? 'gold' : 'gray' }} />
+                </Button>
+            { !hasClan
+              ? <></>
+              : <Button onClick={() => { setIsLoading (true); handleGiftCardClick (item).then (_ => setIsLoading (false)) }} >
+                  <FontAwesomeIcon icon={faGift} />
+                </Button> }
+              </CardBody>
+            </Card>
+          </Col>))}
+        </Row>
 
+        <br />
 
-  const toggle = () => setDropdownOpen(prevState => !prevState);
-  
-  
-  if (!playerProfile) {
-    return <Alert color='warning'>User has not player status</Alert>;
-  } else {
-    return (
-      isLoading
-        ? <WaitSpinner />
-        : <ProfilePage title='Deck'>
-          <Row>
-            {(deck ?? []).map((item, index) => (
-              <Col sm="2" key={`card${index}`}>
-                <Card id={`card${index}`} style={{ width: '150px', margin: '10px' }}>
-                  <UncontrolledPopover trigger="hover" placement="top" target={`card${index}`}>
-                    <PopoverHeader>{item.name}</PopoverHeader>
-                    <PopoverBody>{item.description}</PopoverBody>
-                  </UncontrolledPopover>
-                  <CardImg top width="100%" src={`/cards/${item.picture}.png`} alt={item.name} />
-                  <CardBody>
-                    <CardTitle>{item.name}</CardTitle>
-                    <Button onClick={() => handleCardRemove(item)}>
-                    <FontAwesomeIcon icon={faTrash} /></Button>
-                    <Button onClick={() => handleFavoriteCard(item)}>
-                      <FontAwesomeIcon icon={faStar} style={{ color: playerProfile.favoriteCardId === item.id ? 'gold' : 'gray' }} />
-                    </Button>
-                    { !hasClan
-                      ? <></>
-                      : <Button onClick={() => handleGiftCardClick(item)}>
-                          <FontAwesomeIcon icon={faGift} />
-                        </Button> }
-                  </CardBody>
-                </Card>
-              </Col>
-            ))}
-
-
-
-
-          </Row>
-
-          <h2>Añadir carta</h2>
-          <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-            <DropdownToggle caret>
-              Añadir carta
-            </DropdownToggle>
-            <DropdownMenu>
-              {availableCards.map((card, index) => (
-                <DropdownItem key={index} onClick={() => handleCardClick(card)}>
-                  {card.name}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-
-        </ProfilePage>
-    );
-  }
+        <Dropdown isOpen={dropdownOpen} toggle={_ => setDropdownOpen (!dropdownOpen)}>
+          <DropdownToggle caret>
+            +
+          </DropdownToggle>
+          <DropdownMenu>
+          { availableCards.map((card, index) => (
+            <DropdownItem key={index} onClick={() => { setIsLoading (true); handleCardClick (card).then (_ => setIsLoading (false)) }} >
+              <div className='d-flex justify-content-start gap-2'>
+                <img alt={ card.name } src={`/cards/${card.picture}.png`} width='16' />
+                { card.name }
+              </div>
+            </DropdownItem> ))}
+          </DropdownMenu>
+        </Dropdown>
+      </ProfilePage>)
 }

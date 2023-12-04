@@ -18,32 +18,24 @@
 using DataClash.Application.Common.Interfaces;
 using MediatR;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Statistics.AllWarIds
 {
-   public record GetAllWarIdsQuery : IRequest<List<long>>;
+  public record GetAllWarIdsQuery : IRequest<List<long>>;
 
-   public class GetAllWarIdsQueryHandler : IRequestHandler<GetAllWarIdsQuery, List<long>>
-   {
-       private readonly IApplicationDbContext _context;
+  public class GetAllWarIdsQueryHandler : IRequestHandler<GetAllWarIdsQuery, List<long>>
+    {
+      private readonly IApplicationDbContext _context;
 
-       public GetAllWarIdsQueryHandler(IApplicationDbContext context)
-       {
-           _context = context;
-       }
+      public GetAllWarIdsQueryHandler (IApplicationDbContext context)
+        {
+          _context = context;
+        }
 
-       public async Task<List<long>> Handle(GetAllWarIdsQuery request, CancellationToken cancellationToken)
-       {
-           var allWarIds = _context.Wars.Select(w => w.Id).ToList();
-           return allWarIds;
-       }
-   }
-
-   public class GetAllWarIdsQueryValidator : AbstractValidator<GetAllWarIdsQuery>
-   {
-       public GetAllWarIdsQueryValidator()
-       {
-           // Add validation rules here
-       }
-   }
+       public async Task<List<long>> Handle (GetAllWarIdsQuery request, CancellationToken cancellationToken)
+        {
+          return await _context.Wars.Select (w => w.Id).ToListAsync (cancellationToken);
+        }
+    }
 }

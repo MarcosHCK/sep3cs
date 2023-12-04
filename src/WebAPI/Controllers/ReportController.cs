@@ -22,21 +22,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace DataClash.WebUI.Controllers
 {
   [Authorize]
-  public class ReportController : UserControllerBase
+  public class ReportController : ApiControllerBase
     {
       [HttpPost]
       public async Task<ActionResult<long>> Create (CreateErrorReportCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
-      [HttpDelete ("{id}")]
+        => await Mediator.Send (command);
+      [HttpDelete]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
-      public async Task<IActionResult> Delete (long id)
-        {
-          await Mediator.Send (new DeleteErrorReportCommand (id));
-          return NoContent ();
-        }
+      public async Task<IActionResult> Delete (DeleteErrorReportCommand command)
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }

@@ -19,10 +19,9 @@ import { Accordion } from 'reactstrap'
 import { AccordionBody } from 'reactstrap'
 import { AccordionHeader } from 'reactstrap'
 import { AccordionItem } from 'reactstrap'
-import { Alert, Col, Container, Row } from 'reactstrap'
 import { Avatar } from '../Avatar'
+import { Col, Container, Row } from 'reactstrap'
 import { Nav, NavItem, NavLink } from 'reactstrap'
-import { PlayerClient } from '../../webApiClient.ts'
 import { ProfileChallenge } from './ProfileChallenge'
 import { ProfileClan } from './ProfileClan'
 import { ProfileClanPlayers } from './ProfileClanPlayers'
@@ -30,19 +29,13 @@ import { ProfileClanWars } from './ProfileClanWars'
 import { ProfileDeck } from './ProfileDeck'
 import { ProfileIdentity } from './ProfileIdentity'
 import { ProfilePlayer } from './ProfilePlayer'
-import { useAuthorize } from '../../services/AuthorizeProvider'
-import { useErrorReporter } from '../ErrorReporter'
-import { WaitSpinner } from '../WaitSpinner'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-export function Profile ()
+export function Profile (props)
 {
-  const { isAuthorized, userProfile } = useAuthorize ()
+  const { playerProfile, userProfile } = props
   const [ activeIndex, setActiveIndex ] = useState (String (0))
-  const [ playerProfile, setPlayerProfile ] = useState ()
-  const [ playerClient ] = useState (new PlayerClient ())
   const [ sectionOpen, setSectionOpen ] = useState ([])
-  const errorReporter = useErrorReporter ()
 
   const downProps = { playerProfile, userProfile }
 
@@ -59,25 +52,6 @@ export function Profile ()
         ]},
       { title: 'Deck', component: <ProfileDeck {...downProps} /> },
     ]
-
-  useEffect (() =>
-    {
-      const refreshPlayer = async () =>
-        {
-          if (isAuthorized) try
-            {
-              return await playerClient.getCurrent ()
-            }
-          catch (error)
-            {
-              errorReporter (error)
-            }
-        }
-
-      setPlayerProfile (undefined)
-      refreshPlayer ().then ((player) => setPlayerProfile (player))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAuthorized])
 
   const createSection = (page, index) =>
     {
@@ -126,34 +100,27 @@ export function Profile ()
         }
     }
 
-  if (!isAuthorized)
-    return <WaitSpinner />
-  else if (!playerProfile)
-    return <Alert color='danger'>User is not a player</Alert>
-  else
-    return (
-      !isAuthorized
-      ? <WaitSpinner />
-      : <Container fluid>
-          <Row>
-            <div className='d-flex align-items-center'>
-              <Avatar userName={ userProfile.name } userEmail={ userProfile.email } />
-              <div className='p-2'>
-                <h2>{ userProfile.name } { !userProfile.family_name ? null : `(${userProfile.family_name})` }</h2>
-                <span>Personal profile</span>
-              </div>
-            </div>
-          </Row>
-            <span className='p-3' />
-          <Row>
-            <Col xs='2'>
-              <Nav vertical='sm'>
-                { pages.map ((page, index) => createSection (page, `${index}`)) }
-              </Nav>
-            </Col>
-            <Col xs='10'>
-              { activeIndex.split ('.').reduce ((acc, index) => (!acc ? pages : acc.children)[Number (index)], undefined).component }
-            </Col>
-          </Row>
-        </Container>)
+  return (
+    <Container fluid>
+      <Row>
+        <div className='d-flex align-items-center'>
+          <Avatar userName={ userProfile.name } userEmail={ userProfile.email } />
+          <div className='p-2'>
+            <h2>{ playerProfile.nickname ?? userProfile.family_name ?? userProfile.name }</h2>
+            <span>Personal profile</span>
+          </div>
+        </div>
+      </Row>
+        <span className='p-3' />
+      <Row>
+        <Col xs='2'>
+          <Nav vertical='sm'>
+            { pages.map ((page, index) => createSection (page, `${index}`)) }
+          </Nav>
+        </Col>
+        <Col xs='10'>
+          { activeIndex.split ('.').reduce ((acc, index) => (!acc ? pages : acc.children)[Number (index)], undefined).component }
+        </Col>
+      </Row>
+    </Container>)
 }

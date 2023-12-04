@@ -16,11 +16,21 @@
  */
 using AutoMapper;
 using DataClash.Application.Challenges.Queries.GetChallengesWithPagination;
+using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
+using DataClash.Application.Clans.Queries.GetClansWithPagination;
+using DataClash.Application.Clans.Queries.GetPlayerClansWithPagination;
+using DataClash.Application.Clans.Queries.GetWarClansWithPagination;
 using DataClash.Application.Common.Mappings;
+using DataClash.Application.MagicCards.Queries.GetMagicCard;
+using DataClash.Application.Matches.Queries.GetMatch;
 using DataClash.Application.PlayerCards.Queries.GetPlayerCardsWithPagination;
 using DataClash.Application.Players.Queries.GetPlayer;
+using DataClash.Application.Players.Queries.GetPlayersWithPagination;
+using DataClash.Application.StructCards.Queries.GetStructCard;
+using DataClash.Application.TroopCards.Queries.GetTroopCards;
 using DataClash.Application.Wars.Queries.GetWar;
 using DataClash.Domain.Entities;
+using DataClash.Framework.Identity;
 using NUnit.Framework;
 using System.Runtime.Serialization;
 
@@ -44,10 +54,21 @@ namespace DataClash.Application.UnitTests.Common.Mappings
         }
 
       [Test]
+      [TestCase (typeof (ApplicationUser), typeof (PlayerBriefVm))]
       [TestCase (typeof (Challenge), typeof (ChallengeBriefDto))]
+      [TestCase (typeof (Clan), typeof (ClanBriefDto))]
+      [TestCase (typeof (MagicCard), typeof (MagicCardBriefDto))]
+      [TestCase (typeof (Match), typeof (MatchBriefDto))]
+      [TestCase (typeof (Player), typeof (PlayerBriefDto))]
       [TestCase (typeof (Player), typeof (PlayerBriefDto))]
       [TestCase (typeof (PlayerCard), typeof (PlayerCardBriefDto))]
+      [TestCase (typeof (PlayerCard), typeof (PlayerCardBriefDto))]
+      [TestCase (typeof (PlayerClan), typeof (CurrentPlayerClanVm))]
+      [TestCase (typeof (PlayerClan), typeof (PlayerClanBriefDto))]
+      [TestCase (typeof (StructCard), typeof (StructCardBriefDto))]
+      [TestCase (typeof (TroopCard), typeof (TroopCardBriefDto))]
       [TestCase (typeof (War), typeof (WarBriefDto))]
+      [TestCase (typeof (WarClan), typeof (WarClanBriefDto))]
       public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
         {
           _mapper.Map (GetInstanceOf (source), source, destination);

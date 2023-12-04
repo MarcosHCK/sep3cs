@@ -30,32 +30,19 @@ namespace DataClash.WebUI.Controllers
     {
       [HttpGet]
       public async Task<ActionResult<PaginatedList<WarBriefDto>>> GetWithPagination ([FromQuery] GetWarsWithPaginationQuery query)
-        {
-          return await Mediator.Send (query);
-        }
-
+        => await Mediator.Send (query);
       [HttpPost]
       public async Task<ActionResult<long>> Create (CreateWarCommand command)
-        {
-          return await Mediator.Send (command);
-        }
-
+        => await Mediator.Send (command);
       [HttpDelete]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Delete (DeleteWarCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
-
+        => await NoContentAction (() => Mediator.Send (command));
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdateWarCommand command)
-        {
-          await Mediator.Send (command);
-          return NoContent ();
-        }
+        => await NoContentAction (() => Mediator.Send (command));
     }
 }

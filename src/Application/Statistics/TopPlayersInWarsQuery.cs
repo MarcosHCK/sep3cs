@@ -18,48 +18,40 @@
 using DataClash.Application.Common.Interfaces;
 using MediatR;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataClash.Application.Statistics.BestPlayer
 {
-   public record GetBestPlayerQuery(int WarId) : IRequest<List<string[]>>;
+  public record GetBestPlayerQuery(int WarId) : IRequest<List<string[]>>;
 
-   public class GetBestPlayerQueryHandler : IRequestHandler<GetBestPlayerQuery, List<string[]>>
-   {
-       private readonly IApplicationDbContext _context;
+  public class GetBestPlayerQueryHandler : IRequestHandler<GetBestPlayerQuery, List<string[]>>
+    {
+      private readonly IApplicationDbContext _context;
 
-       public GetBestPlayerQueryHandler(IApplicationDbContext context)
-       {
-           _context = context;
-       }
-
-        public async Task<List<string[]>> Handle(GetBestPlayerQuery request, CancellationToken cancellationToken)
+      public GetBestPlayerQueryHandler (IApplicationDbContext context)
         {
-            var bestPlayers = (from pc in _context.PlayerClans
-                               join wc in _context.WarClans on pc.ClanId equals wc.ClanId
-                               where wc.WarId == request.WarId
-                               join p in _context.Players on pc.PlayerId equals p.Id
-                               select new { Player = p, Clan = pc.ClanId, Trophies = p.TotalThrophies })
-                 .ToList();
-
-            var groupedPlayers = bestPlayers
-                .GroupBy(pc => pc.Clan)
-                .Select(g => new { Clan = g.Key, BestPlayer = g.OrderByDescending(x => x.Trophies).First() })
-                .ToList();
-
-            var result = groupedPlayers
-                .Select(g => new string[] { g.BestPlayer.Player.Nickname, _context.Clans.Find(g.Clan).Name, g.BestPlayer.Trophies.ToString() })
-                .ToList();
-
-            return result;
+          _context = context;
         }
 
+      public async Task<List<string[]>> Handle (GetBestPlayerQuery request, CancellationToken cancellationToken)
+        {
+          var bestPlayers = await (from pc in _context.PlayerClans
+                                   join wc in _context.WarClans on pc.ClanId equals wc.ClanId
+                                   where wc.WarId == request.WarId
+                                   join p in _context.Players on pc.PlayerId equals p.Id
+                                   select new { Player = p, Clan = pc.ClanId, Trophies = p.TotalThrophies })
+                 .ToListAsync (cancellationToken);
+          var groupedPlayers = bestPlayers
+              .GroupBy (pc => pc.Clan)
+              .Select (g => new { Clan = g.Key, BestPlayer = g.OrderByDescending (x => x.Trophies).First () })
+              .ToList ();
+          var result = groupedPlayers
+              .Select (g => new string[] {
+                  g.BestPlayer.Player.Nickname ?? "<no nickname>",
+                  _context.Clans.Find (g.Clan)?.Name ?? "<no name>",
+                  g.BestPlayer.Trophies.ToString ()
+                }).ToList ();
+        return result;
+        }
     }
-
-    public class GetBestPlayerQueryValidator : AbstractValidator<GetBestPlayerQuery>
-   {
-       public GetBestPlayerQueryValidator()
-       {
-           // Add validation rules here
-       }
-   }
 }
