@@ -21,12 +21,11 @@ using DataClash.Application.Common.Mappings;
 using DataClash.Application.Common.Models;
 using DataClash.Application.Common.Security;
 using DataClash.Application.Matches.Queries.GetMatch;
-using DataClash.Domain.Enums;
 using MediatR;
 
 namespace DataClash.Application.Matches.Queries.GetMatchesWithPagination
 {
-  [Authorize (Roles = Roles.Administrator)]
+  [Authorize]
   public record GetMatchesWithPaginationQuery : IRequest<PaginatedList<MatchBriefDto>>
     {
       public int PageNumber { get; init; } = 1;
