@@ -24,7 +24,7 @@ using DataClash.Application.Clans.Commands.RemovePlayer;
 using DataClash.Application.Clans.Commands.UpdateClan;
 using DataClash.Application.Clans.Commands.UpdatePlayer;
 using DataClash.Application.Clans.Commands.UpdateWar;
-using DataClash.Application.Clans.Queries.GetClanForCurrentPlayer;
+using DataClash.Application.Clans.Queries.GetClanForPlayer;
 using DataClash.Application.Clans.Queries.GetClansWithPagination;
 using DataClash.Application.Clans.Queries.GetPlayerClansWithPagination;
 using DataClash.Application.Clans.Queries.GetWarClansWithPagination;
@@ -37,11 +37,11 @@ namespace DataClash.WebUI.Controllers
   [Authorize]
   public class ClanController : ApiControllerBase
     {
-      [HttpGet ("Current")]
-      public async Task<ActionResult<CurrentPlayerClanVm?>> GetForCurrentPlayer ([FromQuery] GetClanForCurrentPlayerQuery query)
-        => await Mediator.Send (query);
       [HttpGet ("Player")]
       public async Task<ActionResult<PaginatedList<PlayerClanBriefDto>>> GetPlayerClansWithPagination ([FromQuery] GetPlayerClansWithPaginationQuery query)
+        => await Mediator.Send (query);
+      [HttpGet ("Player/{Id}")]
+      public async Task<ActionResult<PlayerClanVm?>> GetForPlayer ([FromRoute] GetClanForPlayerQuery query)
         => await Mediator.Send (query);
       [HttpGet ("War")]
       public async Task<ActionResult<PaginatedList<WarClanBriefDto>>> GetWarClansWithPagination ([FromQuery] GetWarClansWithPaginationQuery query)

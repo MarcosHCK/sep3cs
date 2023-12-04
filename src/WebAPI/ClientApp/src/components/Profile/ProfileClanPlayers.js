@@ -91,7 +91,7 @@ export function ProfileClanPlayers (props)
         {
           if (!!playerProfile) try
             {
-              const currentClan = await clanClient.getForCurrentPlayer ()
+              const currentClan = await clanClient.getForPlayer (playerProfile.id)
 
               if (currentClan === null)
                 setHasClan (false)
