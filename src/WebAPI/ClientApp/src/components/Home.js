@@ -20,15 +20,10 @@ import {Mural} from './HomeTable';
 import './Home.css';
 import React, { useEffect, useState } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { TopClansClient } from '../webApiClient.ts'
-import { CompletedChallengesClient } from '../webApiClient.ts';
-import { MostGiftedCardsClient } from '../webApiClient.ts';
 
-
-export function Home() {
-
+export function Home ()
+{
   //clanes x region, falta automatizar lo de crear la variable pa poner en la tabla y revisar la query como tal 
-  const [topClansClient] = useState(new TopClansClient())
   const [topClans, clanData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +35,6 @@ export function Home() {
   }, []); 
 
   //desafios completados, falta la misma automatizacion de arriba y probar la query
-  const [completedChallengesClient] = useState(new CompletedChallengesClient())
   const [completedChallenges, challengeData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +46,6 @@ export function Home() {
   }, []);
 
   //cartas mas donadas, falta la misma automatizacion de arriba y probar la query
-  const [mostGiftedCardsClient] = useState(new MostGiftedCardsClient())
   const [giftedCards, giftedData] = useState([]);
 
   useEffect(() => {
@@ -122,6 +115,7 @@ export function Home() {
         console.log('selectedclanName:', selectedClanName);
         console.log('popularcards:', data);} )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedClanName]);
 
   const toggleClan = () => setDropdownOpenClan(prevState => !prevState);
@@ -143,7 +137,7 @@ export function Home() {
  </div>
 
       <h1 className="table-title">
-            <img className="table-image" src="clanes.jfif" />
+            <img alt='' className="table-image" src="clanes.jfif" />
                     Top Clans by Regions
           </h1>
       <Table columns={['Clan', 'Region', 'Trophies']} data={topClans} />
@@ -151,7 +145,7 @@ export function Home() {
       <div className="tableContainer">
         <div className="headerContainer">
           <h1 className="table-title">
-            <img className="table-image" src="top_players.webp" />
+            <img alt='' className="table-image" src="top_players.webp" />
                     Top Players by Wars
           </h1>
           <Dropdown isOpen={dropdownOpenWar} toggle={toggleWar}>
@@ -170,7 +164,7 @@ export function Home() {
         <Table columns={['Player', 'Clan', 'Trophies']} data={bestPlayers} />
 
         <h1 className="table-title">
-            <img className="table-image" src="desafio.jfif" />
+            <img alt='' className="table-image" src="desafio.jfif" />
                     Completed Challenges
           </h1>
         <Table columns={['Player', 'Challenge']} data={completedChallenges} />
@@ -178,7 +172,7 @@ export function Home() {
         <div className="headerContainer">
           
           <h1 className="table-title">
-            <img className="table-image" src="cards1.jfif" />
+            <img alt='' className="table-image" src="cards1.jfif" />
             Most Popular Cards by Clans
           </h1>
           <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
@@ -197,7 +191,7 @@ export function Home() {
         <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
 
         <h1 className="table-title">
-            <img className="table-image" src="cards3.jfif" />
+            <img alt='' className="table-image" src="cards3.jfif" />
             Most Gifted Cards by Region
           </h1>
         
