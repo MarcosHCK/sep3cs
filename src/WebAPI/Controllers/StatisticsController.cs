@@ -25,7 +25,41 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataClash.WebUI.Controllers
 {
-  public class TopClansController : ExporterControllerBase<(string, string, string)>
+  public record TopClansBrief
+    {
+      public string Name { get; init; } = null!;
+      public string Region { get; init; } = null!;
+      public string Throphies { get; init; } = null!;
+    }
+
+  public record CompletedChallengesBrief
+    {
+      public string Player { get; init; } = null!;
+      public string Challenge { get; init; } = null!;
+    }
+
+  public record MostGiftedCardsBrief
+    {
+      public string Card { get; init; } = null!;
+      public string Region { get; init; } = null!;
+      public string Donations { get; init; } = null!;
+    }
+
+  public record BestPlayerBrief
+    {
+      public string Player { get; init; } = null!;
+      public string Clan { get; init; } = null!;
+      public string Throphies { get; init; } = null!;
+    }
+
+  public record PopularCardsBrief
+    {
+      public string Card { get; init; } = null!;
+      public string Type { get; init; } = null!;
+      public string Clan { get; init; } = null!;
+    }
+
+  public class TopClansController : ExporterControllerBase<TopClansBrief>
     {
       [HttpGet]
       public async Task<ActionResult<List<string[]>>> GetTopClans ()
@@ -34,11 +68,11 @@ namespace DataClash.WebUI.Controllers
       public async Task<FileResult> ExportTopClans ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, async () => {
           var values = await Mediator.Send (new GetTopClansQuery ());
-          return values.Select (x => (x[0], x[1], x[2]));
+          return values.Select (x => new TopClansBrief { Name = x[0], Region = x[1], Throphies = x[2] });
         });
     }
 
-  public class CompletedChallengesController : ExporterControllerBase<(string, string)>
+  public class CompletedChallengesController : ExporterControllerBase<CompletedChallengesBrief>
     {
       [HttpGet]
       public async Task<ActionResult<List<string[]>>> GetCompletedChallenges ()
@@ -47,11 +81,11 @@ namespace DataClash.WebUI.Controllers
       public async Task<FileResult> ExportCompletedChallenges ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, async () => {
           var values = await Mediator.Send (new GetCompletedChallengesQuery ());
-          return values.Select (x => (x[0], x[1]));
+          return values.Select (x => new CompletedChallengesBrief { Player = x[0], Challenge = x[1] });
         });
     }
 
-  public class MostGiftedCardsController : ExporterControllerBase<(string, string, string)>
+  public class MostGiftedCardsController : ExporterControllerBase<MostGiftedCardsBrief>
     {
       [HttpGet]
       public async Task<ActionResult<List<string[]>>> GetMostGiftedCards ()
@@ -61,7 +95,7 @@ namespace DataClash.WebUI.Controllers
         => await ExportResult (contentType, fileName, async () =>
           {
             var values = await Mediator.Send (new GetMostGiftedCardsQuery ());
-            return values.Select (x => (x[0], x[1], x[2]));
+            return values.Select (x => new MostGiftedCardsBrief { Card = x[0], Region = x[1], Donations = x[2] });
           });
     }
 
@@ -79,7 +113,7 @@ namespace DataClash.WebUI.Controllers
           });
     }
 
-  public class BestPlayerController : ExporterControllerBase<(string, string, string)>
+  public class BestPlayerController : ExporterControllerBase<BestPlayerBrief>
     {
       [HttpGet]
       public async Task<ActionResult<List<string[]>>> GetBestPlayer (int warId)
@@ -89,7 +123,7 @@ namespace DataClash.WebUI.Controllers
         => await ExportResult (contentType, fileName, async () =>
           {
             var values = await Mediator.Send (new GetBestPlayerQuery (warId));
-            return values.Select (x => (x[0], x[1], x[2]));
+            return values.Select (x => new BestPlayerBrief { Player = x[0], Clan = x[1], Throphies = x[2] });
           });
     }
 
@@ -107,7 +141,7 @@ namespace DataClash.WebUI.Controllers
           });
     }
 
-  public class PopularCardsController : ExporterControllerBase<(string, string, string)>
+  public class PopularCardsController : ExporterControllerBase<PopularCardsBrief>
     {
       [HttpGet]
       public async Task<ActionResult<List<string[]>>> GetPopularCards (string clanName)
@@ -117,7 +151,7 @@ namespace DataClash.WebUI.Controllers
         => await ExportResult (contentType, fileName, async () =>
           {
             var values = await Mediator.Send (new GetPopularCardsQuery (clanName));
-            return values.Select (x => (x[0], x[1], x[2]));
+            return values.Select (x => new PopularCardsBrief { Card = x[0], Type = x[1], Clan = x[2] });
           });
     }
 }
