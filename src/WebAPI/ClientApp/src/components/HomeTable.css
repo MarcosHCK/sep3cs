@@ -70,3 +70,18 @@ td {
    margin-bottom: 40px;
 }
 
+.mural {
+
+   border-radius: 10px;
+   padding: 20px;
+   margin: 20px;
+   background-color: #f8fcff;
+  }
+  
+  .mural h2 {
+   text-align: center;
+  }
+  
+  .mural p {
+   text-align: justify;
+  }
