@@ -13,54 +13,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
- *//*
-import React, { useEffect, useState } from 'react'
-import { Card, CardImg, CardBody, CardTitle, CardText, Row, Col, UncontrolledTooltip } from 'reactstrap'
-import { CardClient } from '../webApiClient.ts'
-import { useErrorReporter } from './ErrorReporter'
-
-export function Cards () {
- const [ items, setItems ] = useState (undefined)
- const [ cardClient ] = useState (new CardClient ())
- const errorReporter = useErrorReporter ()
-
- useEffect (() => {
- const loadCards = async () => {
- try {
- const paginatedList = await cardClient.getWithPagination(1, 120)
- setItems (paginatedList.items)
- } catch (error) {
- errorReporter (error)
- }
- }
-
- loadCards ()
- }, [])
-
- return (
- <Row>
- { (items ?? []).map ((item, index) => (
- <Col sm="2" key={index}>
-   <Card id={`card${index}`} style={{ width: '150px', margin: '10px' }}>
-     <CardImg top width="100%" src={`/cards/${item.picture}.png`} alt={item.name} />
-     <UncontrolledTooltip target={`card${index}`} placement="top">
-       <h5>{item.name}</h5>
-       <p>{item.description}</p>
-       {/* Aquí puedes agregar más información de la carta si lo deseas }
-     </UncontrolledTooltip>
-   </Card>
- </Col>
- ))}
- </Row>
- )
-}
-*/
-import React, { useEffect, useState } from 'react'
+ */
 import { Card, CardImg, Row, Col, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { CardClient } from '../webApiClient.ts'
-import { useErrorReporter } from './ErrorReporter'
 import { FaInfo, FaHeart, FaFire, FaSquare, FaUsers, FaClock ,FaBuilding,FaBomb, FaCircle} from 'react-icons/fa';
-
+import { useErrorReporter } from './ErrorReporter'
+import React, { useEffect, useState } from 'react'
 
 export function Cards () {
   const [ troopCards, setTroopCards ] = useState (undefined)
@@ -85,6 +43,7 @@ export function Cards () {
     };
    
     loadCards();
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
    
   return (
