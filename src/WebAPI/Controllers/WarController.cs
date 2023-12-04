@@ -38,11 +38,11 @@ namespace DataClash.WebUI.Controllers
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Delete (DeleteWarCommand command)
-        => await NoContentAction (() => Mediator.Send (command));
+        => await NoContent (() => Mediator.Send (command));
       [HttpPut]
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdateWarCommand command)
-        => await NoContentAction (() => Mediator.Send (command));
+        => await NoContent (() => Mediator.Send (command));
     }
 }
