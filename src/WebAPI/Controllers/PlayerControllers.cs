@@ -42,6 +42,6 @@ namespace DataClash.WebUI.Controllers
       [ProducesResponseType (StatusCodes.Status204NoContent)]
       [ProducesDefaultResponseType]
       public async Task<IActionResult> Update (UpdatePlayerCommand command)
-        => await NoContentAction (() => Mediator.Send (command));
+        => await NoContent (() => Mediator.Send (command));
     }
 }

@@ -14,23 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
-using DataClash.Application.ErrorReports.Commands.CreateErrorReport;
-using DataClash.Application.ErrorReports.Commands.DeleteErrorReport;
-using Microsoft.AspNetCore.Authorization;
+using DataClash.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataClash.WebUI.Controllers
 {
-  [Authorize]
-  public class ReportController : ApiControllerBase
+  public abstract class ExporterControllerBase<T> : ApiControllerBase
     {
-      [HttpPost]
-      public async Task<ActionResult<long>> Create (CreateErrorReportCommand command)
-        => await Mediator.Send (command);
-      [HttpDelete]
-      [ProducesResponseType (StatusCodes.Status204NoContent)]
-      [ProducesDefaultResponseType]
-      public async Task<IActionResult> Delete (DeleteErrorReportCommand command)
-        => await NoContent (() => Mediator.Send (command));
+      private IExporterService<T>? _exporter;
+      protected IExporterService<T> Exporter => _exporter ??= HttpContext.RequestServices.GetRequiredService<IExporterService<T>> ();
+
+      protected delegate Task<List<T>> ExportAction ();
+      protected async Task<FileResult> ExportResult (string contentType, string name, ExportAction action)
+        {
+          var valueResult = await action ();
+          var exportResult = await Exporter.Export (contentType, valueResult);
+          return File (exportResult, contentType, name);
+        }
     }
 }
