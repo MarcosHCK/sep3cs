@@ -17,6 +17,7 @@
 import { HomeCarousel } from './HomeCarousel'
 import Table from './HomeTable';
 import {Mural} from './HomeTable';
+import { FaFileDownload } from 'react-icons/fa';
 import './Home.css';
 import React, { useEffect, useState } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -123,81 +124,80 @@ export function Home ()
   return (
     <div>
       <div className="home">
-   <div className="carousel">
-     <HomeCarousel items={[
-       { src: '/comic/administrator.jpeg', },
-       { src: '/comic/query_card_stats.jpeg', },
-       { src: '/comic/query_challenge_stats.jpeg', },
-       { src: '/comic/query_clan_stats.jpeg', },
-       { src: '/comic/query_clan_war_stats.jpeg', },
-       { src: '/comic/registration.jpeg', },
-     ]} />
-   </div>
-   <Mural />
- </div>
+        <div className="carousel">
+          <HomeCarousel items={[
+            { src: '/comic/administrator.jpeg', },
+            { src: '/comic/query_card_stats.jpeg', },
+            { src: '/comic/query_challenge_stats.jpeg', },
+            { src: '/comic/query_clan_stats.jpeg', },
+            { src: '/comic/query_clan_war_stats.jpeg', },
+            { src: '/comic/registration.jpeg', },
+          ]} />
+        </div>
+        <Mural />
+      </div>
 
-      <h1 className="table-title">
-            <img alt='' className="table-image" src="clanes.jfif" />
-                    Top Clans by Regions
-          </h1>
+      <h1 className="table-title d-flex">
+        <img alt='' className="table-image" src="clanes.jfif" />
+            Top Clans by Regions
+        <span className='flex-grow-1' />
+        <a href='/api/TopClans/Export?contentType=text%2Fcsv'><FaFileDownload /></a>
+      </h1>
       <Table columns={['Clan', 'Region', 'Trophies']} data={topClans} />
 
-      <div className="tableContainer">
-        <div className="headerContainer">
-          <h1 className="table-title">
-            <img alt='' className="table-image" src="top_players.webp" />
-                    Top Players by Wars
-          </h1>
-          <Dropdown isOpen={dropdownOpenWar} toggle={toggleWar}>
-            <DropdownToggle caret>
-              Select a war
-            </DropdownToggle>
-            <DropdownMenu>
-              {warIds.map((id, index) => (
-                <DropdownItem key={index} onClick={() => setSelectedWarId(id)}>
-                  {id}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-        <Table columns={['Player', 'Clan', 'Trophies']} data={bestPlayers} />
+      <h1 className="table-title d-flex">
+        <img alt='' className="table-image" src="top_players.webp" />
+            Top Players by Wars
+        <span className='flex-grow-1' />
+        <Dropdown isOpen={dropdownOpenWar} toggle={toggleWar}>
+          <DropdownToggle caret>
+            Select a war
+          </DropdownToggle>
+          <DropdownMenu>
+        { warIds.map((id, index) => (
+            <DropdownItem key={index} onClick={() => setSelectedWarId (id)}>
+              {id}
+            </DropdownItem>))}
+          </DropdownMenu>
+        </Dropdown>
+        <a href={`/api/BestPlayer/Export?contentType=text%2Fcsv&warId=${selectedWarId}`}><FaFileDownload /></a>
+      </h1>
+      <Table columns={['Player', 'Clan', 'Trophies']} data={bestPlayers} />
 
-        <h1 className="table-title">
-            <img alt='' className="table-image" src="desafio.jfif" />
-                    Completed Challenges
-          </h1>
-        <Table columns={['Player', 'Challenge']} data={completedChallenges} />
-
-        <div className="headerContainer">
+      <h1 className="table-title d-flex">
+        <img alt='' className="table-image" src="desafio.jfif" />
+            Completed Challenges
+        <span className='flex-grow-1' />
+        <a href='/api/CompletedChallenges/Export?contentType=text%2Fcsv'><FaFileDownload /></a>
+      </h1>
+      <Table columns={['Player', 'Challenge']} data={completedChallenges} />
           
-          <h1 className="table-title">
-            <img alt='' className="table-image" src="cards1.jfif" />
+      <h1 className="table-title d-flex">
+        <img alt='' className="table-image" src="cards1.jfif" />
             Most Popular Cards by Clans
-          </h1>
-          <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
-            <DropdownToggle caret>
-              Select a clan
-            </DropdownToggle>
-            <DropdownMenu>
-              {clanName.map((name, index) => (
-                <DropdownItem key={index} onClick={() => setSelectedClanName(name)}>
-                  {name}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-        <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
+        <span className='flex-grow-1' />
+        <Dropdown isOpen={dropdownOpenClan} toggle={toggleClan}>
+          <DropdownToggle caret>
+            Select a clan
+          </DropdownToggle>
+          <DropdownMenu>
+        { clanName.map((name, index) => (
+            <DropdownItem key={index} onClick={() => setSelectedClanName (name)}>
+              {name}
+            </DropdownItem>))}
+          </DropdownMenu>
+        </Dropdown>
+        <a href={`/api/PopularCards/Export?contentType=text%2Fcsv&clanName=${selectedClanName}`}><FaFileDownload /></a>
+      </h1>
+      <Table columns={['Card', 'Type', 'Clan']} data={popularCards} />
 
-        <h1 className="table-title">
-            <img alt='' className="table-image" src="cards3.jfif" />
+      <h1 className="table-title d-flex">
+        <img alt='' className="table-image" src="cards3.jfif" />
             Most Gifted Cards by Region
-          </h1>
-        
-        <Table columns={['Card', 'Region', 'Donations']} data={giftedCards} />
-
-      </div>
+        <span className='flex-grow-1' />
+        <a href='/api/MostGiftedCards/Export?contentType=text%2Fcsv'><FaFileDownload /></a>
+      </h1>
+      <Table columns={['Card', 'Region', 'Donations']} data={giftedCards} />
     </div>
   )
 }

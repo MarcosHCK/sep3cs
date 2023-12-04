@@ -31,7 +31,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<string[]>>> GetTopClans ()
         => await Mediator.Send (new GetTopClansQuery ());
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<string[]>>> ExportTopClans ([FromQuery] string contentType, [FromQuery] string fileName)
+      public async Task<ActionResult<List<string[]>>> ExportTopClans ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetTopClansQuery ()));
     }
 
@@ -41,7 +41,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<string[]>>> GetCompletedChallenges ()
         => await Mediator.Send (new GetCompletedChallengesQuery ());
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<string[]>>> ExportCompletedChallenges ([FromQuery] string contentType, [FromQuery] string fileName)
+      public async Task<ActionResult<List<string[]>>> ExportCompletedChallenges ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetCompletedChallengesQuery ()));
     }
 
@@ -51,7 +51,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<string[]>>> GetMostGiftedCards ()
         => await Mediator.Send (new GetMostGiftedCardsQuery ());
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<string[]>>> ExportMostGiftedCards ([FromQuery] string contentType, [FromQuery] string fileName)
+      public async Task<ActionResult<List<string[]>>> ExportMostGiftedCards ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetMostGiftedCardsQuery ()));
     }
 
@@ -61,7 +61,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<long>>> GetAllWarIds ()
         => await Mediator.Send (new GetAllWarIdsQuery ());
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<long>>> ExportAllWarIds ([FromQuery] string contentType, [FromQuery] string fileName)
+      public async Task<ActionResult<List<long>>> ExportAllWarIds ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetAllWarIdsQuery ()));
     }
 
@@ -71,7 +71,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<string[]>>> GetBestPlayer (int warId)
         => await Mediator.Send (new GetBestPlayerQuery (warId));
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<string[]>>> ExportBestPlayer ([FromQuery] string contentType, [FromQuery] string fileName, [FromQuery] int warId)
+      public async Task<ActionResult<List<string[]>>> ExportBestPlayer ([FromQuery] string contentType, [FromQuery] string? fileName, [FromQuery] int warId)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetBestPlayerQuery (warId)));
     }
 
@@ -81,7 +81,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<string>>> GetAllClanNames ()
         => await Mediator.Send (new GetAllClanNamesQuery ());
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<string>>> ExportAllClanNames ([FromQuery] string contentType, [FromQuery] string fileName)
+      public async Task<ActionResult<List<string>>> ExportAllClanNames ([FromQuery] string contentType, [FromQuery] string? fileName)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetAllClanNamesQuery ()));
     }
 
@@ -91,7 +91,7 @@ namespace DataClash.WebUI.Controllers
       public async Task<ActionResult<List<string[]>>> GetPopularCards (string clanName)
         => await Mediator.Send (new GetPopularCardsQuery (clanName));
       [HttpGet ("Export")]
-      public async Task<ActionResult<List<string[]>>> ExportPopularCards ([FromQuery] string contentType, [FromQuery] string fileName, [FromQuery] string clanName)
+      public async Task<ActionResult<List<string[]>>> ExportPopularCards ([FromQuery] string contentType, [FromQuery] string? fileName, [FromQuery] string clanName)
         => await ExportResult (contentType, fileName, () => Mediator.Send (new GetPopularCardsQuery (clanName)));
     }
 }
