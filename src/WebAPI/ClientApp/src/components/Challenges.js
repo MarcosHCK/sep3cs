@@ -15,18 +15,19 @@
  * along with sep3cs. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Button, Table,Input } from 'reactstrap'
+import { ChallengeClient } from '../webApiClient.ts'
 import { CreateChallengeCommand, DeleteChallengeCommand } from '../webApiClient.ts'
 import { DateTime } from './DateTime'
-import { useParams } from 'react-router-dom'
+import { IntegerInput } from './IntegerInput'
 import { Pager } from './Pager'
 import { TimeSpan } from './TimeSpan'
 import { UpdateChallengeCommand } from '../webApiClient.ts'
 import { useAuthorize } from '../services/AuthorizeProvider'
-import { UserRoles } from '../services/AuthorizeConstants'
-import { ChallengeClient } from '../webApiClient.ts'
-import React, { useEffect, useState } from 'react'
-import { WaitSpinner } from './WaitSpinner'
 import { useErrorReporter } from './ErrorReporter'
+import { useParams } from 'react-router-dom'
+import { UserRoles } from '../services/AuthorizeConstants'
+import { WaitSpinner } from './WaitSpinner'
+import React, { useEffect, useState } from 'react'
 
 export function Challenges (props)
 {
@@ -180,18 +181,18 @@ export function Challenges (props)
                   readOnly={readOnly} />
               </td>
               <td>
-                <Input
-                  type='number'
+                <IntegerInput
                   defaultValue={item.bounty}
-                  onChange={(e) => { item.bounty = e.target.value; updateChallenge (item) }}
-                  readOnly={readOnly} />
+                  disabled={readOnly}
+                  natural nonZero
+                  onChanged={value => { item.bounty = value; updateChallenge (item) }} />
               </td>
               <td>
-                <Input
-                  type='number'
+                <IntegerInput
                   defaultValue={item.cost}
-                  onChange={(e) => { item.cost = e.target.value; updateChallenge (item) }}
-                  readOnly={readOnly} />
+                  disabled={readOnly}
+                  natural nonZero
+                  onChanged={value => { item.cost = value; updateChallenge (item) }} />
               </td>
               <td>
                 <Input
@@ -207,18 +208,18 @@ export function Challenges (props)
                   readOnly={readOnly} />
               </td>
               <td>
-                <Input
-                  type='number'
+                <IntegerInput
                   defaultValue={item.maxLooses}
-                  onChange={(e) => { item.maxLooses = e.target.value; updateChallenge (item) }}
-                  readOnly={readOnly} />
+                  disabled={readOnly}
+                  natural nonZero
+                  onChanged={value => { item.maxLooses = value; updateChallenge (item) }} />
               </td>
               <td>
-                <Input
-                  type='number'
+                <IntegerInput
                   defaultValue={item.minLevel}
-                  onChange={(e) => { item.minLevel = e.target.value; updateChallenge (item) }}
-                  readOnly={readOnly} />
+                  disabled={readOnly}
+                  natural nonZero
+                  onChanged={value => { item.minLevel = value; updateChallenge (item) }} />
               </td>
               <td>
                 <Input
